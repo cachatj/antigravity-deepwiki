@@ -57,7 +57,7 @@ public static class McpRepositoryScopeAccessor
     private static object? EnsureExperimental(McpServerOptions options)
     {
         options.Capabilities ??= new ServerCapabilities();
-        options.Capabilities.Experimental = new Dictionary<string, object>();
+        options.Capabilities.Experimental ??= new Dictionary<string, object>();
         return options.Capabilities.Experimental;
     }
 

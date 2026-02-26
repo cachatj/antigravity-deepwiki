@@ -36,42 +36,58 @@ public static class DbInitializer
 
         // 初始化系统设置默认值（仅在首次运行时从环境变量创建）
         await SystemSettingDefaults.InitializeDefaultsAsync(configuration, context);
+
+        // 初始化默认 MCP 提供商
+        await InitializeMcpProvidersAsync(context);
     }
 
     private static async Task InitializeAdminUserAsync(IContext context)
     {
-        const string adminEmail = "admin@routin.ai";
-        const string adminPassword = "Admin@123";
+        const string adminEmail = "admin@opendeepwiki.com";
+        const string adminPassword = "123456";
 
-        var exists = await context.Users.AnyAsync(u => u.Email == adminEmail && !u.IsDeleted);
-        if (exists) return;
-
-        var adminRole = await context.Roles.FirstOrDefaultAsync(r => r.Name == "Admin" && !r.IsDeleted);
-        if (adminRole == null) return;
-
-        var adminUser = new User
+        // Clean up any legacy admin users that might cause ID mismatches
+        var legacyAdmins = await context.Users
+            .Where(u => (u.Email == "admin@routin.ai" || u.Name == "admin") && u.Id != "00000000-0000-0000-0000-000000000001" && !u.IsDeleted)
+            .ToListAsync();
+        
+        if (legacyAdmins.Any())
         {
-            Id = Guid.NewGuid().ToString(),
-            Name = "admin",
-            Email = adminEmail,
-            Password = BCrypt.Net.BCrypt.HashPassword(adminPassword),
-            Status = 1,
-            IsSystem = true,
-            CreatedAt = DateTime.UtcNow
-        };
+            context.Users.RemoveRange(legacyAdmins);
+            await context.SaveChangesAsync();
+        }
 
-        context.Users.Add(adminUser);
-
-        var userRole = new UserRole
+        var adminUser = await context.Users.FirstOrDefaultAsync(u => u.Id == "00000000-0000-0000-0000-000000000001" && !u.IsDeleted);
+        
+        if (adminUser == null)
         {
-            Id = Guid.NewGuid().ToString(),
-            UserId = adminUser.Id,
-            RoleId = adminRole.Id,
-            CreatedAt = DateTime.UtcNow
-        };
+            var adminRole = await context.Roles.FirstOrDefaultAsync(r => r.Name == "Admin" && !r.IsDeleted);
+            if (adminRole == null) return;
 
-        context.UserRoles.Add(userRole);
-        await context.SaveChangesAsync();
+            adminUser = new User
+            {
+                Id = "00000000-0000-0000-0000-000000000001", // Stable ID
+                Name = "admin",
+                Email = adminEmail,
+                Password = BCrypt.Net.BCrypt.HashPassword(adminPassword),
+                Status = 1,
+                IsSystem = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            context.Users.Add(adminUser);
+
+            var userRole = new UserRole
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = adminUser.Id,
+                RoleId = adminRole.Id,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            context.UserRoles.Add(userRole);
+            await context.SaveChangesAsync();
+        }
     }
 
     private static async Task InitializeRolesAsync(IContext context)
@@ -80,7 +96,7 @@ public static class DbInitializer
         {
             new Role
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = "00000000-0000-0000-0000-admin-role-01", // Stable ID
                 Name = "Admin",
                 Description = "系统管理员",
                 IsActive = true,
@@ -89,7 +105,7 @@ public static class DbInitializer
             },
             new Role
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = "00000000-0000-0000-0000-user-role-01", // Stable ID
                 Name = "User",
                 Description = "普通用户",
                 IsActive = true,
@@ -100,9 +116,16 @@ public static class DbInitializer
 
         foreach (var role in roles)
         {
-            var exists = await context.Roles.AnyAsync(r => r.Name == role.Name && !r.IsDeleted);
-            if (!exists)
+            var existingRole = await context.Roles.FirstOrDefaultAsync(r => r.Name == role.Name && !r.IsDeleted);
+            if (existingRole == null)
             {
+                context.Roles.Add(role);
+            }
+            else if (existingRole.Id != role.Id)
+            {
+                // Fix role ID if it doesn't match our stable ID
+                context.Roles.Remove(existingRole);
+                await context.SaveChangesAsync();
                 context.Roles.Add(role);
             }
         }
@@ -160,4 +183,38 @@ public static class DbInitializer
         await context.SaveChangesAsync();
     }
 
+    private static async Task InitializeMcpProvidersAsync(IContext context)
+    {
+        var providers = new[]
+        {
+            new McpProvider
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "DeepWiki Repository Tools",
+                Description = "Provides tools for searching documentation and exploring repository structure.",
+                ServerUrl = "/api/mcp/{owner}/{repo}",
+                TransportType = "sse",
+                RequiresApiKey = false, // Set to false to remove "API Key Required" message
+                IsActive = true,
+                SortOrder = 1,
+                CreatedAt = DateTime.UtcNow
+            }
+        };
+
+        foreach (var provider in providers)
+        {
+            var existing = await context.McpProviders.FirstOrDefaultAsync(p => p.Name == provider.Name && !p.IsDeleted);
+            if (existing == null)
+            {
+                context.McpProviders.Add(provider);
+            }
+            else if (existing.RequiresApiKey)
+            {
+                existing.RequiresApiKey = false;
+                context.McpProviders.Update(existing);
+            }
+        }
+
+        await context.SaveChangesAsync();
+    }
 }

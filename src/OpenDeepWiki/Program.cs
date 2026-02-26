@@ -310,6 +310,7 @@ try
 
     // Register translation service
     builder.Services.AddScoped<ITranslationService, TranslationService>();
+    builder.Services.AddScoped<WikiExportService>();
 
     builder.Services.AddHostedService<RepositoryProcessingWorker>();
     builder.Services.AddHostedService<TranslationWorker>();
@@ -362,7 +363,7 @@ try
     // Register MCP provider management service
     builder.Services.AddScoped<IAdminMcpProviderService, AdminMcpProviderService>();
     builder.Services.AddScoped<IMcpUsageLogService, McpUsageLogService>();
-    builder.Services.AddHostedService<McpStatisticsAggregationService>();
+    builder.Services.AddHostedService<OpenDeepWiki.MCP.McpStatisticsAggregationService>();
 
     // MCP server registration (official MCP server + scope via ConfigureSessionOptions)
     var mcpEnabled = builder.Configuration.GetValue("MCP_ENABLED", true);
@@ -438,6 +439,7 @@ try
     app.MapSystemEndpoints();
     app.MapIncrementalUpdateEndpoints();
     app.MapMcpProviderEndpoints();
+    app.MapWikiExportEndpoints();
 
     // Initialize database (create default data)
     using (var scope = app.Services.CreateScope())

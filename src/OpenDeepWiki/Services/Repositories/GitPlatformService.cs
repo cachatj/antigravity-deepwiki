@@ -42,12 +42,26 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
             "github" => await GetGitHubBranchesAsync(owner, repo),
             "gitee" => await GetGiteeBranchesAsync(owner, repo),
             "gitlab" => await GetGitLabBranchesAsync(owner, repo),
+            "local" => new GitBranchesResult([new GitBranchInfo("main", true)], "main", true),
             _ => new GitBranchesResult([], null, false)
         };
     }
 
     private static (string? platform, string? owner, string? repo) ParseGitUrl(string gitUrl)
     {
+        // Handle local file URLs
+        if (gitUrl.StartsWith("file://") || gitUrl.StartsWith("/"))
+        {
+            var path = gitUrl.StartsWith("file://") ? gitUrl.Substring(7) : gitUrl;
+            var segments = path.Trim('/').Split('/', '\\');
+            if (segments.Length > 0)
+            {
+                var repo = segments.Last().Replace(".git", "", StringComparison.OrdinalIgnoreCase);
+                var owner = segments.Length > 1 ? segments[segments.Length - 2] : "local";
+                return ("local", owner, repo);
+            }
+        }
+
         try
         {
             // 支持格式: https://github.com/owner/repo 或 https://github.com/owner/repo.git

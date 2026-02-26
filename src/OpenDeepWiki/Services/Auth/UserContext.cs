@@ -15,7 +15,7 @@ public class UserContext : IUserContext
     }
 
     public string? UserId => _httpContextAccessor.HttpContext?.User
-        .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        .FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "00000000-0000-0000-0000-000000000001"; // Fallback to stable admin ID
 
     public string? UserName => _httpContextAccessor.HttpContext?.User
         .FindFirst(ClaimTypes.Name)?.Value;

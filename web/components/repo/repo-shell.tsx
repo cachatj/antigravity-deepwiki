@@ -11,6 +11,7 @@ import { fetchRepoTree, fetchRepoBranches } from "@/lib/repository-api";
 import { Network, Download } from "lucide-react";
 import { ChatAssistant, buildCatalogMenu } from "@/components/chat";
 import { useTranslations } from "@/hooks/use-translations";
+import { WikiExport } from "./wiki-export";
 
 interface RepoShellProps {
   owner: string;
@@ -149,50 +150,6 @@ export function RepoShell({
     ? `/${owner}/${repo}/mindmap?${queryString}` 
     : `/${owner}/${repo}/mindmap`;
 
-  // 导出功能处理
-  const handleExport = async () => {
-    if (isExporting) return;
-    
-    setIsExporting(true);
-    try {
-      const params = new URLSearchParams();
-      if (currentBranch) params.set("branch", currentBranch);
-      if (currentLanguage) params.set("lang", currentLanguage);
-      
-      const exportUrl = `/api/v1/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/export${params.toString() ? `?${params.toString()}` : ""}`;
-      
-      const response = await fetch(exportUrl);
-      if (!response.ok) {
-        throw new Error("导出失败");
-      }
-      
-      // 获取文件名
-      const contentDisposition = response.headers.get("content-disposition");
-      let fileName = `${owner}-${repo}-${currentBranch || "main"}-${currentLanguage || "zh"}.zip`;
-      if (contentDisposition) {
-        const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-        if (fileNameMatch?.[1]) {
-          fileName = fileNameMatch[1].replace(/['"]/g, "");
-        }
-      }
-      
-      // 下载文件
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error("导出失败:", error);
-      // 可以在这里添加错误提示
-    } finally {
-      setIsExporting(false);
-    }
-  };
 
   const tree = convertToPageTree(nodes, owner, repo, queryString);
   const title = `${owner}/${repo}`;
@@ -217,16 +174,13 @@ export function RepoShell({
           <Network className="h-4 w-4" />
           <span className="font-medium text-sm">{t("mindmap.title")}</span>
         </Link>
-        <button
-          onClick={handleExport}
-          disabled={isExporting}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-500/10 border border-green-500/30 text-green-700 dark:text-green-300 hover:bg-green-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full"
-        >
-          <Download className="h-4 w-4" />
-          <span className="font-medium text-sm">
-            {isExporting ? "导出中..." : "导出文档"}
-          </span>
-        </button>
+        <WikiExport
+          owner={owner}
+          repo={repo}
+          currentBranch={currentBranch}
+          currentLanguage={currentLanguage}
+          className="w-full justify-start py-2"
+        />
       </div>
     </div>
   );

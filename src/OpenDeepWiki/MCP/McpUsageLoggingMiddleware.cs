@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Security.Claims;
-using System.Text.Json;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using OpenDeepWiki.Entities;
 using OpenDeepWiki.Services.Mcp;
 
@@ -30,7 +31,6 @@ public class McpUsageLoggingMiddleware
         }
 
         var stopwatch = Stopwatch.StartNew();
-        var originalStatusCode = context.Response.StatusCode;
 
         try
         {
@@ -49,7 +49,7 @@ public class McpUsageLoggingMiddleware
                 var ipAddress = context.Connection.RemoteIpAddress?.ToString();
                 var userAgent = context.Request.Headers.UserAgent.FirstOrDefault();
 
-                // Try to extract tool name from request body (MCP JSON-RPC)
+                // Try to extract tool name from context items (set by McpRepositoryTools or similar)
                 var toolName = ExtractToolName(context);
 
                 var log = new McpUsageLog
@@ -79,12 +79,10 @@ public class McpUsageLoggingMiddleware
     }
 
     /// <summary>
-    /// 尝试从 MCP JSON-RPC 请求中提取工具名称
+    /// 尝试从 HttpContext 中提取工具名称
     /// </summary>
     private static string? ExtractToolName(HttpContext context)
     {
-        // MCP uses JSON-RPC, tool calls have method "tools/call" with params.name
-        // We store the tool name in HttpContext.Items during request processing if available
         if (context.Items.TryGetValue("McpToolName", out var toolNameObj) && toolNameObj is string toolName)
         {
             return toolName;

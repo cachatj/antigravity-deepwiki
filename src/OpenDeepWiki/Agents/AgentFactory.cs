@@ -17,7 +17,8 @@ namespace OpenDeepWiki.Agents
         OpenAI,
         AzureOpenAI,
         OpenAIResponses,
-        Anthropic
+        Anthropic,
+        Gemini
     }
 
     public class AiRequestOptions
@@ -117,6 +118,25 @@ namespace OpenDeepWiki.Agents
                 clientAgentOptions.ChatOptions.ModelId = model;
                 var anthropicClient = client.AsAIAgent(clientAgentOptions);
                 return anthropicClient;
+            }
+            else if (option.RequestType == AiRequestType.Gemini)
+            {
+                var clientOptions = new OpenAIClientOptions()
+                {
+                    Endpoint = new Uri(option.Endpoint ?? "https://generativelanguage.googleapis.com/v1beta/openai/"),
+                    Transport = new System.ClientModel.Primitives.HttpClientPipelineTransport(httpClient)
+                };
+
+                var openAiClient = new OpenAIClient(
+                    new ApiKeyCredential(option.ApiKey ?? string.Empty),
+                    clientOptions);
+
+                // Use the configured model or default to gemini-2.0-flash-thinking-exp-01-21 for thinking capabilities
+                var modelToUse = string.IsNullOrEmpty(model) ? "gemini-2.0-flash-thinking-exp-01-21" : model;
+                
+                var chatClient = openAiClient.GetChatClient(modelToUse);
+
+                return chatClient.AsAIAgent(clientAgentOptions);
             }
 
             throw new NotSupportedException("Unknown AI request type.");

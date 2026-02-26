@@ -1,15 +1,10 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext } from "react";
 import {
   UserInfo,
   LoginRequest,
   RegisterRequest,
-  login as apiLogin,
-  register as apiRegister,
-  getCurrentUser,
-  logout as apiLogout,
-  getToken,
 } from "@/lib/auth-api";
 
 interface AuthContextType {
@@ -24,55 +19,28 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// AUTH BYPASS: Always authenticated as local admin.
+// No external auth servers are contacted.
+// To re-enable auth (e.g. for SSO), restore the original AuthProvider
+// from git history and configure the SSO provider.
+const LOCAL_USER: UserInfo = {
+  id: "local-admin",
+  email: "admin@localhost",
+  name: "Local Admin",
+  roles: ["Admin"],
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<UserInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const refreshUser = useCallback(async () => {
-    try {
-      const userInfo = await getCurrentUser();
-      setUser(userInfo);
-    } catch {
-      setUser(null);
-    }
-  }, []);
-
-  useEffect(() => {
-    const initAuth = async () => {
-      const token = getToken();
-      if (token) {
-        await refreshUser();
-      }
-      setIsLoading(false);
-    };
-    initAuth();
-  }, [refreshUser]);
-
-  const login = async (request: LoginRequest) => {
-    const response = await apiLogin(request);
-    setUser(response.user);
-  };
-
-  const register = async (request: RegisterRequest) => {
-    const response = await apiRegister(request);
-    setUser(response.user);
-  };
-
-  const logout = () => {
-    apiLogout();
-    setUser(null);
-  };
-
   return (
     <AuthContext.Provider
       value={{
-        user,
-        isLoading,
-        isAuthenticated: !!user,
-        login,
-        register,
-        logout,
-        refreshUser,
+        user: LOCAL_USER,
+        isLoading: false,
+        isAuthenticated: true,
+        login: async () => {},
+        register: async () => {},
+        logout: () => {},
+        refreshUser: async () => {},
       }}
     >
       {children}

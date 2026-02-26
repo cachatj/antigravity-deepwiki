@@ -21,7 +21,7 @@ interface RepositorySubmitFormProps {
   onSuccess?: () => void;
 }
 
-const GIT_URL_REGEX = /^(https?:\/\/|git@)[\w.-]+[/:].+?(\.git)?$/i;
+const GIT_URL_REGEX = /^((https?:\/\/|git@)[\w.-]+[/:].+?(\.git)?|file:\/\/.*|\/.*)$/i;
 
 const SUPPORTED_LANGUAGES = [
   { code: "en", label: "languages.en" },
@@ -39,6 +39,16 @@ function parseGitUrl(url: string): { orgName: string; repoName: string } | null 
   const sshMatch = url.match(/git@[^:]+:([^/]+)\/([^/]+?)(?:\.git)?$/i);
   if (sshMatch) {
     return { orgName: sshMatch[1], repoName: sshMatch[2] };
+  }
+
+  // Local paths: file:///path/to/repo  or  /path/to/repo
+  const localMatch = url.match(/^(?:file:\/\/|\/)(.+)$/i);
+  if (localMatch) {
+    const path = localMatch[1];
+    const parts = path.split(/[\/\\]/).filter(Boolean);
+    const repoName = parts[parts.length - 1]?.replace(/\.git$/i, '') || 'local-repo';
+    const orgName = parts.length > 1 ? parts[parts.length - 2] : 'local';
+    return { orgName, repoName };
   }
   
   return null;
