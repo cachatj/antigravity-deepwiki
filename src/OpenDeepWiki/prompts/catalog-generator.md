@@ -113,7 +113,7 @@ Before calling WriteCatalog, verify:
 {
   "items": [
     {
-      "title": "标题 (in {{language}})",
+      "title": "Title (in {{language}})",
       "path": "lowercase-hyphen-path",
       "order": 0,
       "children": []

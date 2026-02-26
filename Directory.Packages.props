@@ -3,21 +3,21 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <TimeStamp>$([System.DateTime]::UtcNow.ToString("yyyyMMdd"))</TimeStamp>
     <Version>2.0.0</Version>
-    <!-- 项目信息 -->
+    <!-- Project info -->
     <Product>OpenDeepWiki</Product>
-    <Title>OpenDeepWiki - AI驱动的代码知识库</Title>
-    <Description>OpenDeepWiki是一个基于.NET 9和Semantic Kernel开发的AI驱动代码知识库项目。它能够将GitHub、GitLab、Gitee等代码仓库快速转换为智能知识库，支持多语言代码分析、文档生成、结构图创建和AI对话交互，帮助开发者更好地理解和利用代码库。</Description>
-    <Summary>AI驱动的代码知识库，支持多平台代码仓库分析和智能文档生成</Summary>
-    <!-- 组织信息 -->
+    <Title>OpenDeepWiki - AI-Powered Code Knowledge Base</Title>
+    <Description>OpenDeepWiki is an AI-powered code knowledge base built on .NET and Semantic Kernel. It converts GitHub, GitLab, and other code repositories into intelligent knowledge bases with multi-language code analysis, documentation generation, architecture diagrams, and AI chat interaction.</Description>
+    <Summary>AI-powered code knowledge base supporting multi-platform repository analysis and intelligent documentation generation</Summary>
+    <!-- Organization info -->
     <Company>AIDotNet</Company>
     <Authors>AIDotNet Contributors</Authors>
     <Copyright>Copyright © $(Company) $([System.DateTime]::Now.Year). All rights reserved.</Copyright>
-    <!-- 项目链接 -->
+    <!-- Project links -->
     <PackageProjectUrl>https://github.com/AIDotNet/OpenDeepWiki</PackageProjectUrl>
     <RepositoryUrl>https://github.com/AIDotNet/OpenDeepWiki</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <!-- 项目标签 -->
+    <!-- Project tags -->
     <PackageTags>AI;CodeAnalysis;Documentation;SemanticKernel;Knowledge;Wiki;OpenSource;dotnet9;csharp</PackageTags>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>
@@ -61,30 +61,30 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
-    <!-- 数据库提供程序 -->
+    <!-- Database providers -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <!-- Microsoft Extensions -->
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
-    <!-- AI 和 机器学习 -->
+    <!-- AI and Machine Learning -->
     <PackageVersion Include="Microsoft.SemanticKernel" Version="1.69.0" />
     <PackageVersion Include="Microsoft.SemanticKernel.Connectors.AzureOpenAI" Version="1.69.0" />
     <PackageVersion Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.69.0" />
     <PackageVersion Include="Lost.SemanticKernel.Connectors.Anthropic" Version="1.25.0-alpha3" />
     <PackageVersion Include="Mem0.NET" Version="1.1.3" />
-    <!-- AWS SDK - 解决版本冲突 -->
+    <!-- AWS SDK -->
     <PackageVersion Include="AWSSDK.Core" Version="4.0.0.3" />
     <PackageVersion Include="AWSSDK.S3" Version="4.0.0.3" />
-    <!-- 代码分析 -->
+    <!-- Code analysis -->
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
-    <!-- 版本控制 -->
+    <!-- Version control -->
     <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
     <PackageVersion Include="Octokit" Version="14.0.0" />
-    <!-- JSON 和 序列化 -->
+    <!-- JSON and serialization -->
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.5-beta1" />
-    <!-- 映射和对象转换 -->
+    <!-- Mapping and object conversion -->
     <PackageVersion Include="Mapster.DependencyInjection" Version="10.0.0-pre01" />
-    <!-- 日志记录 -->
+    <!-- Logging -->
     <PackageVersion Include="Serilog" Version="4.3.1-dev-02395" />
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0" />
@@ -94,15 +94,15 @@
     <PackageVersion Include="Serilog.Enrichers.Thread" Version="4.0.0" />
     <PackageVersion Include="Serilog.Enrichers.Process" Version="3.0.0" />
     <PackageVersion Include="Serilog.Expressions" Version="5.1.0-dev-02309" />
-    <!-- 弹性和重试 -->
+    <!-- Resilience and retry -->
     <PackageVersion Include="Polly" Version="8.6.5" />
-    <!-- 服务和分析 -->
+    <!-- Services and analysis -->
     <PackageVersion Include="FastService" Version="0.2.2" />
     <PackageVersion Include="FastService.Analyzers" Version="0.2.2" />
-    <!-- 协议支持 -->
+    <!-- Protocol support -->
     <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="0.8.0-preview.1" />
     <PackageVersion Include="SharpToken" Version="2.0.4" />
-    <!-- Thor 框架相关包 (来自子模块) -->
+    <!-- Framework packages -->
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.6.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
@@ -116,14 +116,10 @@
     <PackageVersion Include="StackExchange.Redis" Version="2.8.31" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.2.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.2.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
+    <!-- OpenTelemetry REMOVED for security (no telemetry) -->
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.1.0" />
     <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.5.2" />
-    <!-- 测试框架 -->
+    <!-- Test frameworks -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />

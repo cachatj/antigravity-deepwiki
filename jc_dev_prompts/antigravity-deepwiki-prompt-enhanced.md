@@ -139,7 +139,7 @@ This tool will be used in **sensitive healthcare analytics environments**. The f
 
 - **LLM**: Gemini 2.0 Pro (already configured and working)
 - **Language**: Python preferred for CLI tool (familiar to data team), TypeScript for extension
-- **No Docker**: Eliminate if possible; Podman if containerization is truly needed
+- **No Docker**: Should we eliminate if possible; Podman if containerization is truly needed - what benefits do we get from docker? I dont mind using it - especially if we get the benefit of our own local hosting web server, databases, we could add vector or noSQL semantic knowledge graphs as well.
 - **No Database**: File-based storage only (markdown + YAML config + JSON cache)
 - **IDE**: Antigravity primary, VS Code secondary compatibility
 

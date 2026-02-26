@@ -1,15 +1,4 @@
-
-### ⚠️ Announcement: Shifting focus to AsyncReview
----
-
-**IMPORTANT UPDATE** DeepWiki-Open maintenance is ongoing, but primary active development is moving to **[AsyncReview](https://github.com/AsyncFuncAI/AsyncReview/)**. Thank you for the support on this project; please join me in the new repository for this year's primary effort.
-
----
----
-
 # DeepWiki-Open
-
-![DeepWiki Banner](screenshots/Deepwiki.png)
 
 **DeepWiki** is my own implementation attempt of DeepWiki, automatically creates beautiful, interactive wikis for any GitHub, GitLab, or BitBucket repository! Just enter a repo name, and DeepWiki will:
 
@@ -17,11 +6,6 @@
 2. Generate comprehensive documentation
 3. Create visual diagrams to explain how everything works
 4. Organize it all into an easy-to-navigate wiki
-
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/sheing)
-[![Tip in Crypto](https://tip.md/badge.svg)](https://tip.md/sng-asyncfunc)
-[![Twitter/X](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://x.com/sashimikun_void)
-[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/VQMBGR8u5v)
 
 [English](./README.md) | [简体中文](./README.zh.md) | [繁體中文](./README.zh-tw.md) | [日本語](./README.ja.md) | [Español](./README.es.md) | [한국어](./README.kr.md) | [Tiếng Việt](./README.vi.md) | [Português Brasileiro](./README.pt-br.md) | [Français](./README.fr.md) | [Русский](./README.ru.md)
 
@@ -62,7 +46,6 @@ echo "AZURE_OPENAI_VERSION=your_azure_openai_version" >> .env
 # Run with Docker Compose
 docker-compose up
 ```
-
 For detailed instructions on using DeepWiki with Ollama and Docker, see [Ollama Instructions](Ollama-instruction.md).
 
 > 💡 **Where to get these keys:**

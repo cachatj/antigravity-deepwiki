@@ -70,32 +70,32 @@ The mind map uses a simple markdown-like format with `#` for hierarchy levels:
 <design_principles>
 **For Backend Projects (dotnet, java, go, python):**
 ```
-# 核心架构
-## API层:src/Controllers
-## 服务层:src/Services
-## 数据层:src/Repositories
-# 领域模型
-## 实体定义:src/Entities
-## 数据传输对象:src/DTOs
-# 基础设施
-## 数据库配置:src/Data
-## 中间件:src/Middleware
+# Core Architecture
+## API Layer:src/Controllers
+## Service Layer:src/Services
+## Data Layer:src/Repositories
+# Domain Model
+## Entity Definitions:src/Entities
+## Data Transfer Objects:src/DTOs
+# Infrastructure
+## Database Config:src/Data
+## Middleware:src/Middleware
 ```
 
 **For Frontend Projects (react, vue, angular):**
 ```
-# 应用入口
-## 路由配置:src/app
-## 布局组件:src/components/layout
-# 功能模块
-## 页面组件:src/pages
-## 业务组件:src/components
-# 状态管理
-## 全局状态:src/store
-## 自定义Hooks:src/hooks
-# 工具层
-## API客户端:src/lib/api
-## 工具函数:src/utils
+# App Entry Point
+## Route Config:src/app
+## Layout Components:src/components/layout
+# Feature Modules
+## Page Components:src/pages
+## Business Components:src/components
+# State Management
+## Global State:src/store
+## Custom Hooks:src/hooks
+# Utility Layer
+## API Client:src/lib/api
+## Utilities:src/utils
 ```
 
 **For Full-Stack Projects:**
@@ -171,21 +171,21 @@ Create a hierarchical representation that:
 ## Example Output
 
 ```
-# 系统架构
-## 前端应用:web
-### 页面路由:web/app
-### UI组件:web/components
-### 状态管理:web/hooks
-## 后端服务:src/OpenDeepWiki
-### API端点:src/OpenDeepWiki/Endpoints
-### 业务服务:src/OpenDeepWiki/Services
-### AI代理:src/OpenDeepWiki/Agents
-# 数据层
-## 实体模型:src/OpenDeepWiki.Entities
-## 数据库上下文:src/OpenDeepWiki.EFCore
-# 基础设施
-## 配置文件:compose.yaml
-## 构建脚本:Makefile
+# System Architecture
+## Frontend App:web
+### Page Routes:web/app
+### UI Components:web/components
+### State Management:web/hooks
+## Backend Services:src/OpenDeepWiki
+### API Endpoints:src/OpenDeepWiki/Endpoints
+### Business Services:src/OpenDeepWiki/Services
+### AI Agents:src/OpenDeepWiki/Agents
+# Data Layer
+## Entity Models:src/OpenDeepWiki.Entities
+## Database Context:src/OpenDeepWiki.EFCore
+# Infrastructure
+## Config Files:compose.yaml
+## Build Scripts:Makefile
 ```
 
 ---

@@ -1,37 +1,38 @@
-# 依赖安装阶段
+# Dependency installation stage
 FROM node:20-alpine AS deps
 WORKDIR /app
 
-# 安装依赖
+# Install dependencies
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-# 构建阶段
+# Build stage
 FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# 构建时不需要 API_PROXY_URL，运行时通过环境变量动态获取
+# API_PROXY_URL is not needed at build time, it is provided at runtime via environment variables
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# 生产运行阶段
+# Production runtime stage
 FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-# 创建非 root 用户
+# Create non-root user
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# 复制构建产物
+# Copy build artifacts
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# 不复制 .env 文件，API_PROXY_URL 通过运行时环境变量传入
+# Do not copy .env file — API_PROXY_URL is provided at runtime via environment variables
 
 USER nextjs
 
