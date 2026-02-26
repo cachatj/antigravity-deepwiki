@@ -1,0 +1,22 @@
+{
+  "title": "设置",
+  "appearance": "外观设置",
+  "appearanceDescription": "自定义应用的外观和显示",
+  "theme": "主题",
+  "themeDescription": "选择应用的颜色主题",
+  "themeLight": "浅色",
+  "themeDark": "深色",
+  "themeSystem": "跟随系统",
+  "language": "语言",
+  "languageDescription": "选择界面显示语言",
+  "notifications": "通知设置",
+  "notificationsDescription": "管理你的通知偏好",
+  "emailNotifications": "邮件通知",
+  "emailNotificationsDescription": "接收重要更新的邮件通知",
+  "pushNotifications": "推送通知",
+  "pushNotificationsDescription": "接收浏览器推送通知",
+  "about": "关于",
+  "aboutDescription": "AI 驱动的代码知识库平台",
+  "saveSuccess": "设置已保存",
+  "saveFailed": "保存失败"
+}

@@ -1,0 +1,22 @@
+{
+  "title": "설정",
+  "appearance": "외관",
+  "appearanceDescription": "앱의 외관과 표시를 사용자 정의",
+  "theme": "테마",
+  "themeDescription": "앱의 색상 테마 선택",
+  "themeLight": "라이트",
+  "themeDark": "다크",
+  "themeSystem": "시스템",
+  "language": "언어",
+  "languageDescription": "표시 언어 선택",
+  "notifications": "알림",
+  "notificationsDescription": "알림 설정 관리",
+  "emailNotifications": "이메일 알림",
+  "emailNotificationsDescription": "중요한 업데이트에 대한 이메일 알림 받기",
+  "pushNotifications": "푸시 알림",
+  "pushNotificationsDescription": "브라우저 푸시 알림 받기",
+  "about": "정보",
+  "aboutDescription": "AI 기반 코드 지식 베이스 플랫폼",
+  "saveSuccess": "설정이 저장되었습니다",
+  "saveFailed": "저장에 실패했습니다"
+}

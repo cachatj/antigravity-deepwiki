@@ -1,0 +1,22 @@
+{
+  "title": "設定",
+  "appearance": "外観",
+  "appearanceDescription": "アプリの外観と表示をカスタマイズ",
+  "theme": "テーマ",
+  "themeDescription": "アプリのカラーテーマを選択",
+  "themeLight": "ライト",
+  "themeDark": "ダーク",
+  "themeSystem": "システム",
+  "language": "言語",
+  "languageDescription": "表示言語を選択",
+  "notifications": "通知",
+  "notificationsDescription": "通知設定を管理",
+  "emailNotifications": "メール通知",
+  "emailNotificationsDescription": "重要な更新のメール通知を受け取る",
+  "pushNotifications": "プッシュ通知",
+  "pushNotificationsDescription": "ブラウザのプッシュ通知を受け取る",
+  "about": "について",
+  "aboutDescription": "AI駆動のコードナレッジベースプラットフォーム",
+  "saveSuccess": "設定を保存しました",
+  "saveFailed": "保存に失敗しました"
+}
