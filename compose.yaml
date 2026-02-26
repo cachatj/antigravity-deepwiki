@@ -31,21 +31,33 @@
       - REPOSITORIES_DIRECTORY=/data
 
       # AI 服务配置 (全局默认，用于 Chat 等功能)
-      - CHAT_API_KEY=your-chat-api-key
-      - ENDPOINT=https://api.openai.com/v1
-      - CHAT_REQUEST_TYPE=OpenAI
+      - CHAT_API_KEY=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
+      - ENDPOINT=https://api.anthropic.com
+      - CHAT_REQUEST_TYPE=Anthropic
 
       # Wiki 生成器配置 - 目录生成
-      - WIKI_CATALOG_MODEL=gpt-4o
-      - WIKI_CATALOG_ENDPOINT=https://api.openai.com/v1
-      - WIKI_CATALOG_API_KEY=your-catalog-api-key
-      - WIKI_CATALOG_REQUEST_TYPE=OpenAI
+      # Option 1: Claude (Anthropic) - Commented out
+      # - WIKI_CATALOG_MODEL=claude-3-5-sonnet-20240620
+      # - WIKI_CATALOG_ENDPOINT=https://api.anthropic.com
+      # - WIKI_CATALOG_API_KEY=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
+      # - WIKI_CATALOG_REQUEST_TYPE=Anthropic
+
+      # Option 2: Gemini (Active)
+      - WIKI_CATALOG_MODEL=gemini-2.5-pro
+      - WIKI_CATALOG_API_KEY=AIzaSyCNXub_eEERwI9GiVWoTKD-uVPBjKadE5M
+      - WIKI_CATALOG_REQUEST_TYPE=Gemini
 
       # Wiki 生成器配置 - 内容生成
-      - WIKI_CONTENT_MODEL=gpt-4o
-      - WIKI_CONTENT_ENDPOINT=https://api.openai.com/v1
-      - WIKI_CONTENT_API_KEY=your-content-api-key
-      - WIKI_CONTENT_REQUEST_TYPE=OpenAI
+      # Option 1: Claude (Anthropic) - Commented out
+      # - WIKI_CONTENT_MODEL=claude-3-5-sonnet-20240620
+      # - WIKI_CONTENT_ENDPOINT=https://api.anthropic.com
+      # - WIKI_CONTENT_API_KEY=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
+      # - WIKI_CONTENT_REQUEST_TYPE=Anthropic
+
+      # Option 2: Gemini (Active)
+      - WIKI_CONTENT_MODEL=gemini-2.5-pro
+      - WIKI_CONTENT_API_KEY=AIzaSyCNXub_eEERwI9GiVWoTKD-uVPBjKadE5M
+      - WIKI_CONTENT_REQUEST_TYPE=Gemini
 
       # Wiki 生成器配置 - 翻译 (可选，不配置则使用内容生成配置)
       # - WIKI_TRANSLATION_MODEL=gpt-4o
@@ -57,9 +69,11 @@
       - WIKI_PARALLEL_COUNT=5
 
       # 多语言支持 (逗号分隔，如: en,zh,ja,ko)
-      - WIKI_LANGUAGES=en,zh
+      - WIKI_LANGUAGES=en
     volumes:
       - ./data:/data
+      - /Users/jc-vht/code_sandbox/edna_phm_sow_airflow_antigravity:/sow:ro
+      - /Users/jc-vht/code_sandbox/AZURE-payer_propensity_models-data_processing_to_prediction:/AZURE_data_fabric:ro
 
   web:
     image: crpi-j9ha7sxwhatgtvj4.cn-shenzhen.personal.cr.aliyuncs.com/open-deepwiki/opendeepwiki-web
@@ -67,7 +81,7 @@
       context: ./web
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3001:3000"
     restart: unless-stopped
     depends_on:
       opendeepwiki:
