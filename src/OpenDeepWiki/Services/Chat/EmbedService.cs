@@ -1,9 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
-using Anthropic.Models.Messages;
 using LibGit2Sharp;
-using Microsoft.Agents.AI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
@@ -372,7 +370,7 @@ public class EmbedService : IEmbedService
             gitTool != null);
 
         // Create agent with app's AI configuration
-        var agentOptions = new ChatClientAgentOptions
+        var runOptions = new AgentRunOptions
         {
             ChatOptions = new ChatOptions
             {
@@ -387,10 +385,10 @@ public class EmbedService : IEmbedService
             RequestType = ParseRequestType(app.ProviderType)
         };
 
-        var (agent, _) = _agentFactory.CreateChatClientWithTools(
+        var (chatClient, _) = _agentFactory.CreateChatClientWithTools(
             modelId,
             tools.ToArray(),
-            agentOptions,
+            runOptions,
             requestOptions);
 
         // Build chat messages
@@ -409,9 +407,7 @@ public class EmbedService : IEmbedService
         var outputTokens = 0;
         var responseBuilder = new System.Text.StringBuilder();
 
-        var thread = await agent.CreateSessionAsync(cancellationToken);
-
-        await foreach (var update in agent.RunStreamingAsync(chatMessages, thread, cancellationToken: cancellationToken))
+        await foreach (var update in AgentRunner.RunStreamingAsync(chatClient, chatMessages, runOptions, cancellationToken))
         {
             if (!string.IsNullOrEmpty(update.Text))
             {
@@ -424,26 +420,11 @@ public class EmbedService : IEmbedService
             }
 
             // Track token usage if available
-            if (update.RawRepresentation is ChatResponseUpdate chatResponseUpdate)
+            var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
+            if (usage != null)
             {
-                if (chatResponseUpdate.RawRepresentation is RawMessageStreamEvent
-                    {
-                        Value: RawMessageDeltaEvent deltaEvent
-                    })
-                {
-                    inputTokens = (int)((int)(deltaEvent.Usage.InputTokens ?? inputTokens) +
-                        deltaEvent.Usage.CacheCreationInputTokens + deltaEvent.Usage.CacheReadInputTokens ?? 0);
-                    outputTokens = (int)(deltaEvent.Usage.OutputTokens);
-                }
-            }
-            else
-            {
-                var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
-                if (usage != null)
-                {
-                    inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
-                    outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
-                }
+                inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
+                outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
             }
         }
 

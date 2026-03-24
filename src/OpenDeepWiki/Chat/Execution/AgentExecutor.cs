@@ -1,7 +1,5 @@
 using System.Runtime.CompilerServices;
 using System.Text;
-using Anthropic.Models.Messages;
-using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -70,7 +68,7 @@ public class AgentExecutor : IAgentExecutor
             var systemPrompt = BuildDeepWikiSystemPrompt();
 
             // Create agent with tools
-            var agentOptions = new ChatClientAgentOptions
+            var runOptions = new AgentRunOptions
             {
                 ChatOptions = new ChatOptions
                 {
@@ -80,10 +78,10 @@ public class AgentExecutor : IAgentExecutor
                 }
             };
 
-            var (agent, _) = _agentFactory.CreateChatClientWithTools(
+            var (chatClient, _) = _agentFactory.CreateChatClientWithTools(
                 _options.DefaultModel,
                 tools,
-                agentOptions);
+                runOptions);
 
             // Build context messages
             var contextMessages = BuildContextMessages(message, session);
@@ -93,12 +91,11 @@ public class AgentExecutor : IAgentExecutor
             cts.CancelAfter(TimeSpan.FromSeconds(_options.TimeoutSeconds));
 
             // Stream and collect response
-            var thread = await agent.CreateSessionAsync(cts.Token);
             var contentBuilder = new StringBuilder();
             var inputTokens = 0;
             var outputTokens = 0;
 
-            await foreach (var update in agent.RunStreamingAsync(chatMessages, thread, cancellationToken: cts.Token))
+            await foreach (var update in AgentRunner.RunStreamingAsync(chatClient, chatMessages, runOptions, cts.Token))
             {
                 if (!string.IsNullOrEmpty(update.Text))
                 {
@@ -106,26 +103,11 @@ public class AgentExecutor : IAgentExecutor
                 }
 
                 // Track token usage if available
-                if (update.RawRepresentation is ChatResponseUpdate chatResponseUpdate)
+                var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
+                if (usage != null)
                 {
-                    if (chatResponseUpdate.RawRepresentation is RawMessageStreamEvent
-                        {
-                            Value: RawMessageDeltaEvent deltaEvent
-                        })
-                    {
-                        inputTokens = (int)((int)(deltaEvent.Usage.InputTokens ?? inputTokens) +
-                            deltaEvent.Usage.CacheCreationInputTokens + deltaEvent.Usage.CacheReadInputTokens ?? 0);
-                        outputTokens = (int)(deltaEvent.Usage.OutputTokens);
-                    }
-                }
-                else
-                {
-                    var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
-                    if (usage != null)
-                    {
-                        inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
-                        outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
-                    }
+                    inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
+                    outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
                 }
             }
 
@@ -212,7 +194,7 @@ public class AgentExecutor : IAgentExecutor
         var systemPrompt = BuildDeepWikiSystemPrompt();
 
         // Create agent with tools
-        var agentOptions = new ChatClientAgentOptions
+        var runOptions = new AgentRunOptions
         {
             ChatOptions = new ChatOptions
             {
@@ -222,10 +204,10 @@ public class AgentExecutor : IAgentExecutor
             }
         };
 
-        var (agent, _) = _agentFactory.CreateChatClientWithTools(
+        var (chatClient, _) = _agentFactory.CreateChatClientWithTools(
             _options.DefaultModel,
             tools,
-            agentOptions);
+            runOptions);
 
         // Build context messages
         var contextMessages = BuildContextMessages(message, session);
@@ -234,22 +216,22 @@ public class AgentExecutor : IAgentExecutor
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         cts.CancelAfter(TimeSpan.FromSeconds(_options.TimeoutSeconds));
 
-        AgentSession? thread = null;
+        AgentRunOptions? initRunOptions = null;
         string? initError = null;
 
         try
         {
-            thread = await agent.CreateSessionAsync(cts.Token);
+            initRunOptions = runOptions;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex,
-                "Failed to create agent thread for session {SessionId}",
+                "Failed to create agent for session {SessionId}",
                 session.SessionId);
             initError = CreateFriendlyErrorMessage(ex);
         }
 
-        if (initError != null || thread == null)
+        if (initError != null)
         {
             yield return AgentResponseChunk.CreateError(initError ?? _options.FriendlyErrorMessage);
             yield break;
@@ -262,7 +244,7 @@ public class AgentExecutor : IAgentExecutor
 
         try
         {
-            await foreach (var update in agent.RunStreamingAsync(chatMessages, thread, cancellationToken: cts.Token))
+            await foreach (var update in AgentRunner.RunStreamingAsync(chatClient, chatMessages, runOptions, cts.Token))
             {
                 if (!string.IsNullOrEmpty(update.Text))
                 {
@@ -270,26 +252,11 @@ public class AgentExecutor : IAgentExecutor
                 }
 
                 // Track token usage if available
-                if (update.RawRepresentation is ChatResponseUpdate chatResponseUpdate)
+                var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
+                if (usage != null)
                 {
-                    if (chatResponseUpdate.RawRepresentation is RawMessageStreamEvent
-                        {
-                            Value: RawMessageDeltaEvent deltaEvent
-                        })
-                    {
-                        inputTokens = (int)((int)(deltaEvent.Usage.InputTokens ?? inputTokens) +
-                            deltaEvent.Usage.CacheCreationInputTokens + deltaEvent.Usage.CacheReadInputTokens ?? 0);
-                        outputTokens = (int)(deltaEvent.Usage.OutputTokens);
-                    }
-                }
-                else
-                {
-                    var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
-                    if (usage != null)
-                    {
-                        inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
-                        outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
-                    }
+                    inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
+                    outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
                 }
             }
             chunks.Add(AgentResponseChunk.CreateComplete());

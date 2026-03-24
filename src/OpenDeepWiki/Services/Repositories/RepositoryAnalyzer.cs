@@ -79,6 +79,44 @@ public class RepositoryAnalyzer : IRepositoryAnalyzer
             workspace.Organization, workspace.RepositoryName, branchName, 
             workspace.WorkingDirectory, previousCommitId ?? "none");
 
+        // Check if the GitUrl is a local directory path (e.g., Docker volume mount)
+        if (IsLocalDirectory(workspace.GitUrl))
+        {
+            _logger.LogInformation(
+                "Local directory detected at {GitUrl}, using directly without clone/pull",
+                workspace.GitUrl);
+
+            // Point the workspace directly at the local directory
+            workspace.WorkingDirectory = workspace.GitUrl;
+
+            // Get commit ID: use git HEAD if it's a git repo, otherwise generate a synthetic one
+            if (Directory.Exists(Path.Combine(workspace.WorkingDirectory, ".git")))
+            {
+                workspace.CommitId = GetHeadCommitId(workspace.WorkingDirectory);
+                _logger.LogInformation(
+                    "Local git repository detected. CommitId: {CommitId}", workspace.CommitId);
+            }
+            else
+            {
+                // Generate a stable synthetic commit ID based on path + last modified time
+                var lastModified = Directory.GetLastWriteTimeUtc(workspace.WorkingDirectory);
+                workspace.CommitId = Convert.ToHexString(
+                    System.Security.Cryptography.SHA1.HashData(
+                        System.Text.Encoding.UTF8.GetBytes($"{workspace.GitUrl}:{lastModified:O}")
+                    )).ToLowerInvariant()[..40];
+                _logger.LogInformation(
+                    "Plain directory (no .git), using synthetic CommitId: {CommitId}", workspace.CommitId);
+            }
+
+            stopwatch.Stop();
+            _logger.LogInformation(
+                "Workspace prepared from local directory. Repository: {Org}/{Repo}, Path: {Path}, CommitId: {CommitId}, Duration: {Duration}ms",
+                workspace.Organization, workspace.RepositoryName,
+                workspace.WorkingDirectory, workspace.CommitId, stopwatch.ElapsedMilliseconds);
+
+            return workspace;
+        }
+
         // Ensure the parent directory exists
         var parentDir = Path.GetDirectoryName(workspace.WorkingDirectory);
         if (!string.IsNullOrEmpty(parentDir) && !Directory.Exists(parentDir))
@@ -265,6 +303,25 @@ public class RepositoryAnalyzer : IRepositoryAnalyzer
         };
     }
 
+    /// <summary>
+    /// Determines if a GitUrl refers to an existing local directory rather than a remote URL.
+    /// Supports absolute paths (e.g., /cah-sow) and file:// protocol URIs.
+    /// </summary>
+    private static bool IsLocalDirectory(string gitUrl)
+    {
+        if (string.IsNullOrWhiteSpace(gitUrl))
+            return false;
+
+        // Strip file:// protocol if present
+        var path = gitUrl;
+        if (path.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
+        {
+            path = path["file://".Length..];
+        }
+
+        // Check if it's an absolute path that exists as a directory
+        return Path.IsPathRooted(path) && Directory.Exists(path);
+    }
 
     /// <summary>
     /// Clones a repository to the working directory.
