@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "@/hooks/use-translations";
-import { fetchRepositoryList } from "@/lib/repository-api";
+import { fetchRepositoryList, deleteRepository } from "@/lib/repository-api";
 import type { RepositoryItemResponse, RepositoryStatus } from "@/types/repository";
 import {
   Clock,
@@ -22,6 +22,7 @@ import {
   ExternalLink,
   RefreshCw,
   GitBranch,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VisibilityToggle } from "@/components/repo/visibility-toggle";
@@ -80,20 +81,39 @@ function StatusBadge({ status }: { status: RepositoryStatus }) {
 
 function RepositoryCard({ 
   repo, 
-  onVisibilityChange 
+  onVisibilityChange,
+  onDelete,
 }: { 
   repo: RepositoryItemResponse;
   onVisibilityChange: (repoId: string, newIsPublic: boolean) => void;
+  onDelete: (repoId: string) => void;
 }) {
   const t = useTranslations();
+  const [isDeleting, setIsDeleting] = useState(false);
   const createdDate = new Date(repo.createdAt).toLocaleDateString();
 
-  // 生成正确编码的Wiki导航URL
-  // 使用encodeURIComponent处理特殊字符，确保URL安全
   const wikiUrl = `/${encodeURIComponent(repo.orgName)}/${encodeURIComponent(repo.repoName)}`;
 
   const handleVisibilityChange = (newIsPublic: boolean) => {
     onVisibilityChange(repo.id, newIsPublic);
+  };
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      `Delete "${repo.orgName}/${repo.repoName}"? This will remove all generated wiki content and cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteRepository(repo.id);
+      onDelete(repo.id);
+    } catch (err) {
+      console.error("Failed to delete repository:", err);
+      alert("Failed to delete repository. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -115,7 +135,19 @@ function RepositoryCard({
             </p>
           </div>
           <div className="flex flex-col items-end gap-2 shrink-0">
-            <StatusBadge status={repo.statusName} />
+            <div className="flex items-center gap-1">
+              <StatusBadge status={repo.statusName} />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                title="Delete repository"
+              >
+                <Trash2 className={cn("h-3.5 w-3.5", isDeleting && "animate-spin")} />
+              </Button>
+            </div>
             <VisibilityToggle
               repositoryId={repo.id}
               isPublic={repo.isPublic}
@@ -191,6 +223,11 @@ export function RepositoryList({ ownerId, refreshTrigger }: RepositoryListProps)
         repo.id === repoId ? { ...repo, isPublic: newIsPublic } : repo
       )
     );
+  }, []);
+
+  // Handle repository deletion — remove from local state
+  const handleDelete = useCallback((repoId: string) => {
+    setRepositories((prev) => prev.filter((repo) => repo.id !== repoId));
   }, []);
 
   useEffect(() => {
@@ -283,6 +320,7 @@ export function RepositoryList({ ownerId, refreshTrigger }: RepositoryListProps)
                 key={repo.id} 
                 repo={repo} 
                 onVisibilityChange={handleVisibilityChange}
+                onDelete={handleDelete}
               />
             ))}
           </div>
