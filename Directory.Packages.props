@@ -45,6 +45,7 @@
     <PackageVersion Include="ModelContextProtocol" Version="0.8.0-preview.1" />
     <PackageVersion Include="MySql.EntityFrameworkCore" Version="10.0.0-rc" />
     <PackageVersion Include="OpenAI" Version="2.8.0" />
+    <PackageVersion Include="Google.GenAI" Version="1.5.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.12.36" />
     <!-- Entity Framework Core -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />

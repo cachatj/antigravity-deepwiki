@@ -301,7 +301,7 @@ class TestRAGIntegration:
         
         # Test with default configuration
         try:
-            rag = RAG(provider="google", model="gemini-1.5-flash")
+            rag = RAG(provider="google", model="gemini-2.5-flash")
             assert rag is not None, "RAG should be initialized"
             assert hasattr(rag, 'embedder'), "RAG should have embedder"
             assert hasattr(rag, 'is_ollama_embedder'), "RAG should have is_ollama_embedder attribute"

@@ -121,20 +121,11 @@ namespace OpenDeepWiki.Agents
             }
             else if (option.RequestType == AiRequestType.Gemini)
             {
-                var clientOptions = new OpenAIClientOptions()
-                {
-                    Endpoint = new Uri(option.Endpoint ?? "https://generativelanguage.googleapis.com/v1beta/openai/"),
-                    Transport = new System.ClientModel.Primitives.HttpClientPipelineTransport(httpClient)
-                };
-
-                var openAiClient = new OpenAIClient(
-                    new ApiKeyCredential(option.ApiKey ?? string.Empty),
-                    clientOptions);
-
-                // Use the configured model or default to gemini-2.0-flash-thinking-exp-01-21 for thinking capabilities
-                var modelToUse = string.IsNullOrEmpty(model) ? "gemini-2.0-flash-thinking-exp-01-21" : model;
+                var modelToUse = string.IsNullOrEmpty(model) ? "gemini-2.5-flash" : model;
                 
-                var chatClient = openAiClient.GetChatClient(modelToUse);
+                // Construct Google GenAI Native Client
+                var geminiClient = new Google.GenAI.Client(apiKey: option.ApiKey ?? string.Empty);
+                var chatClient = new GeminiChatClient(geminiClient, modelToUse);
 
                 return chatClient.AsAIAgent(clientAgentOptions);
             }
