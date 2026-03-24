@@ -2794,20 +2794,20 @@
     ]
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "/Users/jcachat/.nuget/packages/": {}
   },
   "project": {
     "version": "2.0.0",
     "restore": {
-      "projectUniqueName": "/app/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj",
+      "projectUniqueName": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj",
       "projectName": "OpenDeepWiki.Postgresql",
-      "projectPath": "/app/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/app/src/EFCore/OpenDeepWiki.Postgresql/obj/",
+      "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj",
+      "packagesPath": "/Users/jcachat/.nuget/packages/",
+      "outputPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Postgresql/obj/",
       "projectStyle": "PackageReference",
       "centralPackageVersionsManagementEnabled": true,
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "/Users/jcachat/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -2819,8 +2819,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/app/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj": {
-              "projectPath": "/app/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj"
+            "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj": {
+              "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj"
             }
           }
         }
@@ -2956,7 +2956,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",

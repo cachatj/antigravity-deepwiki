@@ -987,10 +987,14 @@
       "Microsoft.Extensions.AI.Abstractions/10.4.0": {
         "type": "package",
         "compile": {
-          "lib/net10.0/Microsoft.Extensions.AI.Abstractions.dll": {}
+          "lib/net10.0/Microsoft.Extensions.AI.Abstractions.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net10.0/Microsoft.Extensions.AI.Abstractions.dll": {}
+          "lib/net10.0/Microsoft.Extensions.AI.Abstractions.dll": {
+            "related": ".xml"
+          }
         }
       },
       "Microsoft.Extensions.AI.OpenAI/10.2.0-preview.1.26063.2": {
@@ -1721,10 +1725,14 @@
       "System.CodeDom/7.0.0": {
         "type": "package",
         "compile": {
-          "lib/net7.0/System.CodeDom.dll": {}
+          "lib/net7.0/System.CodeDom.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net7.0/System.CodeDom.dll": {}
+          "lib/net7.0/System.CodeDom.dll": {
+            "related": ".xml"
+          }
         },
         "build": {
           "buildTransitive/net6.0/_._": {}
@@ -1892,10 +1900,14 @@
           "System.CodeDom": "7.0.0"
         },
         "compile": {
-          "lib/net7.0/System.Management.dll": {}
+          "lib/net7.0/System.Management.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net7.0/System.Management.dll": {}
+          "lib/net7.0/System.Management.dll": {
+            "related": ".xml"
+          }
         },
         "build": {
           "buildTransitive/net6.0/_._": {}
@@ -5347,20 +5359,20 @@
     ]
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "/Users/jcachat/.nuget/packages/": {}
   },
   "project": {
     "version": "2.0.0",
     "restore": {
-      "projectUniqueName": "/app/src/OpenDeepWiki/OpenDeepWiki.csproj",
+      "projectUniqueName": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/OpenDeepWiki.csproj",
       "projectName": "OpenDeepWiki",
-      "projectPath": "/app/src/OpenDeepWiki/OpenDeepWiki.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/app/src/OpenDeepWiki/obj/",
+      "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/OpenDeepWiki.csproj",
+      "packagesPath": "/Users/jcachat/.nuget/packages/",
+      "outputPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/obj/",
       "projectStyle": "PackageReference",
       "centralPackageVersionsManagementEnabled": true,
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "/Users/jcachat/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -5372,23 +5384,23 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/app/framework/OpenDeepWiki.Cache.DependencyInjection/OpenDeepWiki.Cache.DependencyInjection.csproj": {
-              "projectPath": "/app/framework/OpenDeepWiki.Cache.DependencyInjection/OpenDeepWiki.Cache.DependencyInjection.csproj"
+            "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.DependencyInjection/OpenDeepWiki.Cache.DependencyInjection.csproj": {
+              "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.DependencyInjection/OpenDeepWiki.Cache.DependencyInjection.csproj"
             },
-            "/app/framework/OpenDeepWiki.Cache.Memory/OpenDeepWiki.Cache.Memory.csproj": {
-              "projectPath": "/app/framework/OpenDeepWiki.Cache.Memory/OpenDeepWiki.Cache.Memory.csproj"
+            "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Memory/OpenDeepWiki.Cache.Memory.csproj": {
+              "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Memory/OpenDeepWiki.Cache.Memory.csproj"
             },
-            "/app/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj": {
-              "projectPath": "/app/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj"
+            "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj": {
+              "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj"
             },
-            "/app/src/EFCore/OpenDeepWiki.Sqlite/OpenDeepWiki.Sqlite.csproj": {
-              "projectPath": "/app/src/EFCore/OpenDeepWiki.Sqlite/OpenDeepWiki.Sqlite.csproj"
+            "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Sqlite/OpenDeepWiki.Sqlite.csproj": {
+              "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Sqlite/OpenDeepWiki.Sqlite.csproj"
             },
-            "/app/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj": {
-              "projectPath": "/app/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj"
+            "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj": {
+              "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj"
             },
-            "/app/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj": {
-              "projectPath": "/app/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj"
+            "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj": {
+              "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj"
             }
           }
         }
@@ -5638,7 +5650,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

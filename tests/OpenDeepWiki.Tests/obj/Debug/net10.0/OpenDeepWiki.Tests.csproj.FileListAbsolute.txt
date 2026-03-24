@@ -247,3 +247,10 @@
 /Users/jcachat/code_sandbox/antigravity-deepwiki/tests/OpenDeepWiki.Tests/obj/Debug/net10.0/OpenDeepWiki.Tests.pdb
 /Users/jcachat/code_sandbox/antigravity-deepwiki/tests/OpenDeepWiki.Tests/obj/Debug/net10.0/OpenDeepWiki.Tests.genruntimeconfig.cache
 /Users/jcachat/code_sandbox/antigravity-deepwiki/tests/OpenDeepWiki.Tests/obj/Debug/net10.0/ref/OpenDeepWiki.Tests.dll
+/Users/jcachat/code_sandbox/antigravity-deepwiki/tests/OpenDeepWiki.Tests/bin/Debug/net10.0/Google.Apis.dll
+/Users/jcachat/code_sandbox/antigravity-deepwiki/tests/OpenDeepWiki.Tests/bin/Debug/net10.0/Google.Apis.Auth.dll
+/Users/jcachat/code_sandbox/antigravity-deepwiki/tests/OpenDeepWiki.Tests/bin/Debug/net10.0/Google.Apis.Core.dll
+/Users/jcachat/code_sandbox/antigravity-deepwiki/tests/OpenDeepWiki.Tests/bin/Debug/net10.0/Google.GenAI.dll
+/Users/jcachat/code_sandbox/antigravity-deepwiki/tests/OpenDeepWiki.Tests/bin/Debug/net10.0/System.CodeDom.dll
+/Users/jcachat/code_sandbox/antigravity-deepwiki/tests/OpenDeepWiki.Tests/bin/Debug/net10.0/System.Management.dll
+/Users/jcachat/code_sandbox/antigravity-deepwiki/tests/OpenDeepWiki.Tests/bin/Debug/net10.0/runtimes/win/lib/net7.0/System.Management.dll

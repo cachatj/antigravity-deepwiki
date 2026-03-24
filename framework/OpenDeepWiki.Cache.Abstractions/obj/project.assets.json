@@ -8,20 +8,20 @@
     "net10.0": []
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "/Users/jcachat/.nuget/packages/": {}
   },
   "project": {
     "version": "2.0.0",
     "restore": {
-      "projectUniqueName": "/app/framework/OpenDeepWiki.Cache.Abstractions/OpenDeepWiki.Cache.Abstractions.csproj",
+      "projectUniqueName": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/OpenDeepWiki.Cache.Abstractions.csproj",
       "projectName": "OpenDeepWiki.Cache.Abstractions",
-      "projectPath": "/app/framework/OpenDeepWiki.Cache.Abstractions/OpenDeepWiki.Cache.Abstractions.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/app/framework/OpenDeepWiki.Cache.Abstractions/obj/",
+      "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/OpenDeepWiki.Cache.Abstractions.csproj",
+      "packagesPath": "/Users/jcachat/.nuget/packages/",
+      "outputPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/obj/",
       "projectStyle": "PackageReference",
       "centralPackageVersionsManagementEnabled": true,
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "/Users/jcachat/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -154,7 +154,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",
