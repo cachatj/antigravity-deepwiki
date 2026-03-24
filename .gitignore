@@ -69,4 +69,4 @@ next-env.d.ts
 certs/
 .history
 .vscode
-data
+data/
