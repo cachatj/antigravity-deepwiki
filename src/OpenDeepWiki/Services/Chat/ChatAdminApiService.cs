@@ -8,7 +8,9 @@ namespace OpenDeepWiki.Services.Chat;
 
 [MiniApi(Route = "/api/chat/admin")]
 [Tags("Chat 管理")]
-[Authorize(Policy = "AdminOnly")]
+// AUTH BYPASS: AllowAnonymous to match the frontend auth bypass in auth-context.tsx.
+// To re-enable auth, restore [Authorize(Policy = "AdminOnly")].
+[AllowAnonymous]
 public class ChatAdminApiService(IChatConfigService configService, IMessageRouter messageRouter, IMessageQueue messageQueue, ILogger<ChatAdminApiService> logger)
 {
     /// <summary>
