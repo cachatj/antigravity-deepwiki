@@ -1,7 +1,8 @@
 #!/bin/bash
 # ============================================
-#  OpenDeepWiki — Double-click Launcher (macOS)
-#  Starts API backend + Next.js frontend
+#  OpenDeepWiki (Web UI) — Double-click Launcher (macOS)
+#  Starts .NET API backend + web/ Next.js frontend
+#  This is the same stack that Docker runs.
 # ============================================
 
 # cd into the directory where this script lives,
@@ -17,7 +18,7 @@ NC='\033[0m' # No Color
 
 echo ""
 echo -e "${CYAN}============================================${NC}"
-echo -e "${CYAN}       OpenDeepWiki  —  Local Launcher${NC}"
+echo -e "${CYAN}   OpenDeepWiki (Web UI) — Local Launcher${NC}"
 echo -e "${CYAN}============================================${NC}"
 echo ""
 
@@ -52,6 +53,7 @@ check_command() {
 
 check_command node
 check_command npm
+check_command dotnet
 
 # ── Load .env ──────────────────────────────
 if [ -f .env ]; then
@@ -63,34 +65,49 @@ else
   echo -e "${YELLOW}⚠ No .env file found — using defaults / existing env vars${NC}"
 fi
 
-# ── Install frontend deps if needed ────────
-if [ ! -d "node_modules" ]; then
-  echo -e "${YELLOW}→ Installing frontend dependencies...${NC}"
-  npm install
+# ── Set API_PROXY_URL for the web/ frontend ─
+# The .NET backend listens on port 5265 in development mode (launchSettings.json)
+export API_PROXY_URL="http://localhost:5265"
+
+# ── Install web/ frontend deps if needed ───
+if [ ! -d "web/node_modules" ]; then
+  echo -e "${YELLOW}→ Installing web/ frontend dependencies...${NC}"
+  (cd web && npm install)
 fi
 
 # ── Trap: clean up child processes on exit ──
 cleanup() {
   echo ""
   echo -e "${YELLOW}Shutting down...${NC}"
-  # Kill the whole process group
   kill -- -$$ 2>/dev/null
   exit 0
 }
 trap cleanup SIGINT SIGTERM EXIT
 
-# ── Start API backend ─────────────────────
+# ── Kill any stale .NET process on port 5265 ─
+STALE_PID=$(lsof -ti :5265 2>/dev/null)
+if [ -n "$STALE_PID" ]; then
+  echo -e "${YELLOW}→ Killing stale process on port 5265 (PID $STALE_PID)...${NC}"
+  kill "$STALE_PID" 2>/dev/null
+  sleep 1
+fi
+
+# ── Ensure data directory exists ────────────
+mkdir -p data
+
+# ── Start .NET API backend ─────────────────
 echo ""
-echo -e "${GREEN}▶ Starting API backend${NC}  (http://localhost:${PORT:-8001})"
-python -m api.main &
-API_PID=$!
+echo -e "${GREEN}▶ Starting .NET API backend${NC}  (http://localhost:5265)"
+dotnet run --project src/OpenDeepWiki/OpenDeepWiki.csproj &
+DOTNET_PID=$!
 
-# Give the API a moment to bind
-sleep 2
+# Give the .NET backend time to compile and start
+echo -e "${YELLOW}  Waiting for .NET backend to start (this may take a moment on first run)...${NC}"
+sleep 10
 
-# ── Start Next.js frontend ────────────────
-echo -e "${GREEN}▶ Starting Next.js frontend${NC}  (http://localhost:3000)"
-npm run dev &
+# ── Start web/ Next.js frontend ────────────
+echo -e "${GREEN}▶ Starting web/ Next.js frontend${NC}  (http://localhost:3000)"
+(cd web && npm run dev) &
 NEXT_PID=$!
 
 # ── Wait a moment then open the browser ───
@@ -98,8 +115,8 @@ sleep 4
 echo ""
 echo -e "${CYAN}============================================${NC}"
 echo -e "${CYAN}  Services running:${NC}"
-echo -e "    API backend  →  ${GREEN}http://localhost:${PORT:-8001}${NC}"
-echo -e "    Frontend     →  ${GREEN}http://localhost:3000${NC}"
+echo -e "    .NET backend →  ${GREEN}http://localhost:5265${NC}"
+echo -e "    Web frontend →  ${GREEN}http://localhost:3000${NC}"
 echo -e "${CYAN}============================================${NC}"
 echo ""
 echo -e "${YELLOW}Press Ctrl+C to stop all services.${NC}"
@@ -109,4 +126,4 @@ echo ""
 open "http://localhost:3000" 2>/dev/null
 
 # Wait for both background processes
-wait $API_PID $NEXT_PID
+wait $DOTNET_PID $NEXT_PID

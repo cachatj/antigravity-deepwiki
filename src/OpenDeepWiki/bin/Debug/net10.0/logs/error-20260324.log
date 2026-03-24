@@ -1,0 +1,125 @@
+2026-03-24 15:36:25.208 -04:00 [ERR] [Microsoft.Extensions.Hosting.Internal.Host] Hosting failed to start
+{"EventId":{"Id":11,"Name":"HostedServiceStartupFaulted"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":1}
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5265: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Address already in use
+ ---> System.Net.Sockets.SocketException (48): Address already in use
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-03-24 15:36:25.222 -04:00 [ERR] [Microsoft.Extensions.Hosting.Internal.Host] BackgroundService failed
+{"EventId":{"Id":9,"Name":"BackgroundServiceFaulted"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":11,"ThreadName":".NET TP Worker"}
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at OpenDeepWiki.MCP.McpStatisticsAggregationService.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/MCP/McpStatisticsAggregationService.cs:line 26
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-03-24 15:36:25.222 -04:00 [ERR] [Microsoft.Extensions.Hosting.Internal.Host] BackgroundService failed
+{"EventId":{"Id":9,"Name":"BackgroundServiceFaulted"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":13,"ThreadName":".NET TP Worker"}
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at OpenDeepWiki.Services.MindMap.MindMapWorker.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Services/MindMap/MindMapWorker.cs:line 53
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-03-24 15:36:25.222 -04:00 [ERR] [Microsoft.Extensions.Hosting.Internal.Host] BackgroundService failed
+{"EventId":{"Id":9,"Name":"BackgroundServiceFaulted"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":15,"ThreadName":".NET TP Worker"}
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at OpenDeepWiki.Services.Repositories.IncrementalUpdateWorker.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Services/Repositories/IncrementalUpdateWorker.cs:line 38
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-03-24 15:36:25.222 -04:00 [ERR] [Microsoft.Extensions.Hosting.Internal.Host] BackgroundService failed
+{"EventId":{"Id":9,"Name":"BackgroundServiceFaulted"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":9,"ThreadName":".NET TP Worker"}
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at OpenDeepWiki.Services.Translation.TranslationWorker.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Services/Translation/TranslationWorker.cs:line 53
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-03-24 15:36:25.222 -04:00 [ERR] [Microsoft.Extensions.Hosting.Internal.Host] BackgroundService failed
+{"EventId":{"Id":9,"Name":"BackgroundServiceFaulted"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":16,"ThreadName":".NET TP Worker"}
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at OpenDeepWiki.Services.Repositories.RepositoryProcessingWorker.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Services/Repositories/RepositoryProcessingWorker.cs:line 47
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-03-24 15:36:25.222 -04:00 [FTL] [Microsoft.Extensions.Hosting.Internal.Host] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+{"EventId":{"Id":10,"Name":"BackgroundServiceStoppingHost"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":11,"ThreadName":".NET TP Worker"}
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at OpenDeepWiki.MCP.McpStatisticsAggregationService.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/MCP/McpStatisticsAggregationService.cs:line 26
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-03-24 15:36:25.222 -04:00 [ERR] [Microsoft.Extensions.Hosting.Internal.Host] BackgroundService failed
+{"EventId":{"Id":9,"Name":"BackgroundServiceFaulted"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":12,"ThreadName":".NET TP Worker"}
+System.OperationCanceledException: The operation was canceled.
+   at System.Threading.Channels.AsyncOperation`2.GetResult(Int16 token)
+   at System.Threading.Channels.ChannelReader`1.ReadAllAsync(CancellationToken cancellationToken)+MoveNext()
+   at OpenDeepWiki.Chat.Processing.ChatMessageProcessingWorker.ConsumeMessagesAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Chat/Processing/ChatMessageProcessingWorker.cs:line 95
+   at OpenDeepWiki.Chat.Processing.ChatMessageProcessingWorker.ConsumeMessagesAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Chat/Processing/ChatMessageProcessingWorker.cs:line 95
+   at OpenDeepWiki.Chat.Processing.ChatMessageProcessingWorker.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Chat/Processing/ChatMessageProcessingWorker.cs:line 56
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-03-24 15:36:25.222 -04:00 [FTL] [Microsoft.Extensions.Hosting.Internal.Host] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+{"EventId":{"Id":10,"Name":"BackgroundServiceStoppingHost"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":13,"ThreadName":".NET TP Worker"}
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at OpenDeepWiki.Services.MindMap.MindMapWorker.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Services/MindMap/MindMapWorker.cs:line 53
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-03-24 15:36:25.222 -04:00 [FTL] [Microsoft.Extensions.Hosting.Internal.Host] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+{"EventId":{"Id":10,"Name":"BackgroundServiceStoppingHost"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":15,"ThreadName":".NET TP Worker"}
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at OpenDeepWiki.Services.Repositories.IncrementalUpdateWorker.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Services/Repositories/IncrementalUpdateWorker.cs:line 38
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-03-24 15:36:25.222 -04:00 [FTL] [Microsoft.Extensions.Hosting.Internal.Host] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+{"EventId":{"Id":10,"Name":"BackgroundServiceStoppingHost"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":9,"ThreadName":".NET TP Worker"}
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at OpenDeepWiki.Services.Translation.TranslationWorker.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Services/Translation/TranslationWorker.cs:line 53
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-03-24 15:36:25.222 -04:00 [FTL] [Microsoft.Extensions.Hosting.Internal.Host] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+{"EventId":{"Id":10,"Name":"BackgroundServiceStoppingHost"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":16,"ThreadName":".NET TP Worker"}
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at OpenDeepWiki.Services.Repositories.RepositoryProcessingWorker.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Services/Repositories/RepositoryProcessingWorker.cs:line 47
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2026-03-24 15:36:25.223 -04:00 [FTL] [] Application terminated unexpectedly
+{"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":1}
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5265: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Address already in use
+ ---> System.Net.Sockets.SocketException (48): Address already in use
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Program.cs:line 450
+2026-03-24 15:36:25.223 -04:00 [FTL] [Microsoft.Extensions.Hosting.Internal.Host] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+{"EventId":{"Id":10,"Name":"BackgroundServiceStoppingHost"},"Application":"OpenDeepWiki","Environment":"Development","MachineName":"jc-mbp","ProcessId":80983,"ProcessName":"OpenDeepWiki","ThreadId":12,"ThreadName":".NET TP Worker"}
+System.OperationCanceledException: The operation was canceled.
+   at System.Threading.Channels.AsyncOperation`2.GetResult(Int16 token)
+   at System.Threading.Channels.ChannelReader`1.ReadAllAsync(CancellationToken cancellationToken)+MoveNext()
+   at OpenDeepWiki.Chat.Processing.ChatMessageProcessingWorker.ConsumeMessagesAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Chat/Processing/ChatMessageProcessingWorker.cs:line 95
+   at OpenDeepWiki.Chat.Processing.ChatMessageProcessingWorker.ConsumeMessagesAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Chat/Processing/ChatMessageProcessingWorker.cs:line 95
+   at OpenDeepWiki.Chat.Processing.ChatMessageProcessingWorker.ExecuteAsync(CancellationToken stoppingToken) in /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/Chat/Processing/ChatMessageProcessingWorker.cs:line 56
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)

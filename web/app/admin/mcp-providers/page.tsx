@@ -391,7 +391,7 @@ export default function AdminMcpProvidersPage() {
                   readOnly
                 />
                 <p className="text-xs text-muted-foreground">
-                  固定路径模板，后端会按仓库解析 owner/repo。
+                  Fixed path template; the backend resolves owner/repo per repository.
                 </p>
               </div>
             </div>

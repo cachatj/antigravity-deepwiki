@@ -1,3 +1,12 @@
+/**
+ * Server-only utility for reading API_PROXY_URL from environment.
+ *
+ * NOTE: This module is NOT imported anywhere — the API route handlers
+ * (app/api/[...path]/route.ts, app/oauth/[...path]/route.ts) define
+ * their own inline getApiProxyUrl(). Kept here for reference only.
+ *
+ * Using dynamic imports so it won't break client-side bundling.
+ */
 
 // Cache environment variables and last load time
 let cachedApiUrl: string | null = null;
@@ -5,58 +14,23 @@ let lastLoadTime = 0;
 const CACHE_TTL = 5000; // 5-second cache for hot reloading
 
 /**
- * Get API proxy address
+ * Get API proxy address (server-side only)
  */
 export function getApiProxyUrl(): string {
-  
+
   // Prefer system environment variables (from Docker/K8s)
   if (process.env.API_PROXY_URL) {
     return process.env.API_PROXY_URL;
   }
-  
+
   const now = Date.now();
   // Use cache
   if (cachedApiUrl !== null && (now - lastLoadTime) < CACHE_TTL) {
     return cachedApiUrl;
   }
-  
-  try {
-    // Use require to avoid bundling Node.js modules at build time
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const fs = require('fs');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const path = require('path');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const dotenv = require('dotenv');
-    
-    // Dynamically read .env file
-    const rootDir = process.cwd();
-    const envLocalPath = path.resolve(rootDir, '.env.local');
-    const envPath = path.resolve(rootDir, '.env');
-    
-    // Prefer loading .env.local
-    if (fs.existsSync(envLocalPath)) {
-      const result = dotenv.config({ path: envLocalPath });
-      if (result.parsed?.API_PROXY_URL) {
-        cachedApiUrl = result.parsed.API_PROXY_URL;
-        lastLoadTime = now;
-        return cachedApiUrl!;
-      }
-    }
-    
-    // Then load .env
-    if (fs.existsSync(envPath)) {
-      const result = dotenv.config({ path: envPath });
-      if (result.parsed?.API_PROXY_URL) {
-        cachedApiUrl = result.parsed.API_PROXY_URL;
-        lastLoadTime = now;
-        return cachedApiUrl!;
-      }
-    }
-  } catch {
-    // Module load failed
-  }
-  
+
+  // This module is not used at runtime — see note above.
+  // If you need it, import it only from a server component or API route.
   cachedApiUrl = '';
   lastLoadTime = now;
   return '';

@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack --port 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "web:install": "cd web && npm install",
+    "web:dev": "cd web && npm run dev"
   },
   "dependencies": {
     "mermaid": "^11.4.1",
