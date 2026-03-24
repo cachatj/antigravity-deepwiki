@@ -1,12 +1,9 @@
-using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 using OpenAI;
 using OpenAI.Chat;
-using OpenAI.Responses;
 using System;
 using System.ClientModel;
-using Anthropic;
 
 #pragma warning disable OPENAI001
 
@@ -66,71 +63,50 @@ namespace OpenDeepWiki.Agents
             };
         }
 
-        public static ChatClientAgent CreateAgentInternal(
+        public static IChatClient CreateChatClientInternal(
             string model,
-            ChatClientAgentOptions clientAgentOptions,
             AiRequestOptions options)
         {
             var option = ResolveOptions(options, true);
             var httpClient = CreateHttpClient();
 
-            if (option.RequestType == AiRequestType.OpenAI)
-            {
-                var clientOptions = new OpenAIClientOptions()
-                {
-                    Endpoint = new Uri(option.Endpoint ?? DefaultEndpoint),
-                    Transport = new System.ClientModel.Primitives.HttpClientPipelineTransport(httpClient)
-                };
-
-                var openAiClient = new OpenAIClient(
-                    new ApiKeyCredential(option.ApiKey ?? string.Empty),
-                    clientOptions);
-
-                var openAIClient = openAiClient.GetChatClient(model);
-
-                return openAIClient.AsAIAgent(clientAgentOptions);
-            }
-            else if (option.RequestType == AiRequestType.OpenAIResponses)
-            {
-                var clientOptions = new OpenAIClientOptions()
-                {
-                    Endpoint = new Uri(option.Endpoint ?? DefaultEndpoint),
-                    Transport = new System.ClientModel.Primitives.HttpClientPipelineTransport(httpClient)
-                };
-
-                var openAiClient = new OpenAIClient(
-                    new ApiKeyCredential(option.ApiKey ?? string.Empty),
-                    clientOptions);
-
-                var openAIClient = openAiClient.GetResponsesClient(model);
-
-                return openAIClient.AsAIAgent(clientAgentOptions);
-            }
-            else if (option.RequestType == AiRequestType.Anthropic)
-            {
-                AnthropicClient client = new()
-                {
-                    BaseUrl = option.Endpoint ?? DefaultEndpoint,
-                    ApiKey = option.ApiKey,
-                    HttpClient = httpClient,
-                };
-
-                clientAgentOptions.ChatOptions.ModelId = model;
-                var anthropicClient = client.AsAIAgent(clientAgentOptions);
-                return anthropicClient;
-            }
-            else if (option.RequestType == AiRequestType.Gemini)
+            if (option.RequestType == AiRequestType.Gemini)
             {
                 var modelToUse = string.IsNullOrEmpty(model) ? "gemini-2.5-flash" : model;
-                
-                // Construct Google GenAI Native Client
                 var geminiClient = new Google.GenAI.Client(apiKey: option.ApiKey ?? string.Empty);
-                var chatClient = new GeminiChatClient(geminiClient, modelToUse);
-
-                return chatClient.AsAIAgent(clientAgentOptions);
+                return new GeminiChatClient(geminiClient, modelToUse);
             }
 
-            throw new NotSupportedException("Unknown AI request type.");
+            if (option.RequestType == AiRequestType.OpenAI || 
+                option.RequestType == AiRequestType.Anthropic ||
+                option.RequestType == AiRequestType.AzureOpenAI)
+            {
+                // All OpenAI-compatible providers (including Anthropic via compat endpoint)
+                var clientOptions = new OpenAIClientOptions()
+                {
+                    Endpoint = new Uri(option.Endpoint ?? DefaultEndpoint),
+                    Transport = new System.ClientModel.Primitives.HttpClientPipelineTransport(httpClient)
+                };
+
+                var openAiClient = new OpenAIClient(
+                    new ApiKeyCredential(option.ApiKey ?? string.Empty),
+                    clientOptions);
+
+                return openAiClient.GetChatClient(model).AsIChatClient();
+            }
+
+            // Fallback: use OpenAI-compatible endpoint
+            var fallbackOptions = new OpenAIClientOptions()
+            {
+                Endpoint = new Uri(option.Endpoint ?? DefaultEndpoint),
+                Transport = new System.ClientModel.Primitives.HttpClientPipelineTransport(httpClient)
+            };
+
+            var fallbackClient = new OpenAIClient(
+                new ApiKeyCredential(option.ApiKey ?? string.Empty),
+                fallbackOptions);
+
+            return fallbackClient.GetChatClient(model).AsIChatClient();
         }
 
         private static AiRequestOptions ResolveOptions(
@@ -188,53 +164,44 @@ namespace OpenDeepWiki.Agents
         }
 
         /// <summary>
-        /// Creates a ChatClientAgent with the specified tools.
+        /// Creates an IChatClient with the specified tools.
         /// </summary>
         /// <param name="model">The model name to use.</param>
         /// <param name="tools">The AI tools to make available to the agent.</param>
-        /// <param name="clientAgentOptions">Options for the chat client agent.</param>
+        /// <param name="runOptions">Options for the agent run.</param>
         /// <param name="requestOptions">Optional request options override.</param>
-        /// <returns>A tuple containing the ChatClientAgent and the tools list.</returns>
-        public (ChatClientAgent Agent, IList<AITool> Tools) CreateChatClientWithTools(
+        /// <returns>A tuple containing the IChatClient and the tools list.</returns>
+        public (IChatClient Client, IList<AITool> Tools) CreateChatClientWithTools(
             string model,
             AITool[] tools,
-            ChatClientAgentOptions clientAgentOptions,
+            AgentRunOptions runOptions,
             AiRequestOptions? requestOptions = null)
         {
             var option = ResolveOptions(requestOptions ?? _options, true);
 
             // Ensure tools are set in chat options
-            clientAgentOptions.ChatOptions ??= new ChatOptions();
-            clientAgentOptions.ChatOptions.Tools = tools;
-            clientAgentOptions.ChatOptions.ToolMode = ChatToolMode.Auto;
-            var agent = CreateAgentInternal(model, clientAgentOptions, option);
+            runOptions.ChatOptions ??= new ChatOptions();
+            runOptions.ChatOptions.Tools = tools;
+            runOptions.ChatOptions.ToolMode = ChatToolMode.Auto;
+            var client = CreateChatClientInternal(model, option);
 
-
-            return (agent, tools);
+            return (client, tools);
         }
 
         /// <summary>
-        /// Creates a simple ChatClientAgent without tools for translation tasks.
+        /// Creates a simple IChatClient without tools for translation tasks.
         /// </summary>
         /// <param name="model">The model name to use.</param>
         /// <param name="maxToken"></param>
         /// <param name="requestOptions">Optional request options override.</param>
-        /// <returns>The ChatClientAgent.</returns>
-        public ChatClientAgent CreateSimpleChatClient(
+        /// <returns>The IChatClient.</returns>
+        public IChatClient CreateSimpleChatClient(
             string model,
             int maxToken = 32000,
             AiRequestOptions? requestOptions = null)
         {
             var option = ResolveOptions(requestOptions ?? _options, true);
-            var clientAgentOptions = new ChatClientAgentOptions
-            {
-                ChatOptions = new ChatOptions()
-                {
-                    MaxOutputTokens = maxToken,
-                },
-            };
-
-            return CreateAgentInternal(model, clientAgentOptions, option);
+            return CreateChatClientInternal(model, option);
         }
     }
 }

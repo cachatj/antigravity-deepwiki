@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
@@ -288,7 +287,7 @@ public class McpRepositoryTools
             RequestType = ParseRequestType(modelConfig.Provider)
         };
 
-        var agentOptions = new ChatClientAgentOptions
+        var runOptions = new AgentRunOptions
         {
             ChatOptions = new ChatOptions
             {
@@ -297,10 +296,10 @@ public class McpRepositoryTools
             }
         };
 
-        var (agent, _) = agentFactory.CreateChatClientWithTools(
+        var (chatClient, _) = agentFactory.CreateChatClientWithTools(
             modelConfig.ModelId,
             tools.Count == 0 ? Array.Empty<AITool>() : tools.ToArray(),
-            agentOptions,
+            runOptions,
             requestOptions);
 
         var promptBuilder = new StringBuilder();
@@ -364,9 +363,8 @@ public class McpRepositoryTools
             new(ChatRole.User, promptBuilder.ToString())
         };
 
-        var thread = await agent.CreateSessionAsync(cancellationToken);
         var summaryBuilder = new StringBuilder();
-        await foreach (var update in agent.RunStreamingAsync(messages, thread, cancellationToken: cancellationToken))
+        await foreach (var update in AgentRunner.RunStreamingAsync(chatClient, messages, runOptions, cancellationToken))
         {
             if (!string.IsNullOrEmpty(update.Text))
             {

@@ -2,9 +2,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
-using Anthropic.Models.Messages;
 using AIDotNet.Toon;
-using Microsoft.Agents.AI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
@@ -825,7 +823,7 @@ Please start executing the task.";
                     retryCount + 1, _options.MaxRetryAttempts, operationName, model);
 
                 // Create chat options with the tools
-                var chatOptions = new ChatClientAgentOptions
+                var runOptions = new AgentRunOptions
                 {
                     ChatOptions = new ChatOptions()
                     {
@@ -839,7 +837,7 @@ Please start executing the task.";
                 var (chatClient, aiTools) = _agentFactory.CreateChatClientWithTools(
                     model,
                     tools,
-                    chatOptions,
+                    runOptions,
                     requestOptions);
 
                 // Build the conversation with system prompt and user message
@@ -871,9 +869,7 @@ Please start executing the task.";
 
                 _logger.LogDebug("Starting streaming response. Operation: {Operation}", operationName);
 
-                var thread = await chatClient.CreateSessionAsync(cancellationToken);
-                
-                await foreach (var update in chatClient.RunStreamingAsync(messages, thread, cancellationToken: cancellationToken))
+                await foreach (var update in AgentRunner.RunStreamingAsync(chatClient, messages, runOptions, cancellationToken))
                 {
                     // Print streaming content
                     if (!string.IsNullOrEmpty(update.Text))
@@ -914,25 +910,10 @@ Please start executing the task.";
                     }
 
                     // Track token usage if available
-                    if (update.RawRepresentation is ChatResponseUpdate chatResponseUpdate)
+                    var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
+                    if (usage != null)
                     {
-                        if (chatResponseUpdate.RawRepresentation is RawMessageStreamEvent
-                            {
-                                Value: RawMessageDeltaEvent deltaEvent
-                            })
-                        {
-                            inputTokens = (int)((int)(deltaEvent.Usage.InputTokens ?? inputTokens) +
-                                deltaEvent.Usage.CacheCreationInputTokens + deltaEvent.Usage.CacheReadInputTokens ?? 0);
-                            outputTokens = (int)(deltaEvent.Usage.OutputTokens);
-                        }
-                    }
-                    else
-                    {
-                        var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
-                        if (usage != null)
-                        {
-                            usageDetails = usage;
-                        }
+                        usageDetails = usage;
                     }
                 }
 
@@ -1563,39 +1544,22 @@ Translation:";
             _options.GetTranslationModel(),
             _options.MaxOutputTokens,
             _options.GetTranslationRequestOptions());
-        var thread = await chatClient.CreateSessionAsync(cancellationToken);
-
         var contentBuilder = new StringBuilder();
         var inputTokens = 0;
         var outputTokens = 0;
 
-        await foreach (var update in chatClient.RunStreamingAsync(messages, thread, cancellationToken: cancellationToken))
+        await foreach (var update in chatClient.GetStreamingResponseAsync(messages, cancellationToken: cancellationToken))
         {
             if (!string.IsNullOrEmpty(update.Text))
             {
                 contentBuilder.Append(update.Text);
             }
 
-            if (update.RawRepresentation is ChatResponseUpdate chatResponseUpdate)
+            var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
+            if (usage != null)
             {
-                if (chatResponseUpdate.RawRepresentation is RawMessageStreamEvent
-                    {
-                        Value: RawMessageDeltaEvent deltaEvent
-                    })
-                {
-                    inputTokens = (int)((int)(deltaEvent.Usage.InputTokens ?? inputTokens) +
-                        deltaEvent.Usage.CacheCreationInputTokens + deltaEvent.Usage.CacheReadInputTokens ?? 0);
-                    outputTokens = (int)(deltaEvent.Usage.OutputTokens);
-                }
-            }
-            else
-            {
-                var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
-                if (usage != null)
-                {
-                    inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
-                    outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
-                }
+                inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
+                outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
             }
         }
 
@@ -1665,39 +1629,21 @@ Translated document:";
                     _options.GetTranslationModel(), 
                     _options.MaxOutputTokens, 
                     _options.GetTranslationRequestOptions());
-                var thread = await chatClient.CreateSessionAsync(cancellationToken);
-                
                 var contentBuilder = new StringBuilder();
                 var inputTokens = 0;
                 var outputTokens = 0;
-                await foreach (var update in chatClient.RunStreamingAsync(messages, thread, cancellationToken: cancellationToken))
+                await foreach (var update in chatClient.GetStreamingResponseAsync(messages, cancellationToken: cancellationToken))
                 {
                     if (!string.IsNullOrEmpty(update.Text))
                     {
                         contentBuilder.Append(update.Text);
                     }
 
-                    // Track token usage if available
-                    if (update.RawRepresentation is ChatResponseUpdate chatResponseUpdate)
+                    var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
+                    if (usage != null)
                     {
-                        if (chatResponseUpdate.RawRepresentation is RawMessageStreamEvent
-                            {
-                                Value: RawMessageDeltaEvent deltaEvent
-                            })
-                        {
-                            inputTokens = (int)((int)(deltaEvent.Usage.InputTokens ?? inputTokens) +
-                                deltaEvent.Usage.CacheCreationInputTokens + deltaEvent.Usage.CacheReadInputTokens ?? 0);
-                            outputTokens = (int)(deltaEvent.Usage.OutputTokens);
-                        }
-                    }
-                    else
-                    {
-                        var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
-                        if (usage != null)
-                        {
-                            inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
-                            outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
-                        }
+                        inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
+                        outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
                     }
                 }
 
@@ -1793,39 +1739,21 @@ Translated mind map:";
                     _options.GetTranslationModel(),
                     _options.MaxOutputTokens,
                     _options.GetTranslationRequestOptions());
-                var thread = await chatClient.CreateSessionAsync(cancellationToken);
-
                 var contentBuilder = new StringBuilder();
                 var inputTokens = 0;
                 var outputTokens = 0;
-                await foreach (var update in chatClient.RunStreamingAsync(messages, thread, cancellationToken: cancellationToken))
+                await foreach (var update in chatClient.GetStreamingResponseAsync(messages, cancellationToken: cancellationToken))
                 {
                     if (!string.IsNullOrEmpty(update.Text))
                     {
                         contentBuilder.Append(update.Text);
                     }
 
-                    // Track token usage if available
-                    if (update.RawRepresentation is ChatResponseUpdate chatResponseUpdate)
+                    var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
+                    if (usage != null)
                     {
-                        if (chatResponseUpdate.RawRepresentation is RawMessageStreamEvent
-                            {
-                                Value: RawMessageDeltaEvent deltaEvent
-                            })
-                        {
-                            inputTokens = (int)((int)(deltaEvent.Usage.InputTokens ?? inputTokens) +
-                                deltaEvent.Usage.CacheCreationInputTokens + deltaEvent.Usage.CacheReadInputTokens ?? 0);
-                            outputTokens = (int)(deltaEvent.Usage.OutputTokens);
-                        }
-                    }
-                    else
-                    {
-                        var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
-                        if (usage != null)
-                        {
-                            inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
-                            outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
-                        }
+                        inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
+                        outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
                     }
                 }
 

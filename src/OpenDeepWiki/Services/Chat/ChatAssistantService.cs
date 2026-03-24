@@ -1,9 +1,8 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
-using Anthropic.Models.Messages;
+
 using LibGit2Sharp;
-using Microsoft.Agents.AI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
@@ -416,7 +415,7 @@ public class ChatAssistantService : IChatAssistantService
         var systemPrompt = BuildSystemPrompt(request.Context, gitTool != null);
 
         // Create agent
-        var agentOptions = new ChatClientAgentOptions
+        var runOptions = new AgentRunOptions
         {
             ChatOptions = new ChatOptions
             {
@@ -433,10 +432,10 @@ public class ChatAssistantService : IChatAssistantService
             RequestType = ParseRequestType(modelConfig.Provider)
         };
 
-        var (agent, _) = _agentFactory.CreateChatClientWithTools(
+        var (chatClient, _) = _agentFactory.CreateChatClientWithTools(
             modelConfig.ModelId,
             tools.ToArray(),
-            agentOptions,
+            runOptions,
             requestOptions);
 
 
@@ -451,19 +450,12 @@ public class ChatAssistantService : IChatAssistantService
         var inputTokens = 0;
         var outputTokens = 0;
 
-        // Track tool calls with a stack to handle nested calls
-        var currentBlockIndex = -1;
-        var currentBlockType = "";
-        var currentToolId = "";
-        var currentToolName = "";
-        var toolInputJson = new System.Text.StringBuilder();
+
 
         var openAiToolCalls = new Dictionary<int, (string Id, string Name, System.Text.StringBuilder Args)>();
 
-        var thread = await agent.CreateSessionAsync(cancellationToken);
-
         await foreach (var update in
-                          agent.RunStreamingAsync(chatMessages, thread, cancellationToken: cancellationToken))
+                          AgentRunner.RunStreamingAsync(chatClient, chatMessages, runOptions, cancellationToken))
         {
             if (!string.IsNullOrEmpty(update.Text))
             {
@@ -550,164 +542,12 @@ public class ChatAssistantService : IChatAssistantService
                 }
             }
 
-            if (update.RawRepresentation is ChatResponseUpdate chatResponseUpdate)
+            // Track token usage if available
+            var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
+            if (usage != null)
             {
-                if (chatResponseUpdate.RawRepresentation is RawMessageStreamEvent
-                    {
-                        Value: RawMessageDeltaEvent deltaEvent
-                    })
-                {
-                    inputTokens = (int)((int)(deltaEvent.Usage.InputTokens ?? inputTokens) +
-                        deltaEvent.Usage.CacheCreationInputTokens + deltaEvent.Usage.CacheReadInputTokens ?? 0);
-                    outputTokens = (int)(deltaEvent.Usage.OutputTokens);
-                }
-                else if (chatResponseUpdate.RawRepresentation is RawMessageStreamEvent rawMessageStreamEvent)
-                {
-                     // handle custom streaming format with content block events for more granular tool call tracking
-                    if (rawMessageStreamEvent.Json.TryGetProperty("type", out var typeElement))
-                    {
-                        var eventType = typeElement.GetString();
-
-                        // handle content block start event to track new tool calls 
-                        if (eventType == "content_block_start")
-                        {
-                           // reset current block tracking
-                            if (rawMessageStreamEvent.Json.TryGetProperty("index", out var indexElement))
-                            {
-                                currentBlockIndex = indexElement.GetInt32();
-                            }
-
-                            if (rawMessageStreamEvent.Json.TryGetProperty("content_block", out var contentBlock))
-                            {
-                                var blockType = contentBlock.TryGetProperty("type", out var blockTypeElement)
-                                    ? blockTypeElement.GetString() ?? ""
-                                    : "";
-                                currentBlockType = blockType;
-
-                               // handle start of thinking block
-                                if (blockType == "thinking")
-                                {
-                                    yield return new SSEEvent
-                                    {
-                                        Type = SSEEventType.Thinking,
-                                        Data = new { type = "start", index = currentBlockIndex }
-                                    };
-                                }
-                                // handle start of tool_use block
-                                else if (blockType == "tool_use")
-                                {
-                                    currentToolId = contentBlock.TryGetProperty("id", out var idElement)
-                                        ? idElement.GetString() ?? ""
-                                        : "";
-                                    currentToolName = contentBlock.TryGetProperty("name", out var nameElement)
-                                        ? nameElement.GetString() ?? ""
-                                        : "";
-                                    toolInputJson.Clear();
-
-                                    // send initial tool call event with empty arguments
-                                    yield return new SSEEvent
-                                    {
-                                        Type = SSEEventType.ToolCall,
-                                        Data = new ToolCallDto
-                                        {
-                                            Id = currentToolId,
-                                            Name = currentToolName,
-                                            Arguments = null
-                                        }
-                                    };
-                                }
-                            }
-                        }
-                        // handle content block delta events to capture thinking text and tool input updates
-                        else if (eventType == "content_block_delta")
-                        {
-                            if (rawMessageStreamEvent.Json.TryGetProperty("delta", out var delta))
-                            {
-                                var deltaType = delta.TryGetProperty("type", out var deltaTypeElement)
-                                    ? deltaTypeElement.GetString()
-                                    : null;
-
-                                 // handle thinking delta updates
-                                if (deltaType == "thinking_delta")
-                                {
-                                    var thinkingText = delta.TryGetProperty("thinking", out var thinkingElement)
-                                        ? thinkingElement.GetString() ?? ""
-                                        : "";
-
-                                    if (!string.IsNullOrEmpty(thinkingText))
-                                    {
-                                        yield return new SSEEvent
-                                        {
-                                            Type = SSEEventType.Thinking,
-                                            Data = new { type = "delta", content = thinkingText, index = currentBlockIndex }
-                                        };
-                                    }
-                                }
-                                // handle tool input delta updates
-                                else if (deltaType == "input_json_delta")
-                                {
-                                    var partialJson = delta.TryGetProperty("partial_json", out var jsonElement)
-                                        ? jsonElement.GetString() ?? ""
-                                        : "";
-
-                                    // append partial JSON updates for the current tool call
-                                    toolInputJson.Append(partialJson);
-                                }
-                            }
-                        }
-                        
-                       
-                        else if (eventType == "content_block_stop")
-                        {
-                            // handle end of thinking block
-                            if (currentBlockType == "tool_use" && !string.IsNullOrEmpty(currentToolId))
-                            {
-                                Dictionary<string, object>? arguments = null;
-                                var jsonStr = toolInputJson.ToString();
-                                if (!string.IsNullOrEmpty(jsonStr))
-                                {
-                                    try
-                                    {
-                                        arguments = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonStr);
-                                    }
-                                    catch
-                                    {
-                                        // failed to parse arguments, keep as null
-                                    }
-                                }
-
-                                // send final tool call event with complete arguments when tool_use block ends
-                                yield return new SSEEvent
-                                {
-                                    Type = SSEEventType.ToolCall,
-                                    Data = new ToolCallDto
-                                    {
-                                        Id = currentToolId,
-                                        Name = currentToolName,
-                                        Arguments = arguments
-                                    }
-                                };
-
-                                // reset tool call tracking
-                                currentToolId = "";
-                                currentToolName = "";
-                                toolInputJson.Clear();
-                            }
-
-                            currentBlockType = "";
-                        }
-                    }
-                }
-            }
-            else
-            {
-                // try to extract token usage from other response formats
-                var usage = update.Contents.OfType<UsageContent>().FirstOrDefault()?.Details;
-                if (usage != null)
-                {
-                    inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
-                    outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
-                }
+                inputTokens = (int)(usage.InputTokenCount ?? inputTokens);
+                outputTokens = (int)(usage.OutputTokenCount ?? outputTokens);
             }
         }
 
