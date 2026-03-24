@@ -448,4 +448,96 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
             IsSupported = result.IsSupported
         };
     }
+
+    /// <summary>
+    /// Deletes a repository and all its associated data (soft-delete).
+    /// </summary>
+    [HttpDelete("/{id}")]
+    public async Task<IResult> DeleteAsync(string id)
+    {
+        var currentUserId = userContext.UserId;
+
+        // Find repository
+        var repository = await context.Repositories
+            .FirstOrDefaultAsync(item => item.Id == id && !item.IsDeleted);
+
+        if (repository is null)
+        {
+            return Results.NotFound(new { success = false, message = "Repository not found" });
+        }
+
+        // Verify ownership (skip if no owner set — e.g., local repos)
+        if (!string.IsNullOrWhiteSpace(repository.OwnerUserId) &&
+            !string.IsNullOrWhiteSpace(currentUserId) &&
+            repository.OwnerUserId != currentUserId)
+        {
+            return Results.Json(new { success = false, message = "No permission to delete this repository" },
+                statusCode: StatusCodes.Status403Forbidden);
+        }
+
+        // Get all branch IDs for cleanup
+        var branchIds = await context.RepositoryBranches
+            .Where(b => b.RepositoryId == repository.Id)
+            .Select(b => b.Id)
+            .ToListAsync();
+
+        // Get all branch language IDs
+        var branchLanguageIds = await context.BranchLanguages
+            .Where(l => branchIds.Contains(l.RepositoryBranchId))
+            .Select(l => l.Id)
+            .ToListAsync();
+
+        // Clear document catalogs and doc files
+        if (branchLanguageIds.Count > 0)
+        {
+            var catalogs = await context.DocCatalogs
+                .Where(c => branchLanguageIds.Contains(c.BranchLanguageId))
+                .ToListAsync();
+
+            var docFileIds = catalogs
+                .Where(c => c.DocFileId != null)
+                .Select(c => c.DocFileId!)
+                .Distinct()
+                .ToList();
+
+            if (catalogs.Count > 0)
+                context.DocCatalogs.RemoveRange(catalogs);
+
+            if (docFileIds.Count > 0)
+            {
+                var docFiles = await context.DocFiles
+                    .Where(f => docFileIds.Contains(f.Id))
+                    .ToListAsync();
+                if (docFiles.Count > 0)
+                    context.DocFiles.RemoveRange(docFiles);
+            }
+
+            // Clear branch languages
+            var languages = await context.BranchLanguages
+                .Where(l => branchIds.Contains(l.RepositoryBranchId))
+                .ToListAsync();
+            if (languages.Count > 0)
+                context.BranchLanguages.RemoveRange(languages);
+        }
+
+        // Clear branches
+        var branches = await context.RepositoryBranches
+            .Where(b => b.RepositoryId == repository.Id)
+            .ToListAsync();
+        if (branches.Count > 0)
+            context.RepositoryBranches.RemoveRange(branches);
+
+        // Clear processing logs
+        var logs = await context.RepositoryProcessingLogs
+            .Where(log => log.RepositoryId == repository.Id)
+            .ToListAsync();
+        if (logs.Count > 0)
+            context.RepositoryProcessingLogs.RemoveRange(logs);
+
+        // Soft-delete the repository
+        repository.IsDeleted = true;
+        await context.SaveChangesAsync();
+
+        return Results.Ok(new { success = true, message = "Repository deleted" });
+    }
 }
