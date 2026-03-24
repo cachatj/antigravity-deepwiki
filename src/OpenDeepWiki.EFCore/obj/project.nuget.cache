@@ -1,21 +1,21 @@
 {
   "version": 2,
-  "dgSpecHash": "7VZkYAHcojs=",
+  "dgSpecHash": "g9l2loW+I/Q=",
   "success": true,
-  "projectFilePath": "/app/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj",
+  "projectFilePath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj",
   "expectedPackageFiles": [
-    "/root/.nuget/packages/microsoft.entityframeworkcore/10.0.2/microsoft.entityframeworkcore.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.entityframeworkcore.abstractions/10.0.2/microsoft.entityframeworkcore.abstractions.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.entityframeworkcore.analyzers/10.0.2/microsoft.entityframeworkcore.analyzers.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.caching.abstractions/10.0.2/microsoft.extensions.caching.abstractions.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.caching.memory/10.0.2/microsoft.extensions.caching.memory.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.dependencyinjection/10.0.2/microsoft.extensions.dependencyinjection.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.2/microsoft.extensions.dependencyinjection.abstractions.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.logging/10.0.2/microsoft.extensions.logging.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.logging.abstractions/10.0.2/microsoft.extensions.logging.abstractions.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.options/10.0.2/microsoft.extensions.options.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.primitives/10.0.2/microsoft.extensions.primitives.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/system.componentmodel.annotations/5.0.0/system.componentmodel.annotations.5.0.0.nupkg.sha512"
+    "/Users/jcachat/.nuget/packages/microsoft.entityframeworkcore/10.0.2/microsoft.entityframeworkcore.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.entityframeworkcore.abstractions/10.0.2/microsoft.entityframeworkcore.abstractions.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.entityframeworkcore.analyzers/10.0.2/microsoft.entityframeworkcore.analyzers.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.caching.abstractions/10.0.2/microsoft.extensions.caching.abstractions.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.caching.memory/10.0.2/microsoft.extensions.caching.memory.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.dependencyinjection/10.0.2/microsoft.extensions.dependencyinjection.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.2/microsoft.extensions.dependencyinjection.abstractions.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.logging/10.0.2/microsoft.extensions.logging.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.logging.abstractions/10.0.2/microsoft.extensions.logging.abstractions.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.options/10.0.2/microsoft.extensions.options.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.primitives/10.0.2/microsoft.extensions.primitives.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/system.componentmodel.annotations/5.0.0/system.componentmodel.annotations.5.0.0.nupkg.sha512"
   ],
   "logs": []
 }

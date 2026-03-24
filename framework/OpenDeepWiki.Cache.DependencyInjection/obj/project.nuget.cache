@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "SSyUoNb6WZk=",
+  "dgSpecHash": "l6Wz5J6rbFs=",
   "success": true,
-  "projectFilePath": "/app/framework/OpenDeepWiki.Cache.DependencyInjection/OpenDeepWiki.Cache.DependencyInjection.csproj",
+  "projectFilePath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.DependencyInjection/OpenDeepWiki.Cache.DependencyInjection.csproj",
   "expectedPackageFiles": [
-    "/root/.nuget/packages/microsoft.extensions.caching.abstractions/10.0.2/microsoft.extensions.caching.abstractions.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.caching.memory/10.0.2/microsoft.extensions.caching.memory.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.2/microsoft.extensions.dependencyinjection.abstractions.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.logging.abstractions/10.0.2/microsoft.extensions.logging.abstractions.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.options/10.0.2/microsoft.extensions.options.10.0.2.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.extensions.primitives/10.0.2/microsoft.extensions.primitives.10.0.2.nupkg.sha512"
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.caching.abstractions/10.0.2/microsoft.extensions.caching.abstractions.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.caching.memory/10.0.2/microsoft.extensions.caching.memory.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.2/microsoft.extensions.dependencyinjection.abstractions.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.logging.abstractions/10.0.2/microsoft.extensions.logging.abstractions.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.options/10.0.2/microsoft.extensions.options.10.0.2.nupkg.sha512",
+    "/Users/jcachat/.nuget/packages/microsoft.extensions.primitives/10.0.2/microsoft.extensions.primitives.10.0.2.nupkg.sha512"
   ],
   "logs": []
 }

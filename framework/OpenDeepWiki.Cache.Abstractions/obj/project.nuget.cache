@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3H6XuAZJUF4=",
+  "dgSpecHash": "3JGn5UaVpuM=",
   "success": true,
-  "projectFilePath": "/app/framework/OpenDeepWiki.Cache.Abstractions/OpenDeepWiki.Cache.Abstractions.csproj",
+  "projectFilePath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/OpenDeepWiki.Cache.Abstractions.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

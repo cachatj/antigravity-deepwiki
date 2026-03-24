@@ -19,17 +19,17 @@ build_property.TargetFrameworkIdentifier = .NETCoreApp
 build_property.TargetFrameworkVersion = v10.0
 build_property.RootNamespace = OpenDeepWiki
 build_property.RootNamespace = OpenDeepWiki
-build_property.ProjectDir = /app/src/OpenDeepWiki/
+build_property.ProjectDir = /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /app/src/OpenDeepWiki
+build_property.MSBuildProjectDirectory = /Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[/app/src/OpenDeepWiki.Entities/bin/Debug/net10.0/OpenDeepWiki.Entities.xml]
+[/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/bin/Debug/net10.0/OpenDeepWiki.Entities.xml]
 build_metadata.AdditionalFiles.TargetPath = 
 build_metadata.AdditionalFiles.CssScope = 
