@@ -1,23 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const supportedLocales = ['zh', 'en', 'ko', 'ja'];
+const supportedLocales = ['en'];
 
 export function middleware(request: NextRequest) {
-  // 优先从 URL 查询参数获取语言设置（用于仓库文档页面）
+  // Get language from URL query parameter (used for repository doc pages)
   const urlLang = request.nextUrl.searchParams.get('lang');
   
-  // 从 cookie 中获取语言设置
+  // Get language from cookie
   const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
   
-  // 优先级：URL lang 参数 > cookie > 默认 zh
-  let locale = 'zh';
+  // Priority: URL lang parameter > cookie > default 'en'
+  let locale = 'en';
   if (urlLang && supportedLocales.includes(urlLang)) {
     locale = urlLang;
   } else if (cookieLocale && supportedLocales.includes(cookieLocale)) {
     locale = cookieLocale;
   }
   
-  // 将 locale 添加到请求头中，供 i18n 配置使用
+  // Add locale to request headers for i18n config
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-next-intl-locale', locale);
 

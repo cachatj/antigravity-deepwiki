@@ -24,7 +24,7 @@ const toolCallArb = fc.record({
   arguments: fc.dictionary(fc.string(), fc.jsonValue()),
 })
 
-// 生成随机工具结果
+// 生成随机Tool result
 const toolResultArb = fc.record({
   toolCallId: fc.string({ minLength: 1, maxLength: 20 }),
   result: fc.string(),
@@ -47,7 +47,7 @@ describe('useChatHistory Property Tests', () => {
   /**
    * Property 2: 对话历史完整性
    * 
-   * 对于任意对话会话，消息历史必须包含所有用户消息、AI回复、工具调用和工具结果，
+   * 对于任意对话会话，消息历史必须包含所有用户消息、AI回复、工具调用和Tool result，
    * 且发送新消息时必须传递完整历史
    */
   describe('Property 2: 对话历史完整性', () => {
@@ -117,7 +117,7 @@ describe('useChatHistory Property Tests', () => {
       )
     })
 
-    it('工具调用和工具结果应该正确关联', () => {
+    it('工具调用和Tool result应该正确关联', () => {
       fc.assert(
         fc.property(
           toolCallArb,
@@ -134,7 +134,7 @@ describe('useChatHistory Property Tests', () => {
               })
             })
             
-            // 添加工具结果消息
+            // 添加Tool result消息
             act(() => {
               result.current.addMessage({
                 role: 'tool',

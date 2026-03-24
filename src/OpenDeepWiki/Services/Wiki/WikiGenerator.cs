@@ -104,7 +104,7 @@ public class WikiGenerator : IWikiGenerator
     }
 
     /// <summary>
-    /// 设置当前处理的仓库ID
+    /// Sets the current repository ID for processing.
     /// </summary>
     public void SetCurrentRepository(string repositoryId)
     {
@@ -123,15 +123,15 @@ public class WikiGenerator : IWikiGenerator
             workspace.Organization, workspace.RepositoryName,
             workspace.BranchName, branchLanguage.LanguageCode, branchLanguage.Id);
 
-        // 更新状态为处理中
+        // Update status to processing
         branchLanguage.MindMapStatus = MindMapStatus.Processing;
         await _context.SaveChangesAsync(cancellationToken);
 
-        await LogProcessingAsync(ProcessingStep.Catalog, $"开始生成项目架构思维导图 ({branchLanguage.LanguageCode})", cancellationToken);
+        await LogProcessingAsync(ProcessingStep.Catalog, $"Starting project architecture mind map generation ({branchLanguage.LanguageCode})", cancellationToken);
 
         try
         {
-            // 收集仓库上下文
+            // Collect repository context
             _logger.LogDebug("Pre-collecting repository context for mind map");
             var repoContext = await CollectRepositoryContextAsync(workspace.WorkingDirectory, cancellationToken);
             _logger.LogDebug("Repository context collected. ProjectType: {ProjectType}, EntryPoints: {EntryPoints}",
@@ -186,7 +186,7 @@ Remember to call WriteMindMapAsync with the complete mind map content.";
                 workspace.Organization, workspace.RepositoryName, branchLanguage.LanguageCode, stopwatch.ElapsedMilliseconds);
 
             await LogProcessingAsync(ProcessingStep.Catalog,
-                $"项目架构思维导图生成完成，耗时 {stopwatch.ElapsedMilliseconds}ms",
+                $"Project architecture mind map generation completed, took {stopwatch.ElapsedMilliseconds}ms",
                 cancellationToken);
         }
         catch (Exception ex)
@@ -196,7 +196,7 @@ Remember to call WriteMindMapAsync with the complete mind map content.";
                 "Mind map generation failed. Repository: {Org}/{Repo}, Language: {Language}, Duration: {Duration}ms",
                 workspace.Organization, workspace.RepositoryName, branchLanguage.LanguageCode, stopwatch.ElapsedMilliseconds);
 
-            // 更新状态为失败
+            // Update status to failed
             branchLanguage.MindMapStatus = MindMapStatus.Failed;
             await _context.SaveChangesAsync(cancellationToken);
 
@@ -216,12 +216,12 @@ Remember to call WriteMindMapAsync with the complete mind map content.";
             workspace.Organization, workspace.RepositoryName,
             workspace.BranchName, branchLanguage.LanguageCode, branchLanguage.Id);
 
-        // 记录开始生成目录
-        await LogProcessingAsync(ProcessingStep.Catalog, $"开始生成目录结构 ({branchLanguage.LanguageCode})", cancellationToken);
+        // Log catalog generation start
+        await LogProcessingAsync(ProcessingStep.Catalog, $"Starting catalog structure generation ({branchLanguage.LanguageCode})", cancellationToken);
 
         try
         {
-            // 收集仓库上下文（目录结构、项目类型、README等）
+            // Collect repository context (directory structure, project type, README, etc.)
             _logger.LogDebug("Pre-collecting repository context");
             var repoContext = await CollectRepositoryContextAsync(workspace.WorkingDirectory, cancellationToken);
             _logger.LogDebug("Repository context collected. ProjectType: {ProjectType}, EntryPoints: {EntryPoints}", 
@@ -276,7 +276,7 @@ Execute the workflow now. Read entry point files to understand the architecture,
                 workspace.Organization, workspace.RepositoryName, branchLanguage.LanguageCode, stopwatch.ElapsedMilliseconds);
 
             await LogProcessingAsync(ProcessingStep.Catalog, 
-                $"目录结构生成完成，耗时 {stopwatch.ElapsedMilliseconds}ms", 
+                $"Catalog structure generation completed, took {stopwatch.ElapsedMilliseconds}ms", 
                 cancellationToken);
         }
         catch (Exception ex)
@@ -302,8 +302,8 @@ Execute the workflow now. Read entry point files to understand the architecture,
             workspace.Organization, workspace.RepositoryName,
             workspace.BranchName, branchLanguage.LanguageCode);
 
-        // 记录开始生成文档
-        await LogProcessingAsync(ProcessingStep.Content, $"开始生成文档内容 ({branchLanguage.LanguageCode})", cancellationToken);
+        // Log document generation start
+        await LogProcessingAsync(ProcessingStep.Content, $"Starting document content generation ({branchLanguage.LanguageCode})", cancellationToken);
 
         // Get all catalog items that need content generation
         var catalogStorage = new CatalogStorage(_context, branchLanguage.Id);
@@ -315,7 +315,7 @@ Execute the workflow now. Read entry point files to understand the architecture,
             "Found {Count} catalog items to generate content for. Repository: {Org}/{Repo}, ParallelCount: {ParallelCount}",
             catalogItems.Count, workspace.Organization, workspace.RepositoryName, parallelCount);
 
-        await LogProcessingAsync(ProcessingStep.Content, $"发现 {catalogItems.Count} 个文档需要生成，并行数: {parallelCount}", cancellationToken);
+        await LogProcessingAsync(ProcessingStep.Content, $"Found {catalogItems.Count} documents to generate, parallelism: {parallelCount}", cancellationToken);
 
         if (catalogItems.Count > 0)
         {
@@ -338,12 +338,12 @@ Execute the workflow now. Read entry point files to understand the architecture,
         await Parallel.ForEachAsync(catalogItems, parallelOptions, async (item, ct) =>
         {
             var startedIndex = Interlocked.Increment(ref startedCount);
-            var completionStatus = "成功";
+            var completionStatus = "success";
             var shouldLogCompletion = false;
 
             try
             {
-                await LogProcessingAsync(ProcessingStep.Content, $"开始生成文档 ({startedIndex}/{catalogItems.Count}): {item.Title}", ct);
+                await LogProcessingAsync(ProcessingStep.Content, $"Starting document generation ({startedIndex}/{catalogItems.Count}): {item.Title}", ct);
 
                 // Add timeout protection for each document generation
                 var generationTimeout = TimeSpan.FromMinutes(_options.DocumentGenerationTimeoutMinutes);
@@ -382,33 +382,33 @@ Execute the workflow now. Read entry point files to understand the architecture,
             {
                 // Hard timeout occurred (SDK may ignore cancellation)
                 Interlocked.Increment(ref failCount);
-                completionStatus = "超时";
+                completionStatus = "timeout";
                 shouldLogCompletion = true;
                 _logger.LogError(
                     "Document generation hard timeout after {Timeout} minutes. Path: {Path}, Title: {Title}, Repository: {Org}/{Repo}",
                     _options.DocumentGenerationTimeoutMinutes, item.Path, item.Title, workspace.Organization, workspace.RepositoryName);
-                await LogProcessingAsync(ProcessingStep.Content, $"文档生成超时 ({_options.DocumentGenerationTimeoutMinutes}分钟): {item.Title}", ct);
+                await LogProcessingAsync(ProcessingStep.Content, $"Document generation timed out ({_options.DocumentGenerationTimeoutMinutes} minutes): {item.Title}", ct);
             }
             catch (OperationCanceledException)
             {
                 // Timeout occurred
                 Interlocked.Increment(ref failCount);
-                completionStatus = "超时";
+                completionStatus = "timeout";
                 shouldLogCompletion = true;
                 _logger.LogError(
                     "Document generation timed out after {Timeout} minutes. Path: {Path}, Title: {Title}, Repository: {Org}/{Repo}",
                     _options.DocumentGenerationTimeoutMinutes, item.Path, item.Title, workspace.Organization, workspace.RepositoryName);
-                await LogProcessingAsync(ProcessingStep.Content, $"文档生成超时 ({_options.DocumentGenerationTimeoutMinutes}分钟): {item.Title}", ct);
+                await LogProcessingAsync(ProcessingStep.Content, $"Document generation timed out ({_options.DocumentGenerationTimeoutMinutes} minutes): {item.Title}", ct);
             }
             catch (Exception ex)
             {
                 Interlocked.Increment(ref failCount);
-                completionStatus = "失败";
+                completionStatus = "failed";
                 shouldLogCompletion = true;
                 _logger.LogError(ex,
                     "Failed to generate document. Path: {Path}, Title: {Title}, Repository: {Org}/{Repo}",
                     item.Path, item.Title, workspace.Organization, workspace.RepositoryName);
-                await LogProcessingAsync(ProcessingStep.Content, $"文档生成失败: {item.Title} - {ex.Message}", ct);
+                await LogProcessingAsync(ProcessingStep.Content, $"Document generation failed: {item.Title} - {ex.Message}", ct);
                 // Continue with other documents - don't throw
             }
             finally
@@ -418,7 +418,7 @@ Execute the workflow now. Read entry point files to understand the architecture,
                     var completedIndex = Interlocked.Increment(ref completedCount);
                     await LogProcessingAsync(
                         ProcessingStep.Content,
-                        $"文档完成 ({completedIndex}/{catalogItems.Count}): {item.Title} - {completionStatus}",
+                        $"Document completed ({completedIndex}/{catalogItems.Count}): {item.Title} - {completionStatus}",
                         ct);
                 }
             }
@@ -430,7 +430,7 @@ Execute the workflow now. Read entry point files to understand the architecture,
             workspace.Organization, workspace.RepositoryName, branchLanguage.LanguageCode,
             successCount, failCount, stopwatch.ElapsedMilliseconds);
 
-        await LogProcessingAsync(ProcessingStep.Content, $"文档生成完成，成功: {successCount}，失败: {failCount}，耗时: {stopwatch.ElapsedMilliseconds}ms", cancellationToken);
+        await LogProcessingAsync(ProcessingStep.Content, $"Document generation completed, success: {successCount}, failed: {failCount}, took: {stopwatch.ElapsedMilliseconds}ms", cancellationToken);
     }
 
     /// <inheritdoc />
@@ -464,7 +464,7 @@ Execute the workflow now. Read entry point files to understand the architecture,
 
         await LogProcessingAsync(
             ProcessingStep.Content,
-            $"开始重生成指定文档: {catalogTitle} ({normalizedPath})",
+            $"Starting regeneration of specified document: {catalogTitle} ({normalizedPath})",
             cancellationToken);
 
         await GenerateDocumentContentAsync(
@@ -477,7 +477,7 @@ Execute the workflow now. Read entry point files to understand the architecture,
         stopwatch.Stop();
         await LogProcessingAsync(
             ProcessingStep.Content,
-            $"指定文档重生成完成: {catalogTitle}，耗时 {stopwatch.ElapsedMilliseconds}ms",
+            $"Specified document regeneration completed: {catalogTitle}, took {stopwatch.ElapsedMilliseconds}ms",
             cancellationToken);
     }
 
@@ -619,7 +619,7 @@ Please start executing the task.";
 
         try
         {
-            // 构建文件引用的基础URL
+            // Build the base URL for file references
             var gitBaseUrl = BuildGitFileBaseUrl(workspace.GitUrl, workspace.BranchName);
 
             var prompt = await _promptPlugin.LoadPromptAsync(
@@ -881,7 +881,7 @@ Please start executing the task.";
                         Console.Write(update.Text);
                         contentBuilder.Append(update.Text);
 
-                        // 记录AI输出（每100个字符记录一次，避免过于频繁）
+                        // Log AI output (log every ~200 characters to avoid excessive frequency)
                         if (contentBuilder.Length % 200 < update.Text.Length)
                         {
                             await LogProcessingAsync(step, update.Text, true, null, cancellationToken);
@@ -902,8 +902,8 @@ Please start executing the task.";
                                     "Tool call #{CallNumber}: {FunctionName}. Operation: {Operation}",
                                     toolCallCount, tool.FunctionName, operationName);
 
-                                // 记录工具调用
-                                await LogProcessingAsync(step, $"调用工具: {tool.FunctionName}", false, tool.FunctionName, cancellationToken);
+                                // Log tool call
+                                await LogProcessingAsync(step, $"Calling tool: {tool.FunctionName}", false, tool.FunctionName, cancellationToken);
                             }
                             else
                             {
@@ -1115,7 +1115,7 @@ Please start executing the task.";
     }
 
     /// <summary>
-    /// 记录处理日志
+    /// Log a processing event.
     /// </summary>
     private async Task LogProcessingAsync(
         ProcessingStep step,
@@ -1147,7 +1147,7 @@ Please start executing the task.";
     }
 
     /// <summary>
-    /// 记录处理日志（简化版本）
+    /// Log a processing event (simplified version).
     /// </summary>
     private Task LogProcessingAsync(ProcessingStep step, string message, CancellationToken cancellationToken)
     {

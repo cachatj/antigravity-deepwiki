@@ -33,16 +33,16 @@ export function VisibilityToggle({
   const [isLoading, setIsLoading] = React.useState(false);
   const [currentIsPublic, setCurrentIsPublic] = React.useState(isPublic);
 
-  // 同步外部状态变化
+  // Sync external state changes
   React.useEffect(() => {
     setCurrentIsPublic(isPublic);
   }, [isPublic]);
 
-  // 判断是否可以切换到私有
-  // 只有当仓库有密码时，才能设为私有
+  // Determine if toggle to private is allowed
+  // Only repos with a password can be set to private
   const canSetPrivate = hasPassword;
 
-  // 判断开关是否应该被禁用
+  // Determine if toggle should be disabled
   // 1. 外部传入的 disabled
   // 2. 正在加载中
   // 3. 当前是公开状态且没有密码（不能切换到私有）

@@ -45,7 +45,7 @@ interface ChatMessage {
 }
 
 /**
- * SSE事件
+ * SSE event
  */
 interface SSEEvent {
   type: 'content' | 'tool_call' | 'tool_result' | 'done' | 'error'
@@ -202,7 +202,7 @@ export function EmbedChatWidget({
   }
 
   /**
-   * 延迟函数
+   * Delay function
    */
   const delay = (ms: number): Promise<void> => {
     return new Promise(resolve => setTimeout(resolve, ms))
@@ -344,11 +344,11 @@ export function EmbedChatWidget({
           }
         }
         
-        // 成功完成，退出重试循环
+        // Successfully completed, exit retry loop
         break
         
       } catch (err) {
-        // 处理超时错误
+        // Handle timeout error
         if (err instanceof Error && err.name === 'AbortError') {
           if (retryCount < maxRetries) {
             retryCount++
@@ -357,7 +357,7 @@ export function EmbedChatWidget({
           }
           
           setError({
-            message: '请求超时，请重试',
+            message: 'Request timed out, please try again',
             code: 'REQUEST_TIMEOUT',
             retryable: true,
             retryAfterMs: retryDelayMs,
@@ -367,7 +367,7 @@ export function EmbedChatWidget({
           break
         }
         
-        // 处理网络错误
+        // Handle network error
         if (err instanceof TypeError && err.message.includes('fetch')) {
           if (retryCount < maxRetries) {
             retryCount++
@@ -376,7 +376,7 @@ export function EmbedChatWidget({
           }
           
           setError({
-            message: '连接失败，请检查网络',
+            message: 'Connection failed, please check your network',
             code: 'CONNECTION_FAILED',
             retryable: true,
             retryAfterMs: retryDelayMs,

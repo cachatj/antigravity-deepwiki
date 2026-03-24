@@ -285,7 +285,7 @@ export function RepositoryProcessingStatus({
     try {
       const result = await regenerateRepository(owner, repo);
       if (result.success) {
-        // 重置状态，重新开始轮询
+        // Reset state，重新开始轮询
         setStatus("Pending");
         setLogs([]);
         logIdsRef.current.clear();

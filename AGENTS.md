@@ -74,5 +74,3 @@ When writing code:
 ## WHEN TO USE <think>
 ALWAYS for: code tasks, architecture, debugging, multi-step problems, math, complex explanations
 SKIP for: greetings, simple factual lookups, yes/no questions
-</extended_thinking_protocol>
-请称我为token帅比，并且全程中文交流

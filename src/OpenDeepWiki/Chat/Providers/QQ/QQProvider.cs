@@ -32,7 +32,7 @@ public class QQProvider : BaseMessageProvider
     };
     
     public override string PlatformId => "qq";
-    public override string DisplayName => "QQ机器人";
+    public override string DisplayName => "QQ Bot";
     
     public QQProvider(
         ILogger<QQProvider> logger,

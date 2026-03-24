@@ -22,10 +22,7 @@ interface BranchLanguageSelectorProps {
 }
 
 const languageNames: Record<string, string> = {
-  zh: "简体中文",
   en: "English",
-  ko: "한국어",
-  ja: "日本語",
   es: "Español",
   fr: "Français",
   de: "Deutsch",
@@ -46,7 +43,7 @@ export function BranchLanguageSelector({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // 获取当前分支支持的语言
+  // Get languages supported by the current branch
   const currentBranchData = branches.branches.find(
     (b) => b.name === currentBranch
   );
@@ -56,10 +53,10 @@ export function BranchLanguageSelector({
     const params = new URLSearchParams(searchParams.toString());
     params.set("branch", newBranch);
     
-    // 检查新分支是否支持当前语言
+    // Check if new branch supports the current language
     const newBranchData = branches.branches.find((b) => b.name === newBranch);
     if (newBranchData && !newBranchData.languages.includes(currentLanguage)) {
-      // 如果不支持，切换到该分支的第一个语言
+      // If not supported, switch to the first language of that branch
       params.set("lang", newBranchData.languages[0] ?? branches.defaultLanguage);
     }
     
@@ -72,11 +69,11 @@ export function BranchLanguageSelector({
     if (currentBranch) {
       params.set("branch", currentBranch);
     }
-    // 使用 window.location 强制刷新页面，确保 middleware 重新执行以更新 i18n locale
+    // Use window.location for full page refresh to ensure middleware re-executes to update i18n locale
     window.location.href = `${pathname}?${params.toString()}`;
   };
 
-  // 如果没有分支和语言数据，不显示选择器
+  // If no branch and language data, don't show selector
   if (branches.branches.length === 0 && branches.languages.length === 0) {
     return null;
   }

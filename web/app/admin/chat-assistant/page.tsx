@@ -161,7 +161,7 @@ export default function AdminChatAssistantPage() {
         </div>
       </Card>
 
-      {/* 模型配置 */}
+      {/* Model configuration */}
       <Card className="p-6">
         <div className="space-y-4">
           <div className="flex items-center gap-2">

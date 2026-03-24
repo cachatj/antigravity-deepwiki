@@ -63,7 +63,7 @@ export default function ProfilePage() {
       await refreshUser();
       toast.success(t("profile.updateSuccess") || "资料更新成功");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : t("profile.updateFailed") || "更新失败");
+      toast.error(err instanceof Error ? err.message : t("profile.updateFailed") || "Update failed");
     } finally {
       setIsUpdating(false);
     }

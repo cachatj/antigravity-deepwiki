@@ -32,7 +32,7 @@ public class FeishuProvider : BaseMessageProvider
     };
     
     public override string PlatformId => "feishu";
-    public override string DisplayName => "飞书";
+    public override string DisplayName => "Feishu";
     
     public FeishuProvider(
         ILogger<FeishuProvider> logger,

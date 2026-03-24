@@ -25,9 +25,6 @@ const GIT_URL_REGEX = /^((https?:\/\/|git@)[\w.-]+[/:].+?(\.git)?|file:\/\/.*|\/
 
 const SUPPORTED_LANGUAGES = [
   { code: "en", label: "languages.en" },
-  { code: "zh", label: "languages.zh" },
-  { code: "ja", label: "languages.ja" },
-  { code: "ko", label: "languages.ko" },
 ];
 
 function parseGitUrl(url: string): { orgName: string; repoName: string } | null {
@@ -168,7 +165,7 @@ export function RepositorySubmitForm({ onSuccess }: RepositorySubmitFormProps) {
     setIsSubmitting(true);
 
     try {
-      // 如果设置了密码则 isPublic 为 false，否则为 true
+      // If password is set, isPublic is false; otherwise true
       const effectiveIsPublic = !authPassword;
 
       const request: RepositorySubmitRequest = {

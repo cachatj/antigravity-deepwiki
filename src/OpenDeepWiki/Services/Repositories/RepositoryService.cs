@@ -8,7 +8,7 @@ using OpenDeepWiki.Services.Auth;
 namespace OpenDeepWiki.Services.Repositories;
 
 [MiniApi(Route = "/api/v1/repositories")]
-[Tags("仓库")]
+[Tags("Repositories")]
 public class RepositoryService(IContext context, IGitPlatformService gitPlatformService, IUserContext userContext)
 {
     [HttpPost("/submit")]
@@ -17,15 +17,15 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
         var currentUserId = userContext.UserId;
         if (string.IsNullOrWhiteSpace(currentUserId))
         {
-            throw new UnauthorizedAccessException("用户未登录");
+            throw new UnauthorizedAccessException("User not logged in");
         }
 
         if (!request.IsPublic && string.IsNullOrWhiteSpace(request.AuthAccount) && string.IsNullOrWhiteSpace(request.AuthPassword))
         {
-            throw new InvalidOperationException("仓库凭据为空时不允许设置为私有");
+            throw new InvalidOperationException("Private repositories require authentication credentials");
         }
 
-        // 校验是否已存在相同仓库（相同 GitUrl + BranchName）
+        // Check if a duplicate repository already exists (same GitUrl + BranchName)
         var exists = await context.Repositories
             .AsNoTracking()
             .Where(r => r.GitUrl == request.GitUrl && !r.IsDeleted)
@@ -34,10 +34,10 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
 
         if (exists)
         {
-            throw new InvalidOperationException("该仓库的相同分支已存在，请勿重复提交");
+            throw new InvalidOperationException("A repository with the same branch already exists");
         }
 
-        // 获取公开仓库的star和fork数
+        // Get star and fork counts for public repositories
         int starCount = 0;
         int forkCount = 0;
         
@@ -81,7 +81,7 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
             RepositoryBranchId = branchId,
             LanguageCode = request.LanguageCode,
             UpdateSummary = string.Empty,
-            IsDefault = true // 提交时的第一个语言为默认语言
+            IsDefault = true // First language submitted is the default
         };
 
         context.Repositories.Add(repository);
@@ -101,7 +101,7 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
 
         if (repository is null)
         {
-            throw new InvalidOperationException("仓库不存在");
+            throw new InvalidOperationException("Repository not found");
         }
 
         var assignment = new RepositoryAssignment
@@ -118,7 +118,7 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
     }
 
     /// <summary>
-    /// 获取仓库列表（含状态）
+    /// Gets the repository list (with status).
     /// </summary>
     [HttpGet("/list")]
     public async Task<RepositoryListResponse> GetListAsync(
@@ -164,7 +164,7 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
 
         var total = await query.CountAsync();
 
-        // 排序
+        // Sort
         IOrderedQueryable<Repository> orderedQuery;
         var isDesc = string.IsNullOrWhiteSpace(sortOrder) || sortOrder.Equals("desc", StringComparison.OrdinalIgnoreCase);
         
@@ -174,8 +174,8 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
         }
         else if (sortBy?.Equals("status", StringComparison.OrdinalIgnoreCase) == true)
         {
-            // 状态排序优先级: Processing(1) > Pending(0) > Completed(2) > Failed(3)
-            // 使用自定义排序权重
+            // Status sort priority: Processing(1) > Pending(0) > Completed(2) > Failed(3)
+            // Custom sort weights
             orderedQuery = query.OrderBy(r => 
                 r.Status == RepositoryStatus.Processing ? 0 :
                 r.Status == RepositoryStatus.Pending ? 1 :
@@ -214,7 +214,7 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
     }
 
     /// <summary>
-    /// 更新仓库可见性
+    /// Updates repository visibility.
     /// </summary>
     [HttpPost("/visibility")]
     public async Task<IResult> UpdateVisibilityAsync([FromBody] UpdateVisibilityRequest request)
@@ -229,15 +229,15 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
                     Id = request.RepositoryId,
                     IsPublic = request.IsPublic,
                     Success = false,
-                    ErrorMessage = "用户未登录"
+                    ErrorMessage = "User not logged in"
                 }, statusCode: StatusCodes.Status401Unauthorized);
             }
 
-            // 查找仓库
+            // Find repository
             var repository = await context.Repositories
                 .FirstOrDefaultAsync(item => item.Id == request.RepositoryId);
 
-            // 仓库不存在
+            // Repository not found
             if (repository is null)
             {
                 return Results.NotFound(new UpdateVisibilityResponse
@@ -245,11 +245,11 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
                     Id = request.RepositoryId,
                     IsPublic = request.IsPublic,
                     Success = false,
-                    ErrorMessage = "仓库不存在"
+                    ErrorMessage = "Repository not found"
                 });
             }
 
-            // 验证所有权
+            // Verify ownership
             if (repository.OwnerUserId != currentUserId)
             {
                 return Results.Json(new UpdateVisibilityResponse
@@ -257,11 +257,11 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
                     Id = request.RepositoryId,
                     IsPublic = repository.IsPublic,
                     Success = false,
-                    ErrorMessage = "无权限修改此仓库"
+                    ErrorMessage = "No permission to modify this repository"
                 }, statusCode: StatusCodes.Status403Forbidden);
             }
 
-            // 无密码仓库不能设为私有
+            // Repositories without credentials cannot be set to private
             if (!request.IsPublic && string.IsNullOrWhiteSpace(repository.AuthPassword))
             {
                 return Results.BadRequest(new UpdateVisibilityResponse
@@ -269,11 +269,11 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
                     Id = request.RepositoryId,
                     IsPublic = repository.IsPublic,
                     Success = false,
-                    ErrorMessage = "仓库凭据为空时不允许设置为私有"
+                    ErrorMessage = "Private repositories require authentication credentials"
                 });
             }
 
-            // 更新可见性
+            // Update visibility
             repository.IsPublic = request.IsPublic;
             await context.SaveChangesAsync();
 
@@ -292,13 +292,13 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
                 Id = request.RepositoryId,
                 IsPublic = request.IsPublic,
                 Success = false,
-                ErrorMessage = "服务器内部错误"
+                ErrorMessage = "Internal server error"
             }, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
     /// <summary>
-    /// 判断是否为支持获取统计信息的公开平台
+    /// Checks if the URL belongs to a public platform that supports stats.
     /// </summary>
     private static bool IsPublicPlatform(string gitUrl)
     {
@@ -315,7 +315,7 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
     }
 
     /// <summary>
-    /// 重新生成仓库文档
+    /// Regenerates repository documentation.
     /// </summary>
     [HttpPost("/regenerate")]
     public async Task<RegenerateResponse> RegenerateAsync([FromBody] RegenerateRequest request)
@@ -326,7 +326,7 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
             return new RegenerateResponse
             {
                 Success = false,
-                ErrorMessage = "用户未登录"
+                ErrorMessage = "User not logged in"
             };
         }
 
@@ -338,55 +338,55 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
             return new RegenerateResponse
             {
                 Success = false,
-                ErrorMessage = "仓库不存在"
+                ErrorMessage = "Repository not found"
             };
         }
 
-        // 验证所有权
+        // Verify ownership
         if (repository.OwnerUserId != currentUserId)
         {
             return new RegenerateResponse
             {
                 Success = false,
-                ErrorMessage = "无权限操作此仓库"
+                ErrorMessage = "No permission to operate on this repository"
             };
         }
 
-        // 只有失败或完成状态才能重新生成
+        // Only failed or completed repositories can be regenerated
         if (repository.Status != RepositoryStatus.Failed && repository.Status != RepositoryStatus.Completed)
         {
             return new RegenerateResponse
             {
                 Success = false,
-                ErrorMessage = "仓库正在处理中，无法重新生成"
+                ErrorMessage = "Repository is being processed, cannot regenerate"
             };
         }
 
-        // 获取该仓库的所有分支语言ID
+        // Get all branch language IDs for this repository
         var branchLanguageIds = await context.RepositoryBranches
             .Where(b => b.RepositoryId == repository.Id)
             .Join(context.BranchLanguages, b => b.Id, l => l.RepositoryBranchId, (b, l) => l.Id)
             .ToListAsync();
 
-        // 清空之前生成的文档目录
+        // Clear previously generated document catalogs
         var oldCatalogs = await context.DocCatalogs
             .Where(c => branchLanguageIds.Contains(c.BranchLanguageId))
             .ToListAsync();
 
-        // 收集关联的文档文件ID
+        // Collect associated document file IDs
         var docFileIds = oldCatalogs
             .Where(c => c.DocFileId != null)
             .Select(c => c.DocFileId!)
             .Distinct()
             .ToList();
 
-        // 清空文档目录
+        // Clear document catalogs
         if (oldCatalogs.Count > 0)
         {
             context.DocCatalogs.RemoveRange(oldCatalogs);
         }
 
-        // 清空文档文件
+        // Clear document files
         if (docFileIds.Count > 0)
         {
             var oldDocFiles = await context.DocFiles
@@ -399,7 +399,7 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
             }
         }
 
-        // 清空之前的处理日志
+        // Clear previous processing logs
         var oldLogs = await context.RepositoryProcessingLogs
             .Where(log => log.RepositoryId == repository.Id)
             .ToListAsync();
@@ -409,7 +409,7 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
             context.RepositoryProcessingLogs.RemoveRange(oldLogs);
         }
 
-        // 重置状态为 Pending，Worker 会自动拾取处理
+        // Reset status to Pending, the Worker will automatically pick it up
         repository.Status = RepositoryStatus.Pending;
         await context.SaveChangesAsync();
 
@@ -420,7 +420,7 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
     }
 
     /// <summary>
-    /// 获取仓库分支列表（从Git平台API获取）
+    /// Gets the branches of a repository (from Git platform API).
     /// </summary>
     [HttpGet("/branches")]
     public async Task<GitBranchesResponse> GetBranchesAsync([FromQuery] string gitUrl)

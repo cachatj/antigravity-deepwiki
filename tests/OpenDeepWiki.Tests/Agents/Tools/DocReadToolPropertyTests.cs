@@ -10,7 +10,7 @@ namespace OpenDeepWiki.Tests.Agents.Tools;
 
 /// <summary>
 /// Property-based tests for DocReadTool access control validation.
-/// Feature: doc-chat-assistant, Property 4: 文档读取权限控制
+/// Feature: doc-chat-assistant, Property 4: Document Read Access Control
 /// Validates: Requirements 6.2, 6.3
 /// </summary>
 public class DocReadToolPropertyTests
@@ -44,7 +44,7 @@ public class DocReadToolPropertyTests
     /// </summary>
     private static Gen<string> GenerateLanguage()
     {
-        return Gen.Elements("en", "zh", "ja", "ko", "es", "fr", "de");
+        return Gen.Elements("en");
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public class DocReadToolPropertyTests
     }
 
     /// <summary>
-    /// Property 4: 文档读取权限控制 - 同一仓库访问应该被允许
+    /// Property 4: Document Read Access Control - Same-repo access should be allowed
     /// For any DocReadTool context, accessing the same owner/repo/branch should be allowed.
     /// Validates: Requirements 6.2, 6.3
     /// </summary>
@@ -85,7 +85,7 @@ public class DocReadToolPropertyTests
     }
 
     /// <summary>
-    /// Property 4: 文档读取权限控制 - 不同Owner访问应该被拒绝
+    /// Property 4: Document Read Access Control - Different-owner access should be denied
     /// For any DocReadTool context, accessing a different owner should be denied.
     /// Validates: Requirements 6.2, 6.3
     /// </summary>
@@ -117,7 +117,7 @@ public class DocReadToolPropertyTests
     }
 
     /// <summary>
-    /// Property 4: 文档读取权限控制 - 不同Repo访问应该被拒绝
+    /// Property 4: Document Read Access Control - Different-repo access should be denied
     /// For any DocReadTool context, accessing a different repository should be denied.
     /// Validates: Requirements 6.2, 6.3
     /// </summary>
@@ -150,7 +150,7 @@ public class DocReadToolPropertyTests
 
 
     /// <summary>
-    /// Property 4: 文档读取权限控制 - 不同Branch访问应该被拒绝
+    /// Property 4: Document Read Access Control - Different-branch access should be denied
     /// For any DocReadTool context, accessing a different branch should be denied.
     /// Validates: Requirements 6.2, 6.3
     /// </summary>
@@ -182,7 +182,7 @@ public class DocReadToolPropertyTests
     }
 
     /// <summary>
-    /// Property 4: 文档读取权限控制 - 大小写不敏感比较
+    /// Property 4: Document Read Access Control - Case-insensitive comparison
     /// For any DocReadTool context, access validation should be case-insensitive.
     /// Validates: Requirements 6.2, 6.3
     /// </summary>
@@ -210,7 +210,7 @@ public class DocReadToolPropertyTests
     }
 
     /// <summary>
-    /// Property 4: 文档读取权限控制 - 完全不同的上下文应该被拒绝
+    /// Property 4: Document Read Access Control - Completely different context should be denied
     /// For any DocReadTool context, accessing a completely different context should be denied.
     /// Validates: Requirements 6.2, 6.3
     /// </summary>
@@ -254,7 +254,7 @@ public class DocReadToolPropertyTests
     }
 
     /// <summary>
-    /// Property 4: 文档读取权限控制 - 工具属性应该正确存储
+    /// Property 4: Document Read Access Control - Tool properties should be correctly stored
     /// For any DocReadTool, the context properties should be correctly stored.
     /// Validates: Requirements 6.2, 6.3
     /// </summary>

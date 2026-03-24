@@ -26,7 +26,7 @@ export function RepositoryNotFound({ owner, repo, gitHubInfo }: RepositoryNotFou
   const handleSubmit = async () => {
     if (!gitHubInfo?.gitUrl || !gitHubInfo.defaultBranch) return;
 
-    // 检查是否已登录
+    // Check if user is logged in
     if (!isAuthenticated) {
       // 未登录，跳转到登录页并携带当前URL
       const returnUrl = encodeURIComponent(pathname);
@@ -43,11 +43,11 @@ export function RepositoryNotFound({ owner, repo, gitHubInfo }: RepositoryNotFou
         repoName: repo,
         orgName: owner,
         branchName: gitHubInfo.defaultBranch,
-        languageCode: "zh",
+        languageCode: "en",
         isPublic: true,
       });
       
-      // 刷新页面以显示处理状态
+      // Refresh page to show processing status
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("common.submitFailed"));
