@@ -142,10 +142,10 @@ export function RepoShell({
     fetchData();
   }, [urlBranch, urlLang, owner, repo, currentBranch, currentLanguage]);
 
-  // 构建查询字符串 - 优先使用 URL 参数，确保链接始终保持当前 URL 的参数
+  // Build query string - prefer URL params, keep current URL params in links
   const queryString = searchParams.toString();
 
-  // 构建思维导图链接
+  // Build mind map link
   const mindMapUrl = queryString 
     ? `/${owner}/${repo}/mindmap?${queryString}` 
     : `/${owner}/${repo}/mindmap`;
@@ -154,7 +154,7 @@ export function RepoShell({
   const tree = convertToPageTree(nodes, owner, repo, queryString);
   const title = `${owner}/${repo}`;
 
-  // 构建侧边栏顶部的选择器和操作按钮
+  // Build sidebar header selectors and action buttons
   const sidebarBanner = (
     <div className="space-y-3">
       {branches && (
@@ -205,7 +205,7 @@ export function RepoShell({
         children
       )}
       
-      {/* 文档对话助手悬浮球 */}
+      {/* Document chat assistant floating button */}
       <ChatAssistant
         context={{
           owner,

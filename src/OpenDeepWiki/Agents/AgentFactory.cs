@@ -55,7 +55,7 @@ namespace OpenDeepWiki.Agents
         private readonly AiRequestOptions? _options = options?.Value;
 
         /// <summary>
-        /// 创建带拦截功能的 HttpClient
+        /// Creates an HttpClient with logging/interception capabilities.
         /// </summary>
         private static HttpClient CreateHttpClient()
         {

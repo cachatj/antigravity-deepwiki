@@ -811,17 +811,7 @@ public class ChatAssistantService : IChatAssistantService
     /// </summary>
     private static string BuildSystemPrompt(DocContextDto context, bool hasCodeAccess)
     {
-        var responseLanguage = context.UserLanguage switch
-        {
-            "zh-CN" or "zh" => "Chinese (Simplified)",
-            "zh-TW" => "Chinese (Traditional)",
-            "ja" => "Japanese",
-            "ko" => "Korean",
-            "es" => "Spanish",
-            "fr" => "French",
-            "de" => "German",
-            _ => "English"
-        };
+        var responseLanguage = "English";
 
         var sb = new StringBuilder();
 
@@ -1047,8 +1037,8 @@ public class ChatAssistantService : IChatAssistantService
             {
                 var title = !string.IsNullOrEmpty(msg.QuotedText.Title)
                     ? msg.QuotedText.Title
-                    : "引用内容";
-                var quotedContent = $"引用来源：{title}\n<select_text>\n{msg.QuotedText.Text}\n</select_text>";
+                    : "Quoted Content";
+                var quotedContent = $"Quote source: {title}\n<select_text>\n{msg.QuotedText.Text}\n</select_text>";
                 contents.Add(new TextContent(quotedContent));
             }
 

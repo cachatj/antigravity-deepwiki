@@ -1,27 +1,27 @@
 
-// 缓存环境变量和上次加载时间
+// Cache environment variables and last load time
 let cachedApiUrl: string | null = null;
 let lastLoadTime = 0;
-const CACHE_TTL = 5000; // 5秒缓存，方便热更新
+const CACHE_TTL = 5000; // 5-second cache for hot reloading
 
 /**
- * 获取 API 代理地址
+ * Get API proxy address
  */
 export function getApiProxyUrl(): string {
   
-  // 优先使用系统环境变量（Docker/K8s 传入）
+  // Prefer system environment variables (from Docker/K8s)
   if (process.env.API_PROXY_URL) {
     return process.env.API_PROXY_URL;
   }
   
   const now = Date.now();
-  // 使用缓存
+  // Use cache
   if (cachedApiUrl !== null && (now - lastLoadTime) < CACHE_TTL) {
     return cachedApiUrl;
   }
   
   try {
-    // 使用 require 避免构建时打包 Node.js 模块
+    // Use require to avoid bundling Node.js modules at build time
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const fs = require('fs');
     // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -29,12 +29,12 @@ export function getApiProxyUrl(): string {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const dotenv = require('dotenv');
     
-    // 动态读取 .env 文件
+    // Dynamically read .env file
     const rootDir = process.cwd();
     const envLocalPath = path.resolve(rootDir, '.env.local');
     const envPath = path.resolve(rootDir, '.env');
     
-    // 优先加载 .env.local
+    // Prefer loading .env.local
     if (fs.existsSync(envLocalPath)) {
       const result = dotenv.config({ path: envLocalPath });
       if (result.parsed?.API_PROXY_URL) {
@@ -44,7 +44,7 @@ export function getApiProxyUrl(): string {
       }
     }
     
-    // 其次加载 .env
+    // Then load .env
     if (fs.existsSync(envPath)) {
       const result = dotenv.config({ path: envPath });
       if (result.parsed?.API_PROXY_URL) {
@@ -54,7 +54,7 @@ export function getApiProxyUrl(): string {
       }
     }
   } catch {
-    // 模块加载失败
+    // Module load failed
   }
   
   cachedApiUrl = '';

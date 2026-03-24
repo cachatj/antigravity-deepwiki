@@ -107,7 +107,7 @@ function ToolCallDisplay({ toolCall }: { toolCall: ToolCall }) {
 }
 
 /**
- * 工具结果显示组件
+ * Tool result显示组件
  */
 function ToolResultDisplay({ toolResult }: { toolResult: ToolResult }) {
   const t = useTranslations("chat")
@@ -188,7 +188,7 @@ function TextContentDisplay({ content }: { content: string }) {
 }
 
 /**
- * 内容块渲染组件
+ * Content block渲染组件
  */
 function ContentBlockRenderer({ block, index }: { block: ContentBlock; index: number }) {
   switch (block.type) {
@@ -204,7 +204,7 @@ function ContentBlockRenderer({ block, index }: { block: ContentBlock; index: nu
 }
 
 /**
- * 聊天消息组件
+ * Chat message组件
  * 
  * 支持显示用户消息、AI回复、工具调用信息
  * 按 contentBlocks 顺序渲染，保持调用顺序
@@ -345,7 +345,7 @@ export function ChatMessageItem({ message }: ChatMessageProps) {
           </>
         )}
 
-        {/* 工具结果 */}
+        {/* Tool result */}
         {message.toolResult && (
           <div className="mt-1 w-full">
             <ToolResultDisplay toolResult={message.toolResult} />

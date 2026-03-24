@@ -95,7 +95,7 @@ export async function fetchRepoDoc(owner: string, repo: string, slug: string, br
 
 /**
  * Submit a repository for wiki generation
- * 自动携带用户 token 进行认证
+ * Automatically carries user token for authentication
  */
 export async function submitRepository(
   request: RepositorySubmitRequest
@@ -145,7 +145,7 @@ export async function fetchRepositoryList(params?: {
 
 /**
  * Update repository visibility (public/private)
- * 自动携带用户 token 进行认证
+ * Automatically carries user token for authentication
  */
 export async function updateRepositoryVisibility(
   request: UpdateVisibilityRequest
@@ -233,7 +233,7 @@ export async function checkGitHubRepo(
 
 /**
  * Regenerate repository documentation
- * 重新生成仓库文档
+ * Regenerate repository documentation
  */
 export async function regenerateRepository(
   owner: string,
@@ -247,7 +247,7 @@ export async function regenerateRepository(
 
 /**
  * Fetch repository mind map
- * 获取仓库项目架构思维导图
+ * Get repository architecture mind map
  */
 export async function fetchMindMap(
   owner: string,

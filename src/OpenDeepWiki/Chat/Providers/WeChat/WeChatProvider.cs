@@ -33,7 +33,7 @@ public class WeChatProvider : BaseMessageProvider
     };
     
     public override string PlatformId => "wechat";
-    public override string DisplayName => "微信客服";
+    public override string DisplayName => "WeChat";
     
     public WeChatProvider(
         ILogger<WeChatProvider> logger,

@@ -134,7 +134,7 @@ export default function AdminRepositoryManagementPage() {
   const router = useRouter();
   const t = useTranslations();
   const locale = useLocale();
-  const dateLocale = locale === "zh" ? "zh-CN" : locale;
+  const dateLocale = locale;
   const params = useParams<{ id: string }>();
   const repositoryId = useMemo(() => {
     const raw = params?.id;

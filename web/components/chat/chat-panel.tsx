@@ -96,7 +96,7 @@ export function ChatPanel({
   const [shareResult, setShareResult] = React.useState<ChatShareResponse | null>(null)
   const [shareError, setShareError] = React.useState<string | null>(null)
   const [shareCopied, setShareCopied] = React.useState(false)
-  // 引用的选中文本（包含标题）
+  // Quoted selected text（包含标题）
   const [quotedText, setQuotedText] = React.useState<{ title?: string; text: string } | null>(null)
   const [lastRequest, setLastRequest] = React.useState<{
     input: string
@@ -395,7 +395,7 @@ export function ChatPanel({
     if (!files) return
 
     Array.from(files).forEach(file => {
-      // 检查文件类型
+      // Check file type
       if (!["image/png", "image/jpeg", "image/gif", "image/webp"].includes(file.type)) {
         setError({
           message: t("image.unsupportedFormat"),
@@ -404,7 +404,7 @@ export function ChatPanel({
         return
       }
 
-      // 检查文件大小 (10MB)
+      // Check file size (10MB)
       if (file.size > 10 * 1024 * 1024) {
         setError({
           message: t("image.sizeTooLarge"),
@@ -589,7 +589,7 @@ export function ChatPanel({
 
           case "tool_result":
             const toolResult = event.data as ToolResult
-            // 添加工具结果消息
+            // 添加Tool result消息
             addMessage({
               role: "tool",
               content: toolResult.result,
@@ -847,7 +847,7 @@ export function ChatPanel({
               />
             </div>
 
-            {/* 底部工具栏 */}
+            {/* 底部Toolbar */}
             <div className="flex items-center justify-between border-t border-border/50 px-2 py-1">
               {/* 左侧按钮 */}
               <div className="flex items-center gap-1">

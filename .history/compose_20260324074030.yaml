@@ -1,0 +1,76 @@
+services:
+  opendeepwiki:
+    # SECURITY: Build locally from source only — no external pre-compiled images
+    build:
+      context: .
+      dockerfile: src/OpenDeepWiki/Dockerfile
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/api/system/version || exit 1" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    env_file:
+      - .env
+    environment:
+      # ASP.NET Core Environment
+      - ASPNETCORE_ENVIRONMENT=Production
+
+      # Service listen address
+      - URLS=http://+:8080
+
+      # Database config (supports: sqlite, postgresql)
+      - DB_TYPE=sqlite
+      - CONNECTION_STRING=Data Source=/data/opendeepwiki.db
+
+      # JWT auth config (change for production)
+      - JWT_SECRET_KEY=OpenDeepWiki-Default-Secret-Key-Please-Change-In-Production-Environment-2024
+
+      # Repository storage directory
+      - REPOSITORIES_DIRECTORY=/data
+
+      # AI service config (global default, used for Chat features)
+      - CHAT_API_KEY=${CLAUDE_API_KEY}
+      - ENDPOINT=https://api.anthropic.com/v1/messages
+      - CHAT_REQUEST_TYPE=Anthropic
+
+      # Wiki generator config — Catalog generation (Gemini)
+      - WIKI_CATALOG_MODEL=gemini-3.1-pro-preview
+      - WIKI_CATALOG_API_KEY=${GOOGLE_API_KEY}
+      - WIKI_CATALOG_REQUEST_TYPE=Gemini
+      - WIKI_CATALOG_ENDPOINT=https://generativelanguage.googleapis.com/v1beta/openai/
+
+      # Wiki generator config — Content generation (Gemini)
+      - WIKI_CONTENT_MODEL=gemini-3.1-pro-preview
+      - WIKI_CONTENT_API_KEY=${GOOGLE_API_KEY}
+      - WIKI_CONTENT_REQUEST_TYPE=Gemini
+      - WIKI_CONTENT_ENDPOINT=https://generativelanguage.googleapis.com/v1beta/openai/
+
+      # Wiki parallel generation count (default: 5)
+      - WIKI_PARALLEL_COUNT=5
+
+      # Language support (English only)
+      - WIKI_LANGUAGES=en
+
+    volumes:
+      - ./data:/data
+      - ~/code_sandbox/edna_phm_sow_airflow_antigravity:/cah-sow:ro
+      - ~/code_sandbox/2026-PayerPropensity-Models-days_to_payment_payment_ratio:/vht-ppm:ro
+
+  web:
+    # SECURITY: Build locally from source only — no external pre-compiled images
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    restart: unless-stopped
+    depends_on:
+      opendeepwiki:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - API_PROXY_URL=http://opendeepwiki:8080
