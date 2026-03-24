@@ -272,3 +272,14 @@ export async function fetchMindMap(
 
   return (await response.json()) as MindMapResponse;
 }
+
+/**
+ * Delete a repository and all its associated data
+ */
+export async function deleteRepository(
+  repositoryId: string
+): Promise<{ success: boolean; message?: string }> {
+  return api.delete<{ success: boolean; message?: string }>(
+    `/api/v1/repositories/${encodeURIComponent(repositoryId)}`
+  );
+}

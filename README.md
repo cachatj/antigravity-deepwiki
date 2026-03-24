@@ -45,58 +45,6 @@ For detailed instructions on using DeepWiki with Ollama and Docker, see [Ollama 
 > - Get an OpenAI API key from [OpenAI Platform](https://platform.openai.com/api-keys)
 > - Get Azure OpenAI credentials from [Azure Portal](https://portal.azure.com/) - create an Azure OpenAI resource and get the API key, endpoint, and API version
 
-### Option 2: Manual Setup (Recommended)
-
-#### Step 1: Set Up Your API Keys
-
-Create a `.env` file in the project root with these keys:
-
-```
-GOOGLE_API_KEY=your_google_api_key
-OPENAI_API_KEY=your_openai_api_key
-# Optional: Use Google AI embeddings (recommended if using Google models)
-DEEPWIKI_EMBEDDER_TYPE=google
-# Optional: Add this if you want to use OpenRouter models
-OPENROUTER_API_KEY=your_openrouter_api_key
-# Optional: Add this if you want to use Azure OpenAI models
-AZURE_OPENAI_API_KEY=your_azure_openai_api_key
-AZURE_OPENAI_ENDPOINT=your_azure_openai_endpoint
-AZURE_OPENAI_VERSION=your_azure_openai_version
-# Optional: Add Ollama host if not local. default: http://localhost:11434
-OLLAMA_HOST=your_ollama_host
-```
-
-#### Step 2: Start the Backend
-
-```bash
-# Install Python dependencies
-python -m pip install poetry==2.0.1 && poetry install -C api
-
-# Start the API server
-python -m api.main
-```
-
-#### Step 3: Start the Frontend
-
-```bash
-# Install JavaScript dependencies
-npm install
-# or
-yarn install
-
-# Start the web app
-npm run dev
-# or
-yarn dev
-```
-
-#### Step 4: Use DeepWiki!
-
-1. Open [http://localhost:3000](http://localhost:3000) in your browser
-2. Enter a GitHub, GitLab, or Bitbucket repository (like `https://github.com/openai/codex`, `https://github.com/microsoft/autogen`, `https://gitlab.com/gitlab-org/gitlab`, or `https://bitbucket.org/redradish/atlassian_app_versions`)
-3. For private repositories, click "+ Add access tokens" and enter your GitHub or GitLab personal access token
-4. Click "Generate Wiki" and watch the magic happen!
-
 ## 🔍 How It Works
 
 DeepWiki uses AI to:
@@ -625,6 +573,62 @@ To use DeepResearch, simply toggle the "Deep Research" switch in the Ask interfa
 1. **Restart both servers**: Sometimes a simple restart fixes most issues
 2. **Check console logs**: Open browser developer tools to see any JavaScript errors
 3. **Check API logs**: Look at the terminal where the API is running for Python errors
+
+
+### Option 2: Manual Setup (Recommended)
+
+#### Step 1: Set Up Your API Keys
+
+Create a `.env` file in the project root with these keys:
+
+```
+GOOGLE_API_KEY=your_google_api_key
+OPENAI_API_KEY=your_openai_api_key
+# Optional: Use Google AI embeddings (recommended if using Google models)
+DEEPWIKI_EMBEDDER_TYPE=google
+# Optional: Add this if you want to use OpenRouter models
+OPENROUTER_API_KEY=your_openrouter_api_key
+# Optional: Add this if you want to use Azure OpenAI models
+AZURE_OPENAI_API_KEY=your_azure_openai_api_key
+AZURE_OPENAI_ENDPOINT=your_azure_openai_endpoint
+AZURE_OPENAI_VERSION=your_azure_openai_version
+# Optional: Add Ollama host if not local. default: http://localhost:11434
+OLLAMA_HOST=your_ollama_host
+```
+
+#### Step 2: Start the Backend
+
+```bash
+# Install Python dependencies
+python -m pip install poetry==2.0.1 && poetry install -C api
+
+# Start the API server
+python -m api.main
+```
+
+#### Step 3: Start the Frontend
+
+```bash
+# Install JavaScript dependencies
+npm install
+# or
+yarn install
+
+# Start the web app
+npm run dev
+# or
+yarn dev
+```
+
+#### Step 4: Use DeepWiki!
+
+1. Open [http://localhost:3000](http://localhost:3000) in your browser
+2. Enter a GitHub, GitLab, or Bitbucket repository (like `https://github.com/openai/codex`, `https://github.com/microsoft/autogen`, `https://gitlab.com/gitlab-org/gitlab`, or `https://bitbucket.org/redradish/atlassian_app_versions`)
+3. For private repositories, click "+ Add access tokens" and enter your GitHub or GitLab personal access token
+4. Click "Generate Wiki" and watch the magic happen!
+
+
+
 
 ## 🤝 Contributing
 
