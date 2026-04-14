@@ -38,7 +38,7 @@ services:
       - CHAT_REQUEST_TYPE=Anthropic
 
       # Wiki generator config — Catalog generation (Gemini)
-      - WIKI_CATALOG_MODEL=gemini-2.5-flash
+      - WIKI_CATALOG_MODEL=gemini-2.5-pro
       - WIKI_CATALOG_API_KEY=${GOOGLE_API_KEY}
       - WIKI_CATALOG_REQUEST_TYPE=Gemini
 
@@ -55,8 +55,8 @@ services:
 
     volumes:
       - ./data:/data
-      - ~/code_sandbox/edna_phm_sow_airflow_antigravity:/cah-sow:ro
-      - ~/code_sandbox/2026-PayerPropensity-Models-days_to_payment_payment_ratio:/vht-ppm:ro
+      - /Users/jcachat/code_sandbox/edna_phm_sow_airflow:/cah:ro
+      - /Users/jcachat/code_sandbox/2026-PayerPropensity-Models-days_to_payment_payment_ratio:/vht-ppm:ro
 
   web:
     # SECURITY: Build locally from source only — no external pre-compiled images
@@ -64,7 +64,7 @@ services:
       context: ./web
       dockerfile: Dockerfile
     ports:
-      - "3001:3000"
+      - "3000:3000"
     restart: unless-stopped
     depends_on:
       opendeepwiki:
