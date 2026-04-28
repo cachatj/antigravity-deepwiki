@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/hooks/use-translations";
 import { toast } from "sonner";
 import { buildApiUrl } from "@/lib/api-client";
+import { getToken } from "@/lib/auth-api";
 
 interface WikiExportProps {
   owner: string;
@@ -40,7 +41,13 @@ export function WikiExport({
       const endpoint = `/api/v1/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/export${params.toString() ? `?${params.toString()}` : ""}`;
       const exportUrl = buildApiUrl(endpoint);
       
-      const response = await fetch(exportUrl);
+      const token = getToken();
+      const headers: HeadersInit = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(exportUrl, { headers });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || "Export failed");

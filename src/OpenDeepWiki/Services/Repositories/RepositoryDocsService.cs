@@ -418,24 +418,24 @@ public class RepositoryDocsService(IContext context, IGitPlatformService gitPlat
     /// </summary>
     [HttpGet("/{owner}/{repo}/export")]
     [Authorize]
-    public async Task<IActionResult> ExportAsync(string owner, string repo, [FromQuery] string? branch = null, [FromQuery] string? lang = null)
+    public async Task<IResult> ExportAsync(string owner, string repo, [FromQuery] string? branch = null, [FromQuery] string? lang = null)
     {
         var repository = await GetRepositoryAsync(owner, repo);
         if (repository is null)
         {
-            return new NotFoundObjectResult("Repository not found");
+            return Results.NotFound("Repository not found");
         }
 
         var branchEntity = await GetBranchAsync(repository.Id, branch);
         if (branchEntity is null)
         {
-            return new NotFoundObjectResult("Branch not found");
+            return Results.NotFound("Branch not found");
         }
 
         var language = await GetLanguageAsync(branchEntity.Id, lang);
         if (language is null)
         {
-            return new NotFoundObjectResult("Language not found");
+            return Results.NotFound("Language not found");
         }
 
         var now = DateTime.UtcNow;
@@ -448,13 +448,13 @@ public class RepositoryDocsService(IContext context, IGitPlatformService gitPlat
             if (timeSinceLastExport.TotalMinutes < ExportRateLimitMinutes)
             {
                 var remainingMinutes = Math.Ceiling(ExportRateLimitMinutes - timeSinceLastExport.TotalMinutes);
-                return new BadRequestObjectResult($"Export rate limited, please retry in {remainingMinutes} minutes");
+                return Results.BadRequest($"Export rate limited, please retry in {remainingMinutes} minutes");
             }
         }
 
         if (!await TryAcquireExportSlotAsync())
         {
-            return new BadRequestObjectResult("Too many concurrent export requests, please try again later");
+            return Results.BadRequest("Too many concurrent export requests, please try again later");
         }
 
         try
@@ -474,7 +474,7 @@ public class RepositoryDocsService(IContext context, IGitPlatformService gitPlat
 
             if (catalogs.Count == 0)
             {
-                return new NotFoundObjectResult("No document content found for this branch and language");
+                return Results.NotFound("No document content found for this branch and language");
             }
 
             // Create memory stream for generating archive
@@ -489,10 +489,7 @@ public class RepositoryDocsService(IContext context, IGitPlatformService gitPlat
             var fileName = $"{owner}-{repo}-{branchEntity.BranchName}-{language.LanguageCode}.zip";
             
             // Return archive
-            return new FileContentResult(memoryStream.ToArray(), "application/zip")
-            {
-                FileDownloadName = fileName
-            };
+            return Results.File(memoryStream.ToArray(), "application/zip", fileName);
         }
         finally
         {

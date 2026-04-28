@@ -439,7 +439,6 @@ try
     app.MapSystemEndpoints();
     app.MapIncrementalUpdateEndpoints();
     app.MapMcpProviderEndpoints();
-    app.MapWikiExportEndpoints();
 
     // Initialize database (create default data)
     using (var scope = app.Services.CreateScope())
