@@ -57,6 +57,8 @@ services:
       - ./data:/data
       - /Users/jcachat/code_sandbox/edna_phm_sow_airflow:/cah:ro
       - /Users/jcachat/code_sandbox/2026-PayerPropensity-Models-days_to_payment_payment_ratio:/vht-ppm:ro
+      - /Users/jcachat/code_sandbox/SOW - each version/edna_phm_sow_airflow:/sow:ro
+      - /Users/jcachat/code_sandbox/SOW - each version/1-SOWinSAS-legacy:/sas:ro
 
   web:
     # SECURITY: Build locally from source only — no external pre-compiled images
