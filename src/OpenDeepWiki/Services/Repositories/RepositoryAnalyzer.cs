@@ -659,7 +659,7 @@ public class RepositoryAnalyzer : IRepositoryAnalyzer
     }
 
     /// <inheritdoc />
-    public Task<string?> DetectPrimaryLanguageAsync(
+    public async Task<string?> DetectPrimaryLanguageAsync(
         RepositoryWorkspace workspace,
         CancellationToken cancellationToken = default)
     {
@@ -711,7 +711,7 @@ public class RepositoryAnalyzer : IRepositoryAnalyzer
                 _logger.LogDebug("Language statistics: {Stats}", string.Join(", ", topLanguages));
             }
 
-            return Task.FromResult(primaryLanguage);
+            return primaryLanguage;
         }
         catch (Exception ex)
         {
@@ -719,7 +719,7 @@ public class RepositoryAnalyzer : IRepositoryAnalyzer
             _logger.LogWarning(ex,
                 "Failed to detect primary language. Repository: {Org}/{Repo}, Duration: {Duration}ms",
                 workspace.Organization, workspace.RepositoryName, stopwatch.ElapsedMilliseconds);
-            return Task.FromResult<string?>(null);
+            return null;
         }
     }
 

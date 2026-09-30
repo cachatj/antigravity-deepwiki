@@ -88,37 +88,41 @@ public class GitTool
         {
             var currentDir = directoriesToProcess.Dequeue();
 
-            // Subdirectories
+            string[] subDirs = Array.Empty<string>();
             try
             {
-                foreach (var dir in Directory.EnumerateDirectories(currentDir))
-                {
-                    var relativeDir = GetRelativePath(dir);
-                    // Skip ignored or hidden directories completely so we don't scan their contents
-                    if (!IsIgnoredByGitIgnore(relativeDir) && !IsHiddenPath(dir))
-                    {
-                        directoriesToProcess.Enqueue(dir);
-                    }
-                }
+                subDirs = Directory.GetDirectories(currentDir);
             }
             catch { /* Skip inaccessible dirs */ }
 
-            // Files
+            foreach (var dir in subDirs)
+            {
+                var relativeDir = GetRelativePath(dir);
+                // Skip ignored or hidden directories completely so we don't scan their contents
+                if (!IsIgnoredByGitIgnore(relativeDir) && !IsHiddenPath(dir))
+                {
+                    directoriesToProcess.Enqueue(dir);
+                }
+            }
+
+            string[] currentFiles = Array.Empty<string>();
             try
             {
-                foreach (var file in Directory.EnumerateFiles(currentDir))
+                currentFiles = Directory.GetFiles(currentDir);
+            }
+            catch { /* Skip inaccessible files */ }
+
+            foreach (var file in currentFiles)
+            {
+                var relativePath = GetRelativePath(file);
+                if (!IsIgnoredByGitIgnore(relativePath) && !IsHiddenPath(file))
                 {
-                    var relativePath = GetRelativePath(file);
-                    if (!IsIgnoredByGitIgnore(relativePath) && !IsHiddenPath(file))
+                    if (globRegex == null || globRegex.IsMatch(relativePath))
                     {
-                        if (globRegex == null || globRegex.IsMatch(relativePath))
-                        {
-                            yield return file;
-                        }
+                        yield return file;
                     }
                 }
             }
-            catch { /* Skip inaccessible files */ }
         }
     }
 
