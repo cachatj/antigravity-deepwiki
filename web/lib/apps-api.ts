@@ -1,16 +1,16 @@
 /**
- * 用户应用 API 客户端
+ * User apps API client
  * 
- * 实现应用CRUD、统计查询、日志查询API调用
+ * Implements API calls for app CRUD, statistics queries and log queries
  * Requirements: 12.6, 15.6, 16.3
  */
 
 import { api } from './api-client'
 
-// ==================== 应用相关类型 ====================
+// ==================== App types ====================
 
 /**
- * 创建应用请求
+ * Create app request
  */
 export interface CreateChatAppDto {
   name: string
@@ -27,7 +27,7 @@ export interface CreateChatAppDto {
 }
 
 /**
- * 更新应用请求
+ * Update app request
  */
 export interface UpdateChatAppDto {
   name?: string
@@ -45,7 +45,7 @@ export interface UpdateChatAppDto {
 }
 
 /**
- * 应用响应
+ * App response
  */
 export interface ChatAppDto {
   id: string
@@ -68,10 +68,10 @@ export interface ChatAppDto {
   updatedAt?: string
 }
 
-// ==================== 统计相关类型 ====================
+// ==================== Statistics types ====================
 
 /**
- * 每日统计数据
+ * Daily statistics
  */
 export interface AppStatisticsDto {
   appId: string
@@ -82,7 +82,7 @@ export interface AppStatisticsDto {
 }
 
 /**
- * 聚合统计数据
+ * Aggregated statistics
  */
 export interface AggregatedStatisticsDto {
   appId: string
@@ -94,10 +94,10 @@ export interface AggregatedStatisticsDto {
   dailyStatistics: AppStatisticsDto[]
 }
 
-// ==================== 提问记录相关类型 ====================
+// ==================== Question log types ====================
 
 /**
- * 提问记录
+ * Question log entry
  */
 export interface ChatLogDto {
   id: string
@@ -113,7 +113,7 @@ export interface ChatLogDto {
 }
 
 /**
- * 分页提问记录响应
+ * Paginated question log response
  */
 export interface PaginatedChatLogsDto {
   items: ChatLogDto[]
@@ -124,7 +124,7 @@ export interface PaginatedChatLogsDto {
 }
 
 /**
- * 提问记录查询参数
+ * Question log query parameters
  */
 export interface ChatLogQueryParams {
   startDate?: string
@@ -134,54 +134,54 @@ export interface ChatLogQueryParams {
   pageSize?: number
 }
 
-// ==================== 应用 CRUD API ====================
+// ==================== App CRUD API ====================
 
 /**
- * 获取当前用户的应用列表
+ * Get the current user's apps
  */
 export async function getUserApps(): Promise<ChatAppDto[]> {
   return api.get<ChatAppDto[]>('/api/v1/apps')
 }
 
 /**
- * 创建新应用
+ * Create a new app
  */
 export async function createApp(dto: CreateChatAppDto): Promise<ChatAppDto> {
   return api.post<ChatAppDto>('/api/v1/apps', dto)
 }
 
 /**
- * 获取应用详情
+ * Get app details
  */
 export async function getAppById(id: string): Promise<ChatAppDto> {
   return api.get<ChatAppDto>(`/api/v1/apps/${id}`)
 }
 
 /**
- * 更新应用
+ * Update an app
  */
 export async function updateApp(id: string, dto: UpdateChatAppDto): Promise<ChatAppDto> {
   return api.put<ChatAppDto>(`/api/v1/apps/${id}`, dto)
 }
 
 /**
- * 删除应用
+ * Delete an app
  */
 export async function deleteApp(id: string): Promise<void> {
   return api.delete<void>(`/api/v1/apps/${id}`)
 }
 
 /**
- * 重新生成应用密钥
+ * Regenerate the app secret
  */
 export async function regenerateAppSecret(id: string): Promise<{ appSecret: string }> {
   return api.post<{ appSecret: string }>(`/api/v1/apps/${id}/regenerate-secret`)
 }
 
-// ==================== 统计 API ====================
+// ==================== Statistics API ====================
 
 /**
- * 获取应用统计数据
+ * Get app statistics
  */
 export async function getAppStatistics(
   id: string,
@@ -198,10 +198,10 @@ export async function getAppStatistics(
   return api.get<AggregatedStatisticsDto>(url)
 }
 
-// ==================== 提问记录 API ====================
+// ==================== Question log API ====================
 
 /**
- * 获取应用提问记录
+ * Get the app's question log
  */
 export async function getAppLogs(
   id: string,
@@ -221,10 +221,10 @@ export async function getAppLogs(
   return api.get<PaginatedChatLogsDto>(url)
 }
 
-// ==================== 辅助函数 ====================
+// ==================== Helpers ====================
 
 /**
- * 模型提供商类型
+ * Model provider type
  */
 export const PROVIDER_TYPES = [
   { value: 'OpenAI', label: 'OpenAI' },
@@ -235,14 +235,14 @@ export const PROVIDER_TYPES = [
 export type ProviderType = typeof PROVIDER_TYPES[number]['value']
 
 /**
- * 格式化日期为 ISO 字符串（仅日期部分）
+ * Format a date as an ISO string (date part only)
  */
 export function formatDateForApi(date: Date): string {
   return date.toISOString().split('T')[0]
 }
 
 /**
- * 获取默认的日期范围（最近30天）
+ * Get the default date range (last 30 days)
  */
 export function getDefaultDateRange(): { startDate: string; endDate: string } {
   const endDate = new Date()

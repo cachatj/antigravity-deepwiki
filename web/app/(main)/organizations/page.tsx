@@ -97,7 +97,7 @@ export default function OrganizationsPage() {
 
     return (
       <div className="space-y-6">
-        {/* 部门列表 */}
+        {/* Department list */}
         <div>
           <h2 className="text-lg font-semibold mb-4">My Departments</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -125,7 +125,7 @@ export default function OrganizationsPage() {
         </div>
 
 
-        {/* 仓库列表 */}
+        {/* Repository list */}
         <div>
           <h2 className="text-lg font-semibold mb-4">Department Repositories</h2>
           {repositories.length === 0 ? (

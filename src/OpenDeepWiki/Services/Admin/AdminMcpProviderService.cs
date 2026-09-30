@@ -6,7 +6,7 @@ using OpenDeepWiki.Models.Admin;
 namespace OpenDeepWiki.Services.Admin;
 
 /// <summary>
-/// 管理员 MCP 提供商服务实现
+/// Admin MCP provider service implementation
 /// </summary>
 public class AdminMcpProviderService : IAdminMcpProviderService
 {
@@ -80,7 +80,7 @@ public class AdminMcpProviderService : IAdminMcpProviderService
         _context.McpProviders.Add(provider);
         await _context.SaveChangesAsync();
 
-        _logger.LogInformation("MCP 提供商已创建: {Name} ({Id})", provider.Name, provider.Id);
+        _logger.LogInformation("MCP provider created: {Name} ({Id})", provider.Name, provider.Id);
 
         string? modelName = null;
         if (!string.IsNullOrEmpty(provider.ModelConfigId))
@@ -130,7 +130,7 @@ public class AdminMcpProviderService : IAdminMcpProviderService
 
         await _context.SaveChangesAsync();
 
-        _logger.LogInformation("MCP 提供商已更新: {Name} ({Id})", provider.Name, provider.Id);
+        _logger.LogInformation("MCP provider updated: {Name} ({Id})", provider.Name, provider.Id);
         return true;
     }
 
@@ -145,7 +145,7 @@ public class AdminMcpProviderService : IAdminMcpProviderService
         provider.UpdatedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
 
-        _logger.LogInformation("MCP 提供商已删除: {Name} ({Id})", provider.Name, provider.Id);
+        _logger.LogInformation("MCP provider deleted: {Name} ({Id})", provider.Name, provider.Id);
         return true;
     }
 

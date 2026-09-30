@@ -1,7 +1,7 @@
 namespace OpenDeepWiki.Models.Admin;
 
 /// <summary>
-/// MCP 提供商创建/更新请求
+/// MCP provider create/update request
 /// </summary>
 public class McpProviderRequest
 {
@@ -20,7 +20,7 @@ public class McpProviderRequest
 }
 
 /// <summary>
-/// MCP 提供商 DTO
+/// MCP provider DTO
 /// </summary>
 public class McpProviderDto
 {
@@ -42,7 +42,7 @@ public class McpProviderDto
 }
 
 /// <summary>
-/// MCP 使用日志 DTO
+/// MCP usage log DTO
 /// </summary>
 public class McpUsageLogDto
 {
@@ -63,7 +63,7 @@ public class McpUsageLogDto
 }
 
 /// <summary>
-/// MCP 使用日志查询过滤器
+/// MCP usage log query filter
 /// </summary>
 public class McpUsageLogFilter
 {
@@ -75,7 +75,7 @@ public class McpUsageLogFilter
 }
 
 /// <summary>
-/// 分页结果
+/// Paged result
 /// </summary>
 public class PagedResult<T>
 {
@@ -86,7 +86,7 @@ public class PagedResult<T>
 }
 
 /// <summary>
-/// MCP 使用统计响应
+/// MCP usage statistics response
 /// </summary>
 public class McpUsageStatisticsResponse
 {
@@ -99,7 +99,7 @@ public class McpUsageStatisticsResponse
 }
 
 /// <summary>
-/// MCP 每日使用量
+/// MCP daily usage
 /// </summary>
 public class McpDailyUsage
 {

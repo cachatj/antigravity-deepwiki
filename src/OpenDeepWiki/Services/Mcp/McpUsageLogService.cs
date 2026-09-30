@@ -5,7 +5,7 @@ using OpenDeepWiki.Entities;
 namespace OpenDeepWiki.Services.Mcp;
 
 /// <summary>
-/// MCP 使用日志服务实现
+/// MCP usage log service implementation
 /// </summary>
 public class McpUsageLogService : IMcpUsageLogService
 {
@@ -45,7 +45,7 @@ public class McpUsageLogService : IMcpUsageLogService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "写入 MCP 使用日志失败: {ToolName}", log.ToolName);
+            _logger.LogError(ex, "Failed to write MCP usage log: {ToolName}", log.ToolName);
         }
     }
 
@@ -106,11 +106,11 @@ public class McpUsageLogService : IMcpUsageLogService
             }
 
             await context.SaveChangesAsync();
-            _logger.LogInformation("MCP 每日统计聚合完成: {Date}, {Count} 条提供商记录", dateStart.ToString("yyyy-MM-dd"), logs.Count);
+            _logger.LogInformation("MCP daily statistics aggregation completed: {Date}, {Count} provider records", dateStart.ToString("yyyy-MM-dd"), logs.Count);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "MCP 每日统计聚合失败: {Date}", date.ToString("yyyy-MM-dd"));
+            _logger.LogError(ex, "MCP daily statistics aggregation failed: {Date}", date.ToString("yyyy-MM-dd"));
         }
     }
 }

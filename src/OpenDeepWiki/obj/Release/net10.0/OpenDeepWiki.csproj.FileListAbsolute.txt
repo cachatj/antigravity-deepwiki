@@ -229,3 +229,4 @@
 /Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Release/net10.0/prompts/content-generator v2.md
 /Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Release/net10.0/prompts/incremental-updater v2.md
 /Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Release/net10.0/prompts/mindmap-generator v2.md
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Release/net10.0/prompts/architecture_current_state.md

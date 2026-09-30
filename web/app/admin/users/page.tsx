@@ -214,7 +214,7 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      {/* 搜索和筛选 */}
+      {/* Search and filters */}
       <Card className="p-4">
         <div className="flex flex-wrap gap-4">
           <div className="flex flex-1 gap-2">
@@ -246,7 +246,7 @@ export default function AdminUsersPage() {
         </div>
       </Card>
 
-      {/* 用户列表 */}
+      {/* User list */}
       <Card>
         {loading ? (
           <div className="flex h-64 items-center justify-center">
@@ -368,7 +368,7 @@ export default function AdminUsersPage() {
               </table>
             </div>
 
-            {/* 分页 */}
+            {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex items-center justify-between border-t px-4 py-3">
                 <p className="text-sm text-muted-foreground">{t('admin.repositories.totalRecords', { count: data?.total })}</p>
@@ -387,7 +387,7 @@ export default function AdminUsersPage() {
         )}
       </Card>
 
-      {/* 新增用户对话框 */}
+      {/* Create user dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent>
           <DialogHeader>
@@ -428,7 +428,7 @@ export default function AdminUsersPage() {
         </DialogContent>
       </Dialog>
 
-      {/* 角色分配对话框 */}
+      {/* Role assignment dialog */}
       <Dialog open={!!showRolesDialog} onOpenChange={() => setShowRolesDialog(null)}>
         <DialogContent>
           <DialogHeader>
@@ -464,7 +464,7 @@ export default function AdminUsersPage() {
         </DialogContent>
       </Dialog>
 
-      {/* 重置密码对话框 */}
+      {/* Reset password dialog */}
       <Dialog open={!!showPasswordDialog} onOpenChange={() => setShowPasswordDialog(null)}>
         <DialogContent>
           <DialogHeader>
@@ -486,7 +486,7 @@ export default function AdminUsersPage() {
         </DialogContent>
       </Dialog>
 
-      {/* 删除确认对话框 */}
+      {/* Delete confirmation dialog */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>

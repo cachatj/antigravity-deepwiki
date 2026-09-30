@@ -400,7 +400,7 @@ function drawMindMap(
     node.children.forEach(drawNode);
   };
 
-  // 先绘制连接线，再Draw nodes
+  // Draw connection lines first, then draw nodes
   drawConnections(root);
   drawNode(root);
 }

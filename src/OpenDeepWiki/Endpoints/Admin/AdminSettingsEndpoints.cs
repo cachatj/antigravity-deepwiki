@@ -5,16 +5,16 @@ using OpenDeepWiki.Services.Admin;
 namespace OpenDeepWiki.Endpoints.Admin;
 
 /// <summary>
-/// 管理端设置端点
+/// Admin settings endpoints
 /// </summary>
 public static class AdminSettingsEndpoints
 {
     public static RouteGroupBuilder MapAdminSettingsEndpoints(this RouteGroupBuilder group)
     {
         var settingsGroup = group.MapGroup("/settings")
-            .WithTags("管理端-设置");
+            .WithTags("Admin - Settings");
 
-        // 获取设置列表
+        // Get settings list
         settingsGroup.MapGet("/", async (
             [FromQuery] string? category,
             [FromServices] IAdminSettingsService settingsService) =>
@@ -23,22 +23,22 @@ public static class AdminSettingsEndpoints
             return Results.Ok(new { success = true, data = settings });
         })
         .WithName("AdminGetSettings")
-        .WithSummary("获取设置列表");
+        .WithSummary("Get settings list");
 
-        // 获取单个设置
+        // Get a single setting
         settingsGroup.MapGet("/{key}", async (
             string key,
             [FromServices] IAdminSettingsService settingsService) =>
         {
             var setting = await settingsService.GetSettingByKeyAsync(key);
             if (setting == null)
-                return Results.NotFound(new { success = false, message = "设置不存在" });
+                return Results.NotFound(new { success = false, message = "Setting not found" });
             return Results.Ok(new { success = true, data = setting });
         })
         .WithName("AdminGetSettingByKey")
-        .WithSummary("获取单个设置");
+        .WithSummary("Get a single setting");
 
-        // 更新设置
+        // Update setting
         settingsGroup.MapPut("/", async (
             [FromBody] List<UpdateSettingRequest> requests,
             [FromServices] IAdminSettingsService settingsService,
@@ -46,13 +46,13 @@ public static class AdminSettingsEndpoints
         {
             await settingsService.UpdateSettingsAsync(requests);
             
-            // 刷新配置以应用新的设置
+            // Refresh configuration to apply the new setting
             await configManager.RefreshWikiGeneratorOptionsAsync();
             
-            return Results.Ok(new { success = true, message = "设置更新成功" });
+            return Results.Ok(new { success = true, message = "Setting updated" });
         })
         .WithName("AdminUpdateSettings")
-        .WithSummary("更新设置");
+        .WithSummary("Update setting");
 
         return group;
     }

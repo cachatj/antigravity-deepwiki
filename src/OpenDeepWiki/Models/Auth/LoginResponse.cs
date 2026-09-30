@@ -1,33 +1,33 @@
 namespace OpenDeepWiki.Models.Auth;
 
 /// <summary>
-/// 登录响应
+/// Login response
 /// </summary>
 public class LoginResponse
 {
     /// <summary>
-    /// 访问令牌
+    /// Access token
     /// </summary>
     public string AccessToken { get; set; } = string.Empty;
 
     /// <summary>
-    /// 令牌类型
+    /// Token type
     /// </summary>
     public string TokenType { get; set; } = "Bearer";
 
     /// <summary>
-    /// 过期时间（秒）
+    /// Expiration time (seconds)
     /// </summary>
     public int ExpiresIn { get; set; }
 
     /// <summary>
-    /// 用户信息
+    /// User info
     /// </summary>
     public UserInfo User { get; set; } = null!;
 }
 
 /// <summary>
-/// 用户信息
+/// User info
 /// </summary>
 public class UserInfo
 {

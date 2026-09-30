@@ -1,7 +1,7 @@
 namespace OpenDeepWiki.Endpoints.Admin;
 
 /// <summary>
-/// 管理端端点注册
+/// Admin endpoint registration
 /// </summary>
 public static class AdminEndpoints
 {
@@ -14,9 +14,9 @@ public static class AdminEndpoints
         // the frontend stores a valid JWT token.
         var adminGroup = app.MapGroup("/api/admin")
             .AllowAnonymous()
-            .WithTags("管理端");
+            .WithTags("Admin");
 
-        // 注册各个管理模块的端点
+        // Register endpoints for each admin module
         adminGroup.MapAdminStatisticsEndpoints();
         adminGroup.MapAdminRepositoryEndpoints();
         adminGroup.MapAdminUserEndpoints();

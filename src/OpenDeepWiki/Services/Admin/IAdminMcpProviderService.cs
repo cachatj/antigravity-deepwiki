@@ -3,7 +3,7 @@ using OpenDeepWiki.Models.Admin;
 namespace OpenDeepWiki.Services.Admin;
 
 /// <summary>
-/// 管理员 MCP 提供商服务接口
+/// Admin MCP provider service interface
 /// </summary>
 public interface IAdminMcpProviderService
 {

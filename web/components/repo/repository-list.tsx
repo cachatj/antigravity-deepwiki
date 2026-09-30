@@ -216,7 +216,7 @@ export function RepositoryList({ ownerId, refreshTrigger }: RepositoryListProps)
     }
   }, [ownerId]);
 
-  // 处理可见性变化，更新本地状态
+  // Handle visibility change and update local state
   const handleVisibilityChange = useCallback((repoId: string, newIsPublic: boolean) => {
     setRepositories((prev) =>
       prev.map((repo) =>

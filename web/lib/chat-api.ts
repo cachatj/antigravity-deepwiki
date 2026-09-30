@@ -1,7 +1,7 @@
 /**
- * 对话助手 API 客户端
+ * Chat assistant API client
  * 
- * 实现SSE流式对话功能，包含错误处理、超时和重试机制
+ * Implements SSE streaming chat with error handling, timeout and retry
  * Requirements: 9.2, 11.1, 11.2, 11.3, 11.4
  */
 
@@ -9,18 +9,18 @@ import { getApiProxyUrl } from './env'
 import { getToken } from './auth-api'
 import { ChatMessage, ToolCall, ToolResult, QuotedText, ContentBlock, TokenUsage } from '@/hooks/use-chat-history'
 
-// 重新导出类型以便其他模块使用
+// Re-export types for use by other modules
 export type { ChatMessage, ToolCall, ToolResult, QuotedText }
 
 const API_BASE_URL = getApiProxyUrl()
 
-/** 默认请求超时时间（毫秒） */
+/** Default request timeout (milliseconds) */
 const DEFAULT_TIMEOUT_MS = 30000
 
-/** 默认重试次数 */
+/** Default retry count */
 const DEFAULT_MAX_RETRIES = 2
 
-/** 默认重试延迟（毫秒） */
+/** Default retry delay (milliseconds) */
 const DEFAULT_RETRY_DELAY_MS = 1000
 
 function buildApiUrl(path: string): string {
@@ -34,7 +34,7 @@ function buildApiUrl(path: string): string {
 }
 
 /**
- * 目录项
+ * Catalog item
  */
 export interface CatalogItem {
   title: string
@@ -43,7 +43,7 @@ export interface CatalogItem {
 }
 
 /**
- * 文档上下文
+ * Document context
  */
 export interface DocContext {
   owner: string
@@ -57,7 +57,7 @@ export interface DocContext {
 }
 
 /**
- * 对话请求消息DTO
+ * Chat request message DTO
  */
 export interface ChatMessageDto {
   role: 'user' | 'assistant' | 'tool'
@@ -69,7 +69,7 @@ export interface ChatMessageDto {
 }
 
 /**
- * 分享消息 DTO
+ * Share message DTO
  */
 export interface ChatShareMessage {
   id: string
@@ -86,7 +86,7 @@ export interface ChatShareMessage {
 }
 
 /**
- * 创建分享请求载荷
+ * Create share request payload
  */
 export interface CreateChatSharePayload {
   messages: ChatShareMessage[]
@@ -98,7 +98,7 @@ export interface CreateChatSharePayload {
 }
 
 /**
- * 分享响应
+ * Share response
  */
 export interface ChatShareResponse {
   shareId: string
@@ -112,7 +112,7 @@ export interface ChatShareResponse {
 }
 
 /**
- * 对话请求
+ * Chat request
  */
 export interface ChatRequest {
   messages: ChatMessageDto[]
@@ -122,12 +122,12 @@ export interface ChatRequest {
 }
 
 /**
- * SSE event类型
+ * SSE event type
  */
 export type SSEEventType = 'content' | 'thinking' | 'tool_call' | 'tool_result' | 'done' | 'error'
 
 /**
- * Thinking 事件数据
+ * Thinking event data
  */
 export interface ThinkingEvent {
   type: 'start' | 'delta'
@@ -136,7 +136,7 @@ export interface ThinkingEvent {
 }
 
 /**
- * ToolCall 事件数据（带 index）
+ * ToolCall event data (with index)
  */
 export interface ToolCallEvent {
   id: string
@@ -146,7 +146,7 @@ export interface ToolCallEvent {
 }
 
 /**
- * 错误信息
+ * Error info
  */
 export interface ErrorInfo {
   code: string
@@ -156,61 +156,61 @@ export interface ErrorInfo {
 }
 
 /**
- * 错误码常量（与后端保持一致）
+ * Error code constants (kept in sync with the backend)
  * Requirements: 11.1, 11.2, 11.3
  */
 export const ChatErrorCodes = {
-  // 功能状态错误
+  // Feature status errors
   FEATURE_DISABLED: 'FEATURE_DISABLED',
   CONFIG_MISSING: 'CONFIG_MISSING',
   
-  // 模型相关错误
+  // Model errors
   MODEL_UNAVAILABLE: 'MODEL_UNAVAILABLE',
   MODEL_CONFIG_INVALID: 'MODEL_CONFIG_INVALID',
   NO_AVAILABLE_MODELS: 'NO_AVAILABLE_MODELS',
   
-  // 应用相关错误
+  // App errors
   INVALID_APP_ID: 'INVALID_APP_ID',
   APP_MODEL_NOT_CONFIGURED: 'APP_MODEL_NOT_CONFIGURED',
   APP_DISABLED: 'APP_DISABLED',
   
-  // 域名校验错误
+  // Domain validation errors
   DOMAIN_NOT_ALLOWED: 'DOMAIN_NOT_ALLOWED',
   DOMAIN_UNKNOWN: 'DOMAIN_UNKNOWN',
   
-  // 限流错误
+  // Rate limit errors
   RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
   
-  // 文档相关错误
+  // Document errors
   DOCUMENT_NOT_FOUND: 'DOCUMENT_NOT_FOUND',
   DOCUMENT_ACCESS_DENIED: 'DOCUMENT_ACCESS_DENIED',
   REPOSITORY_NOT_FOUND: 'REPOSITORY_NOT_FOUND',
   
-  // 工具调用错误
+  // Tool call errors
   MCP_CALL_FAILED: 'MCP_CALL_FAILED',
   TOOL_EXECUTION_FAILED: 'TOOL_EXECUTION_FAILED',
   TOOL_NOT_FOUND: 'TOOL_NOT_FOUND',
   
-  // 连接和超时错误
+  // Connection and timeout errors
   CONNECTION_FAILED: 'CONNECTION_FAILED',
   REQUEST_TIMEOUT: 'REQUEST_TIMEOUT',
   STREAM_INTERRUPTED: 'STREAM_INTERRUPTED',
   
-  // 内部错误
+  // Internal errors
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   UNKNOWN_ERROR: 'UNKNOWN_ERROR',
 } as const
 
 /**
- * 获取错误码对应的默认消息
+ * Get the default message for an error code
  */
 export function getErrorMessage(code: string): string {
   const messages: Record<string, string> = {
-    [ChatErrorCodes.FEATURE_DISABLED]: '对话助手功能未启用',
-    [ChatErrorCodes.CONFIG_MISSING]: '功能配置缺失',
-    [ChatErrorCodes.MODEL_UNAVAILABLE]: '模型不可用，请选择其他模型',
-    [ChatErrorCodes.MODEL_CONFIG_INVALID]: '模型配置无效',
-    [ChatErrorCodes.NO_AVAILABLE_MODELS]: '暂无可用模型，请联系管理员配置',
+    [ChatErrorCodes.FEATURE_DISABLED]: 'The chat assistant feature is not enabled',
+    [ChatErrorCodes.CONFIG_MISSING]: 'Feature configuration is missing',
+    [ChatErrorCodes.MODEL_UNAVAILABLE]: 'Model unavailable, please select another model',
+    [ChatErrorCodes.MODEL_CONFIG_INVALID]: 'Invalid model configuration',
+    [ChatErrorCodes.NO_AVAILABLE_MODELS]: 'No models available, please contact an administrator to configure one',
     [ChatErrorCodes.INVALID_APP_ID]: 'Invalid app ID',
     [ChatErrorCodes.APP_MODEL_NOT_CONFIGURED]: 'App has no AI model configured',
     [ChatErrorCodes.APP_DISABLED]: 'App is disabled',

@@ -274,7 +274,7 @@ public class McpRepositoryTools
         CancellationToken cancellationToken)
     {
         if (matches.Count == 0)
-            return "未找到匹配的文档内容。";
+            return "No matching document content was found.";
 
         var modelConfig = await ResolveMcpModelConfigAsync(context, cancellationToken);
         if (modelConfig == null)

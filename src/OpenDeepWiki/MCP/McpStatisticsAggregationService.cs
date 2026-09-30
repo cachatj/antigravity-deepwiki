@@ -3,8 +3,8 @@ using OpenDeepWiki.Services.Mcp;
 namespace OpenDeepWiki.MCP;
 
 /// <summary>
-/// MCP 统计聚合后台服务
-/// 每小时聚合前一天的使用日志到 McpDailyStatistics
+/// MCP statistics aggregation background service
+/// Aggregates the previous day's usage logs into McpDailyStatistics every hour
 /// </summary>
 public class McpStatisticsAggregationService : BackgroundService
 {
@@ -37,11 +37,11 @@ public class McpStatisticsAggregationService : BackgroundService
                 await logService.AggregateDailyStatisticsAsync(today);
                 await logService.AggregateDailyStatisticsAsync(today.AddDays(-1));
 
-                _logger.LogDebug("MCP 统计聚合完成");
+                _logger.LogDebug("MCP statistics aggregation completed");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "MCP 统计聚合服务异常");
+                _logger.LogError(ex, "MCP statistics aggregation service error");
             }
 
             await Task.Delay(AggregationInterval, stoppingToken);

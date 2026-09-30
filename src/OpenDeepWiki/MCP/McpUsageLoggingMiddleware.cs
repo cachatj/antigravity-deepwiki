@@ -8,8 +8,8 @@ using OpenDeepWiki.Services.Mcp;
 namespace OpenDeepWiki.MCP;
 
 /// <summary>
-/// MCP 请求使用日志中间件
-/// 拦截 /api/mcp 路径的请求，记录工具调用、耗时、状态码
+/// MCP request usage logging middleware
+/// Intercepts requests under the /api/mcp path and records tool calls, duration and status codes
 /// </summary>
 public class McpUsageLoggingMiddleware
 {
@@ -79,7 +79,7 @@ public class McpUsageLoggingMiddleware
     }
 
     /// <summary>
-    /// 尝试从 HttpContext 中提取工具名称
+    /// Try to extract the tool name from HttpContext
     /// </summary>
     private static string? ExtractToolName(HttpContext context)
     {

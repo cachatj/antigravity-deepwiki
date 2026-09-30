@@ -3,17 +3,17 @@ using OpenDeepWiki.Entities;
 namespace OpenDeepWiki.Services.Mcp;
 
 /// <summary>
-/// MCP 使用日志服务接口
+/// MCP usage log service interface
 /// </summary>
 public interface IMcpUsageLogService
 {
     /// <summary>
-    /// 异步记录 MCP 使用日志（不阻塞请求）
+    /// Record MCP usage logs asynchronously (without blocking the request)
     /// </summary>
     Task LogUsageAsync(McpUsageLog log);
 
     /// <summary>
-    /// 聚合指定日期的日志到每日统计
+    /// Aggregate logs for the specified date into daily statistics
     /// </summary>
     Task AggregateDailyStatisticsAsync(DateTime date);
 }

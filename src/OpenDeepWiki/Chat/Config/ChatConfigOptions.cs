@@ -1,27 +1,27 @@
 namespace OpenDeepWiki.Chat.Config;
 
 /// <summary>
-/// Chat 配置选项
+/// Chat configuration options
 /// </summary>
 public class ChatConfigOptions
 {
     /// <summary>
-    /// 配置节名称
+    /// Configuration section name
     /// </summary>
     public const string SectionName = "Chat";
     
     /// <summary>
-    /// 是否在启动时验证配置
+    /// Whether to validate configuration at startup
     /// </summary>
     public bool ValidateOnStartup { get; set; } = true;
     
     /// <summary>
-    /// 配置缓存过期时间（秒）
+    /// Config cache expiration time (seconds)
     /// </summary>
     public int CacheExpirationSeconds { get; set; } = 300;
     
     /// <summary>
-    /// 是否启用配置热重载
+    /// Whether config hot reload is enabled
     /// </summary>
     public bool EnableHotReload { get; set; } = true;
 }

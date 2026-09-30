@@ -258,15 +258,49 @@ Entry Points: {string.Join(", ", repoContext.EntryPoints.Take(5))}
 
 Execute the workflow now. Read entry point files to understand the architecture, then generate a comprehensive catalog in {branchLanguage.LanguageCode}.";
 
-            await ExecuteAgentWithRetryAsync(
-                _options.CatalogModel,
-                _options.GetCatalogRequestOptions(),
-                prompt,
-                userMessage,
-                tools,
-                "CatalogGeneration",
-                ProcessingStep.Catalog,
-                cancellationToken);
+            // Gemini occasionally returns an empty turn (no text, no tool call). An empty catalog
+            // makes the whole run a silent no-op, so verify and retry a few times.
+            const int maxCatalogAttempts = 3;
+            for (var catalogAttempt = 1; catalogAttempt <= maxCatalogAttempts; catalogAttempt++)
+            {
+                var attemptMessage = catalogAttempt == 1
+                    ? userMessage
+                    : userMessage + $@"
+
+<system-remind>
+YOUR PREVIOUS ATTEMPT ({catalogAttempt - 1}) ENDED WITHOUT WRITING A CATALOG. The catalog is still empty.
+You MUST call the WriteCatalog tool with the complete catalog JSON. Do not finish until WriteCatalog returns success.
+</system-remind>";
+
+                await ExecuteAgentWithRetryAsync(
+                    _options.CatalogModel,
+                    _options.GetCatalogRequestOptions(),
+                    prompt,
+                    attemptMessage,
+                    tools,
+                    "CatalogGeneration",
+                    ProcessingStep.Catalog,
+                    cancellationToken);
+
+                var writtenCatalog = await catalogStorage.GetCatalogJsonAsync(cancellationToken);
+                if (GetAllCatalogPaths(writtenCatalog).Count > 0)
+                {
+                    break;
+                }
+
+                _logger.LogWarning(
+                    "Catalog agent finished without writing any catalog items. Repository: {Org}/{Repo}, Attempt: {Attempt}/{Max}",
+                    workspace.Organization, workspace.RepositoryName, catalogAttempt, maxCatalogAttempts);
+                await LogProcessingAsync(ProcessingStep.Catalog,
+                    $"Agent finished without writing a catalog (attempt {catalogAttempt}/{maxCatalogAttempts})",
+                    cancellationToken);
+
+                if (catalogAttempt == maxCatalogAttempts)
+                {
+                    throw new InvalidOperationException(
+                        $"Catalog generation produced no items after {maxCatalogAttempts} attempts");
+                }
+            }
 
             stopwatch.Stop();
             _logger.LogInformation(
@@ -718,15 +752,48 @@ Please start executing the task.";
 
 Please start executing the task.";
 
-            await ExecuteAgentWithRetryAsync(
-                _options.ContentModel,
-                _options.GetContentRequestOptions(),
-                prompt,
-                userMessage,
-                tools,
-                $"DocumentContent:{catalogPath}",
-                ProcessingStep.Content,
-                cancellationToken);
+            // The model sometimes ends a turn claiming success without ever calling WriteDoc
+            // (or after WriteDoc returned an error). Verify the document exists and retry if not.
+            const int maxWriteAttempts = 3;
+            for (var writeAttempt = 1; writeAttempt <= maxWriteAttempts; writeAttempt++)
+            {
+                var attemptMessage = writeAttempt == 1
+                    ? userMessage
+                    : userMessage + $@"
+
+<system-remind>
+YOUR PREVIOUS ATTEMPT ({writeAttempt - 1}) ENDED WITHOUT A SAVED DOCUMENT. No document exists for this catalog item.
+You MUST call the WriteDoc tool with the complete Markdown content. Do not finish until WriteDoc returns SUCCESS.
+</system-remind>";
+
+                await ExecuteAgentWithRetryAsync(
+                    _options.ContentModel,
+                    _options.GetContentRequestOptions(),
+                    prompt,
+                    attemptMessage,
+                    tools,
+                    $"DocumentContent:{catalogPath}",
+                    ProcessingStep.Content,
+                    cancellationToken);
+
+                if (await docTool.ExistsAsync(cancellationToken))
+                {
+                    break;
+                }
+
+                _logger.LogWarning(
+                    "Agent finished without writing a document. Path: {Path}, Title: {Title}, Attempt: {Attempt}/{Max}",
+                    catalogPath, catalogTitle, writeAttempt, maxWriteAttempts);
+                await LogProcessingAsync(ProcessingStep.Content,
+                    $"Agent finished without saving document (attempt {writeAttempt}/{maxWriteAttempts}): {catalogTitle}",
+                    cancellationToken);
+
+                if (writeAttempt == maxWriteAttempts)
+                {
+                    throw new InvalidOperationException(
+                        $"Agent completed {maxWriteAttempts} attempts without writing document '{catalogPath}' via WriteDoc");
+                }
+            }
 
             stopwatch.Stop();
             _logger.LogInformation(
@@ -825,6 +892,7 @@ Please start executing the task.";
                 // Create chat options with the tools
                 var runOptions = new AgentRunOptions
                 {
+                    MaxRoundTrips = _options.MaxToolRoundTrips,
                     ChatOptions = new ChatOptions()
                     {
                         ToolMode = ChatToolMode.Auto,
@@ -906,6 +974,21 @@ Please start executing the task.";
                                 Console.Write(" " +
                                               Encoding.UTF8.GetString(tool.FunctionArgumentsUpdate.ToArray()));
                             }
+                        }
+                    }
+
+                    // Providers that don't expose OpenAI raw updates (e.g. Gemini) surface calls as FunctionCallContent
+                    if (update.RawRepresentation is not StreamingChatCompletionUpdate)
+                    {
+                        foreach (var call in update.Contents.OfType<FunctionCallContent>())
+                        {
+                            toolCallCount++;
+                            Console.WriteLine();
+                            Console.Write("Call Function:" + call.Name);
+                            _logger.LogDebug(
+                                "Tool call #{CallNumber}: {FunctionName}. Operation: {Operation}",
+                                toolCallCount, call.Name, operationName);
+                            await LogProcessingAsync(step, $"Calling tool: {call.Name}", false, call.Name, cancellationToken);
                         }
                     }
 
@@ -1250,11 +1333,11 @@ Please start executing the task.";
             sourceBranchLanguage.LanguageCode, targetLanguageCode);
 
         await LogProcessingAsync(ProcessingStep.Translation, 
-            $"开始翻译 Wiki: {sourceBranchLanguage.LanguageCode} -> {targetLanguageCode}", cancellationToken);
+            $"Starting Wiki translation: {sourceBranchLanguage.LanguageCode} -> {targetLanguageCode}", cancellationToken);
 
         try
         {
-            // 1. 创建目标语言的BranchLanguage
+            // 1. Create the BranchLanguage for the target language
             var targetBranchLanguage = new BranchLanguage
             {
                 Id = Guid.NewGuid().ToString(),
@@ -1267,13 +1350,13 @@ Please start executing the task.";
             _logger.LogDebug("Created target BranchLanguage. Id: {Id}, LanguageCode: {LanguageCode}",
                 targetBranchLanguage.Id, targetBranchLanguage.LanguageCode);
 
-            // 2. 获取源语言的目录结构
+            // 2. Get the source-language catalog structure
             var sourceCatalogStorage = new CatalogStorage(_context, sourceBranchLanguage.Id);
             var sourceCatalogJson = await sourceCatalogStorage.GetCatalogJsonAsync(cancellationToken);
 
-            // 3. 翻译目录结构
+            // 3. Translate the catalog structure
             await LogProcessingAsync(ProcessingStep.Translation, 
-                $"正在翻译目录结构 -> {targetLanguageCode}", cancellationToken);
+                $"Translating catalog structure -> {targetLanguageCode}", cancellationToken);
 
             var translatedCatalogJson = await TranslateCatalogAsync(
                 sourceCatalogJson,
@@ -1281,25 +1364,25 @@ Please start executing the task.";
                 targetLanguageCode,
                 cancellationToken);
 
-            // 4. 保存翻译后的目录
+            // 4. Save the translated catalog
             var targetCatalogStorage = new CatalogStorage(_context, targetBranchLanguage.Id);
             await targetCatalogStorage.SetCatalogAsync(translatedCatalogJson, cancellationToken);
 
             _logger.LogInformation("Catalog translated and saved for {TargetLang}", targetLanguageCode);
 
-            // 5. 获取所有需要翻译的文档
+            // 5. Get all documents that need translation
             var catalogItems = GetAllCatalogPaths(sourceCatalogJson);
             var totalDocs = catalogItems.Count;
             var translatedCount = 0;
             var failedCount = 0;
 
             await LogProcessingAsync(ProcessingStep.Translation, 
-                $"发现 {totalDocs} 个文档需要翻译 -> {targetLanguageCode}", cancellationToken);
+                $"Found {totalDocs} documents to translate -> {targetLanguageCode}", cancellationToken);
 
-            // 6. 批量预加载所有需要的数据（优化 N+1 查询）
+            // 6. Preload all required data in batch (optimize N+1 queries)
             var catalogPaths = catalogItems.Select(i => i.Path).ToList();
 
-            // 批量加载源语言的目录和文档
+            // Batch load source-language catalogs and documents
             var sourceCatalogs = await _context.DocCatalogs
                 .Where(c => c.BranchLanguageId == sourceBranchLanguage.Id &&
                            catalogPaths.Contains(c.Path) &&
@@ -1315,14 +1398,14 @@ Please start executing the task.";
                 .Where(d => sourceDocFileIds.Contains(d.Id) && !d.IsDeleted)
                 .ToDictionaryAsync(d => d.Id, cancellationToken);
 
-            // 批量加载目标语言的目录
+            // Batch load target-language catalogs
             var targetCatalogs = await _context.DocCatalogs
                 .Where(c => c.BranchLanguageId == targetBranchLanguage.Id &&
                            catalogPaths.Contains(c.Path) &&
                            !c.IsDeleted)
                 .ToDictionaryAsync(c => c.Path, cancellationToken);
 
-            // 构建翻译任务列表
+            // Build the translation task list
             var translationTasks = new List<((string Path, string Title) Item, string SourceContent, DocCatalog TargetCatalog)>();
             foreach (var item in catalogItems)
             {
@@ -1349,7 +1432,7 @@ Please start executing the task.";
                 translationTasks.Add((item, sourceDocFile.Content, targetCatalog));
             }
 
-            // 7. 并行执行 AI 翻译（IO 密集型操作）
+            // 7. Run AI translation in parallel (IO-bound operation)
             var translationResults = new ConcurrentBag<(DocCatalog TargetCatalog, DocFile NewDocFile)?>();
 
             var parallelOptions = new ParallelOptions
@@ -1365,7 +1448,7 @@ Please start executing the task.";
                 try
                 {
                     await LogProcessingAsync(ProcessingStep.Translation,
-                        $"正在翻译文档 ({currentIndex}/{totalDocs}): {task.Item.Title} -> {targetLanguageCode}", ct);
+                        $"Translating document ({currentIndex}/{totalDocs}): {task.Item.Title} -> {targetLanguageCode}", ct);
 
                     // Add timeout protection for translation
                     using var timeoutCts = new CancellationTokenSource(TimeSpan.FromMinutes(_options.TranslationTimeoutMinutes));
@@ -1377,7 +1460,7 @@ Please start executing the task.";
                         targetLanguageCode,
                         linkedCts.Token);
 
-                    // 清理 <think> 标签
+                    // Strip <think> tags
                     translatedContent = RemoveThinkTags(translatedContent);
 
                     var newDocFile = new DocFile
@@ -1403,7 +1486,7 @@ Please start executing the task.";
                     _logger.LogError("Translation timed out after {Timeout} minutes. Path: {Path}, TargetLang: {TargetLang}",
                         _options.TranslationTimeoutMinutes, task.Item.Path, targetLanguageCode);
                     await LogProcessingAsync(ProcessingStep.Translation,
-                        $"文档翻译超时 ({_options.TranslationTimeoutMinutes}分钟): {task.Item.Title}", ct);
+                        $"Document translation timed out ({_options.TranslationTimeoutMinutes} minutes): {task.Item.Title}", ct);
                     translationResults.Add(null);
                 }
                 catch (Exception ex)
@@ -1412,12 +1495,12 @@ Please start executing the task.";
                     _logger.LogError(ex, "Failed to translate document. Path: {Path}, TargetLang: {TargetLang}",
                         task.Item.Path, targetLanguageCode);
                     await LogProcessingAsync(ProcessingStep.Translation,
-                        $"文档翻译失败: {task.Item.Title} - {ex.Message}", ct);
+                        $"Document translation failed: {task.Item.Title} - {ex.Message}", ct);
                     translationResults.Add(null);
                 }
             });
 
-            // 8. 批量保存翻译结果（单线程 EF Core 操作）
+            // 8. Save translation results in batch (single-threaded EF Core operation)
             foreach (var result in translationResults.Where(r => r != null))
             {
                 _context.DocFiles.Add(result!.Value.NewDocFile);
@@ -1425,11 +1508,11 @@ Please start executing the task.";
                 result.Value.TargetCatalog.UpdateTimestamp();
             }
 
-            // 9. 翻译思维导图（如果存在）
+            // 9. Translate the mind map (if present)
             if (!string.IsNullOrEmpty(sourceBranchLanguage.MindMapContent))
             {
                 await LogProcessingAsync(ProcessingStep.Translation,
-                    $"正在翻译思维导图 -> {targetLanguageCode}", cancellationToken);
+                    $"Translating mind map -> {targetLanguageCode}", cancellationToken);
 
                 try
                 {
@@ -1445,7 +1528,7 @@ Please start executing the task.";
                 catch (Exception ex)
                 {
                     _logger.LogWarning(ex, "Failed to translate mind map to {TargetLang}", targetLanguageCode);
-                    // 思维导图翻译失败不影响整体流程
+                    // Mind map translation failure does not affect the overall flow
                     targetBranchLanguage.MindMapStatus = MindMapStatus.Failed;
                 }
             }
@@ -1459,7 +1542,7 @@ Please start executing the task.";
                 translatedCount - failedCount, failedCount, stopwatch.ElapsedMilliseconds);
 
             await LogProcessingAsync(ProcessingStep.Translation, 
-                $"翻译完成 -> {targetLanguageCode}，成功: {translatedCount - failedCount}，失败: {failedCount}，耗时: {stopwatch.ElapsedMilliseconds}ms", 
+                $"Translation completed -> {targetLanguageCode}, success: {translatedCount - failedCount}, failed: {failedCount}, took: {stopwatch.ElapsedMilliseconds}ms", 
                 cancellationToken);
 
             return targetBranchLanguage;
@@ -1484,7 +1567,7 @@ Please start executing the task.";
         string targetLanguage,
         CancellationToken cancellationToken)
     {
-        // 解析源目录结构
+        // Parse the source catalog structure
         var root = System.Text.Json.JsonSerializer.Deserialize<CatalogRoot>(sourceCatalogJson, new System.Text.Json.JsonSerializerOptions
         {
             PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
@@ -1495,13 +1578,13 @@ Please start executing the task.";
             return sourceCatalogJson;
         }
 
-        // 收集所有需要翻译的项（扁平化）
+        // Collect all items to translate (flattened)
         var allItems = new List<CatalogItem>();
         CollectAllCatalogItems(root.Items, allItems);
 
         _logger.LogDebug("Collected {Count} catalog items for parallel translation", allItems.Count);
 
-        // 并发翻译所有标题
+        // Translate all titles concurrently
         var parallelOptions = new ParallelOptions
         {
             MaxDegreeOfParallelism = _options.ParallelCount,
@@ -1537,7 +1620,7 @@ Please start executing the task.";
             }
         });
 
-        // 序列化回 JSON
+        // Serialize back to JSON
         return System.Text.Json.JsonSerializer.Serialize(root, new System.Text.Json.JsonSerializerOptions
         {
             WriteIndented = true,
@@ -1626,10 +1709,10 @@ Translation:";
             "Translation:CatalogTitle",
             cancellationToken);
 
-        // 清理可能的<think>标签及其内容
+        // Strip any <think> tags and their content
         translatedTitle = RemoveThinkTags(translatedTitle);
 
-        // 如果翻译失败或返回空，保留原标题
+        // If translation fails or returns empty, keep the original title
         return string.IsNullOrWhiteSpace(translatedTitle) ? title : translatedTitle;
     }
 
@@ -1804,7 +1887,7 @@ Translated mind map:";
 
                 var result = contentBuilder.ToString().Trim();
 
-                // 清理可能的 <think> 标签
+                // Strip any <think> tags
                 result = RemoveThinkTags(result);
 
                 if (inputTokens > 0 || outputTokens > 0)

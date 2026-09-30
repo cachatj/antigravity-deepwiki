@@ -7,14 +7,14 @@ using OpenDeepWiki.Chat.Routing;
 namespace OpenDeepWiki.Services.Chat;
 
 [MiniApi(Route = "/api/chat/admin")]
-[Tags("Chat 管理")]
+[Tags("Chat Admin")]
 // AUTH BYPASS: AllowAnonymous to match the frontend auth bypass in auth-context.tsx.
 // To re-enable auth, restore [Authorize(Policy = "AdminOnly")].
 [AllowAnonymous]
 public class ChatAdminApiService(IChatConfigService configService, IMessageRouter messageRouter, IMessageQueue messageQueue, ILogger<ChatAdminApiService> logger)
 {
     /// <summary>
-    /// 获取所有 Provider 配置
+    /// Get all provider configurations
     /// </summary>
     [HttpGet("/providers")]
     public async Task<IResult> GetAllProvidersAsync()
@@ -37,7 +37,7 @@ public class ChatAdminApiService(IChatConfigService configService, IMessageRoute
     }
 
     /// <summary>
-    /// 获取指定 Provider 配置
+    /// Get the specified provider configuration
     /// </summary>
     [HttpGet("/providers/{platform}")]
     public async Task<IResult> GetProviderConfigAsync(string platform)
@@ -64,7 +64,7 @@ public class ChatAdminApiService(IChatConfigService configService, IMessageRoute
     }
 
     /// <summary>
-    /// 保存 Provider 配置
+    /// Save provider configuration
     /// </summary>
     [HttpPost("/providers")]
     public async Task<IResult> SaveProviderConfigAsync([FromBody] ProviderConfigDto config)
@@ -86,7 +86,7 @@ public class ChatAdminApiService(IChatConfigService configService, IMessageRoute
     }
 
     /// <summary>
-    /// 删除 Provider 配置
+    /// Delete provider configuration
     /// </summary>
     [HttpDelete("/providers/{platform}")]
     public async Task<IResult> DeleteProviderConfigAsync(string platform)
@@ -103,7 +103,7 @@ public class ChatAdminApiService(IChatConfigService configService, IMessageRoute
     }
 
     /// <summary>
-    /// 启用 Provider
+    /// Enable provider
     /// </summary>
     [HttpPost("/providers/{platform}/enable")]
     public async Task<IResult> EnableProviderAsync(string platform)
@@ -122,7 +122,7 @@ public class ChatAdminApiService(IChatConfigService configService, IMessageRoute
     }
 
     /// <summary>
-    /// 禁用 Provider
+    /// Disable provider
     /// </summary>
     [HttpPost("/providers/{platform}/disable")]
     public async Task<IResult> DisableProviderAsync(string platform)
@@ -141,7 +141,7 @@ public class ChatAdminApiService(IChatConfigService configService, IMessageRoute
     }
 
     /// <summary>
-    /// 重载 Provider 配置
+    /// Reload provider configuration
     /// </summary>
     [HttpPost("/providers/{platform}/reload")]
     public async Task<IResult> ReloadProviderConfigAsync(string platform)
@@ -158,7 +158,7 @@ public class ChatAdminApiService(IChatConfigService configService, IMessageRoute
     }
 
     /// <summary>
-    /// 获取队列状态
+    /// Get queue status
     /// </summary>
     [HttpGet("/queue/status")]
     public async Task<IResult> GetQueueStatusAsync()
@@ -175,7 +175,7 @@ public class ChatAdminApiService(IChatConfigService configService, IMessageRoute
     }
 
     /// <summary>
-    /// 获取死信队列消息
+    /// Get dead letter queue messages
     /// </summary>
     [HttpGet("/queue/deadletter")]
     public async Task<IResult> GetDeadLetterMessagesAsync([FromQuery] int skip, [FromQuery] int take)
@@ -207,7 +207,7 @@ public class ChatAdminApiService(IChatConfigService configService, IMessageRoute
     }
 
     /// <summary>
-    /// 重新处理死信消息
+    /// Reprocess dead letter message
     /// </summary>
     [HttpPost("/queue/deadletter/{messageId}/reprocess")]
     public async Task<IResult> ReprocessDeadLetterAsync(string messageId)
@@ -225,7 +225,7 @@ public class ChatAdminApiService(IChatConfigService configService, IMessageRoute
     }
 
     /// <summary>
-    /// 删除死信消息
+    /// Delete dead letter message
     /// </summary>
     [HttpDelete("/queue/deadletter/{messageId}")]
     public async Task<IResult> DeleteDeadLetterAsync(string messageId)
@@ -243,7 +243,7 @@ public class ChatAdminApiService(IChatConfigService configService, IMessageRoute
     }
 
     /// <summary>
-    /// 清空死信队列
+    /// Clear the dead letter queue
     /// </summary>
     [HttpDelete("/queue/deadletter")]
     public async Task<IResult> ClearDeadLetterQueueAsync()

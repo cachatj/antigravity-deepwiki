@@ -105,7 +105,7 @@ function MermaidFullscreenModal({
     setIsDragging(false);
   }, []);
 
-  // ESC 键关闭，Reset state
+  // Close on ESC key and reset state
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -117,7 +117,7 @@ function MermaidFullscreenModal({
       document.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
     } else {
-      // 关闭时Reset state
+      // Reset state on close
       resetView();
     }
 

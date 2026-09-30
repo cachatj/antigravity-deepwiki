@@ -1,28 +1,28 @@
 namespace OpenDeepWiki.Chat.Config;
 
 /// <summary>
-/// 配置加密服务接口
+/// Config encryption service interface
 /// </summary>
 public interface IConfigEncryption
 {
     /// <summary>
-    /// 加密配置数据
+    /// Encrypt config data
     /// </summary>
-    /// <param name="plainText">明文数据</param>
-    /// <returns>加密后的数据</returns>
+    /// <param name="plainText">Plaintext data</param>
+    /// <returns>Encrypted data</returns>
     string Encrypt(string plainText);
     
     /// <summary>
-    /// 解密配置数据
+    /// Decrypt config data
     /// </summary>
-    /// <param name="cipherText">加密数据</param>
-    /// <returns>解密后的明文</returns>
+    /// <param name="cipherText">Encrypted data</param>
+    /// <returns>Decrypted plaintext</returns>
     string Decrypt(string cipherText);
     
     /// <summary>
-    /// 检查数据是否已加密
+    /// Check whether data is encrypted
     /// </summary>
-    /// <param name="data">数据</param>
-    /// <returns>是否已加密</returns>
+    /// <param name="data">Data</param>
+    /// <returns>Whether the data is encrypted</returns>
     bool IsEncrypted(string data);
 }

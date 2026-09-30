@@ -241,7 +241,7 @@ Usage:
             var startIndex = Math.Max(0, offset - 1);
             var endIndex = Math.Min(lines.Length, startIndex + limit);
 
-            // 记录读取的文件
+            // Record the files that were read
             _readFiles.Add(normalizedPath);
 
             var result = new StringBuilder();

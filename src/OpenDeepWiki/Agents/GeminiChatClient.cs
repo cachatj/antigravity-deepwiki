@@ -80,12 +80,17 @@ public sealed class GeminiChatClient : IChatClient
         var request = BuildRequest(chatMessages, options);
         var stream = _client.Models.GenerateContentStreamAsync(_model, request.Contents, request.Config, cancellationToken);
 
+        var textChars = 0;
+        var functionCalls = new List<string>();
+        string? finishReason = null;
         await foreach (var chunk in stream)
         {
             if (cancellationToken.IsCancellationRequested) yield break;
 
             foreach (var content in ConvertParts(chunk))
             {
+                if (content is TextContent tc) textChars += tc.Text?.Length ?? 0;
+                if (content is FunctionCallContent fcc) functionCalls.Add(fcc.Name);
                 yield return new ChatResponseUpdate
                 {
                     Role = ChatRole.Assistant,
@@ -93,7 +98,58 @@ public sealed class GeminiChatClient : IChatClient
                     Contents = new[] { content }
                 };
             }
+
+            ReportAbnormalFinish(chunk);
+            finishReason = chunk.Candidates?.FirstOrDefault()?.FinishReason?.ToString() ?? finishReason;
+
+            var usage = ConvertUsage(chunk);
+            if (usage != null)
+            {
+                yield return new ChatResponseUpdate
+                {
+                    Role = ChatRole.Assistant,
+                    ModelId = _model,
+                    Contents = new[] { usage }
+                };
+            }
         }
+
+        // One line per model turn so silent/empty turns are visible in the container logs.
+        Console.WriteLine($"[GeminiChatClient] Turn complete. Model: {_model}, TextChars: {textChars}, FunctionCalls: [{string.Join(", ", functionCalls)}], FinishReason: {finishReason ?? "n/a"}");
+    }
+
+    /// <summary>
+    /// Surfaces non-STOP finish reasons and prompt blocks, which otherwise make the model look like it
+    /// silently returned nothing (e.g. MALFORMED_FUNCTION_CALL, MAX_TOKENS, SAFETY).
+    /// </summary>
+    private void ReportAbnormalFinish(Google.GenAI.Types.GenerateContentResponse chunk)
+    {
+        var block = chunk.PromptFeedback?.BlockReason;
+        if (block != null)
+        {
+            Console.WriteLine($"[GeminiChatClient] Prompt blocked. Model: {_model}, Reason: {block}, Message: {chunk.PromptFeedback?.BlockReasonMessage}");
+        }
+
+        var candidate = chunk.Candidates?.FirstOrDefault();
+        var finish = candidate?.FinishReason?.ToString();
+        if (!string.IsNullOrEmpty(finish) && !string.Equals(finish, "Stop", StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine($"[GeminiChatClient] Abnormal finish. Model: {_model}, FinishReason: {finish}, FinishMessage: {candidate?.FinishMessage}");
+        }
+    }
+
+    private static UsageContent? ConvertUsage(Google.GenAI.Types.GenerateContentResponse chunk)
+    {
+        var meta = chunk.UsageMetadata;
+        if (meta == null || meta.TotalTokenCount is null or 0)
+            return null;
+
+        return new UsageContent(new UsageDetails
+        {
+            InputTokenCount = meta.PromptTokenCount,
+            OutputTokenCount = (meta.CandidatesTokenCount ?? 0) + (meta.ThoughtsTokenCount ?? 0),
+            TotalTokenCount = meta.TotalTokenCount
+        });
     }
 
     /// <summary>

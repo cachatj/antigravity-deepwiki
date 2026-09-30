@@ -6,12 +6,12 @@ using OpenDeepWiki.Services.Admin;
 namespace OpenDeepWiki.Infrastructure;
 
 /// <summary>
-/// 数据库初始化服务
+/// Database initialization service
 /// </summary>
 public static class DbInitializer
 {
     /// <summary>
-    /// 初始化数据库（创建默认角色和OAuth提供商）
+    /// Initialize the database (create default roles and OAuth providers)
     /// </summary>
     public static async Task InitializeAsync(IServiceProvider serviceProvider)
     {
@@ -19,25 +19,25 @@ public static class DbInitializer
         var context = scope.ServiceProvider.GetRequiredService<IContext>();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-        // 确保数据库已创建
+        // Ensure the database is created
         if (context is DbContext dbContext)
         {
             await dbContext.Database.EnsureCreatedAsync();
         }
 
-        // 初始化默认角色
+        // Initialize default roles
         await InitializeRolesAsync(context);
 
-        // 初始化默认管理员账户
+        // Initialize the default admin account
         await InitializeAdminUserAsync(context);
 
-        // 初始化OAuth提供商
+        // Initialize OAuth providers
         await InitializeOAuthProvidersAsync(context);
 
-        // 初始化系统设置默认值（仅在首次运行时从环境变量创建）
+        // Initialize system setting defaults (created from environment variables on first run only)
         await SystemSettingDefaults.InitializeDefaultsAsync(configuration, context);
 
-        // 初始化默认 MCP 提供商
+        // Initialize default MCP providers
         await InitializeMcpProvidersAsync(context);
     }
 
@@ -98,7 +98,7 @@ public static class DbInitializer
             {
                 Id = "00000000-0000-0000-0000-admin-role-01", // Stable ID
                 Name = "Admin",
-                Description = "系统管理员",
+                Description = "System administrator",
                 IsActive = true,
                 IsSystemRole = true,
                 CreatedAt = DateTime.UtcNow
@@ -107,7 +107,7 @@ public static class DbInitializer
             {
                 Id = "00000000-0000-0000-0000-user-role-01", // Stable ID
                 Name = "User",
-                Description = "普通用户",
+                Description = "Regular user",
                 IsActive = true,
                 IsSystemRole = true,
                 CreatedAt = DateTime.UtcNow

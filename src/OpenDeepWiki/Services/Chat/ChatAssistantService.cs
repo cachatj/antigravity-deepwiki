@@ -40,7 +40,7 @@ public class ModelConfigDto
     public string ModelId { get; set; } = string.Empty;
     public string? Description { get; set; }
     public bool IsDefault { get; set; }
-    public bool IsEnabled { get; set; } = true; // 返回的模型都是启用的
+    public bool IsEnabled { get; set; } = true; // All returned models are enabled
 }
 
 /// <summary>
@@ -54,7 +54,7 @@ public class ChatMessageDto
     public List<ToolCallDto>? ToolCalls { get; set; }
     public ToolResultDto? ToolResult { get; set; }
     /// <summary>
-    /// 引用的选中文本
+    /// Referenced selected text
     /// </summary>
     public QuotedTextDto? QuotedText { get; set; }
 }
@@ -65,11 +65,11 @@ public class ChatMessageDto
 public class QuotedTextDto
 {
     /// <summary>
-    /// 引用来源的标题（如文档标题）
+    /// Title of the referenced source (e.g. document title)
     /// </summary>
     public string? Title { get; set; }
     /// <summary>
-    /// 选中的文本内容
+    /// Selected text content
     /// </summary>
     public string Text { get; set; } = string.Empty;
 }
@@ -253,7 +253,7 @@ public class ChatAssistantService : IChatAssistantService
                 ModelId = m.ModelId,
                 Description = m.Description,
                 IsDefault = m.Id == config.DefaultModelId || m.IsDefault,
-                IsEnabled = true // 返回的模型都是启用的
+                IsEnabled = true // All returned models are enabled
             })
             .ToListAsync(cancellationToken);
 
@@ -334,7 +334,7 @@ public class ChatAssistantService : IChatAssistantService
                 Type = SSEEventType.Error,
                 Data = SSEErrorResponse.CreateNonRetryable(
                     ChatErrorCodes.FEATURE_DISABLED,
-                    "对话助手功能未启用")
+                    "Chat assistant feature is not enabled")
             };
             yield break;
         }
@@ -349,7 +349,7 @@ public class ChatAssistantService : IChatAssistantService
                 Type = SSEEventType.Error,
                 Data = SSEErrorResponse.CreateNonRetryable(
                     ChatErrorCodes.MODEL_UNAVAILABLE,
-                    "模型不可用，请选择其他模型")
+                    "Model unavailable, please select another model")
             };
             yield break;
         }

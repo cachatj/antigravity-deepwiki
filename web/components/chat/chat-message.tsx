@@ -9,14 +9,14 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
 /**
- * 消息组件属性
+ * Message component props
  */
 export interface ChatMessageProps {
   message: ChatMessageType
 }
 
 /**
- * 引用文本显示组件
+ * Quoted text display component
  */
 function QuotedTextDisplay({ quotedText }: { quotedText: QuotedText }) {
   const t = useTranslations("chat")
@@ -39,7 +39,7 @@ function QuotedTextDisplay({ quotedText }: { quotedText: QuotedText }) {
 }
 
 /**
- * 思考内容显示组件
+ * Thinking content display component
  */
 function ThinkingDisplay({ thinking }: { thinking: string }) {
   const t = useTranslations("chat")
@@ -76,7 +76,7 @@ function ThinkingDisplay({ thinking }: { thinking: string }) {
 }
 
 /**
- * 工具调用显示组件
+ * Tool call display component
  */
 function ToolCallDisplay({ toolCall }: { toolCall: ToolCall }) {
   const t = useTranslations("chat")
@@ -107,7 +107,7 @@ function ToolCallDisplay({ toolCall }: { toolCall: ToolCall }) {
 }
 
 /**
- * Tool result显示组件
+ * Tool result display component
  */
 function ToolResultDisplay({ toolResult }: { toolResult: ToolResult }) {
   const t = useTranslations("chat")
@@ -146,7 +146,7 @@ function ToolResultDisplay({ toolResult }: { toolResult: ToolResult }) {
 }
 
 /**
- * 文本内容显示组件
+ * Text content display component
  */
 function TextContentDisplay({ content }: { content: string }) {
   return (
@@ -164,14 +164,14 @@ function TextContentDisplay({ content }: { content: string }) {
               const match = /language-(\w+)/.exec(className || '')
               
               if (!className && !match) {
-                // 行内代码
+                // Inline code
                 return (
                   <code className="rounded px-1.5 py-0.5 text-xs text-zinc-200 font-mono break-all" style={{ backgroundColor: '#27272a' }} {...props}>
                     {children}
                   </code>
                 )
               }
-              // 代码块内的 code
+              // code inside a code block
               return (
                 <code className="text-sm text-zinc-100 font-mono block" {...props}>
                   {children}
@@ -188,7 +188,7 @@ function TextContentDisplay({ content }: { content: string }) {
 }
 
 /**
- * Content block渲染组件
+ * Content block rendering component
  */
 function ContentBlockRenderer({ block, index }: { block: ContentBlock; index: number }) {
   switch (block.type) {
@@ -204,10 +204,10 @@ function ContentBlockRenderer({ block, index }: { block: ContentBlock; index: nu
 }
 
 /**
- * Chat message组件
+ * Chat message component
  * 
- * 支持显示用户消息、AI回复、工具调用信息
- * 按 contentBlocks 顺序渲染，保持调用顺序
+ * Supports displaying user messages, AI replies and tool call info
+ * Renders in contentBlocks order to preserve call ordering
  * 
  * Requirements: 2.3, 2.4, 2.5, 2.6
  */
@@ -216,7 +216,7 @@ export function ChatMessageItem({ message }: ChatMessageProps) {
   const isUser = message.role === "user"
   const isTool = message.role === "tool"
   
-  // 判断是否使用 contentBlocks 渲染
+  // Decide whether to render using contentBlocks
   const hasContentBlocks = message.contentBlocks && message.contentBlocks.length > 0
 
   return (
@@ -226,7 +226,7 @@ export function ChatMessageItem({ message }: ChatMessageProps) {
         isUser ? "flex-row-reverse" : "flex-row"
       )}
     >
-      {/* 头像 */}
+      {/* Avatar */}
       <div
         className={cn(
           "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
@@ -246,7 +246,7 @@ export function ChatMessageItem({ message }: ChatMessageProps) {
         )}
       </div>
 
-      {/* 消息内容 */}
+      {/* Message content */}
       <div
         className={cn(
           "flex flex-col overflow-hidden",
@@ -255,12 +255,12 @@ export function ChatMessageItem({ message }: ChatMessageProps) {
             : "items-start min-w-0 flex-1"
         )}
       >
-        {/* 引用文本（用户消息） */}
+        {/* Quoted text (user message) */}
         {isUser && message.quotedText && (
           <QuotedTextDisplay quotedText={message.quotedText} />
         )}
 
-        {/* 图片预览 */}
+        {/* Image preview */}
         {message.images && message.images.length > 0 && (
           <div className="mb-2 flex flex-wrap gap-2">
             {message.images.map((img, index) => (
@@ -274,7 +274,7 @@ export function ChatMessageItem({ message }: ChatMessageProps) {
           </div>
         )}
 
-        {/* 按 contentBlocks 顺序渲染（AI 消息） */}
+        {/* Render in contentBlocks order (AI message) */}
         {!isUser && hasContentBlocks ? (
           <div className="w-full space-y-1 overflow-hidden">
             {message.contentBlocks!.map((block, index) => (
@@ -283,12 +283,12 @@ export function ChatMessageItem({ message }: ChatMessageProps) {
           </div>
         ) : (
           <>
-            {/* 兼容旧结构：思考内容 */}
+            {/* Legacy structure compatibility: thinking content */}
             {!isUser && message.thinking && !hasContentBlocks && (
               <ThinkingDisplay thinking={message.thinking} />
             )}
 
-            {/* 文本内容 */}
+            {/* Text content */}
             {message.content && (
               <div
                 className={cn(
@@ -334,7 +334,7 @@ export function ChatMessageItem({ message }: ChatMessageProps) {
               </div>
             )}
 
-            {/* 兼容旧结构：工具调用 */}
+            {/* Legacy structure compatibility: tool calls */}
             {!hasContentBlocks && message.toolCalls && message.toolCalls.length > 0 && (
               <div className="mt-1 w-full">
                 {message.toolCalls.map((toolCall) => (
@@ -352,7 +352,7 @@ export function ChatMessageItem({ message }: ChatMessageProps) {
           </div>
         )}
 
-        {/* 时间戳和Token统计 */}
+        {/* Timestamp and token stats */}
         <div className={cn(
           "mt-1 flex items-center gap-2 text-xs text-muted-foreground",
           isUser ? "flex-row-reverse" : "flex-row"

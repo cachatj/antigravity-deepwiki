@@ -8,8 +8,8 @@ using OpenDeepWiki.Chat.Queue;
 namespace OpenDeepWiki.Chat.Callbacks;
 
 /// <summary>
-/// 消息回调管理器
-/// 负责将 Agent 响应路由到正确的 Provider 并发送给用户
+/// Message callback manager
+/// Routes agent responses to the correct provider and sends them to the user
 /// </summary>
 public class CallbackManager : IMessageCallback
 {
@@ -93,7 +93,7 @@ public class CallbackManager : IMessageCallback
                 message.MessageId, userId, platform);
             _sendStatusCache[message.MessageId] = SendStatus.Failed;
             
-            // 加入重试队列
+            // Add to retry queue
             await EnqueueForRetryAsync(platform, userId, message, cancellationToken);
             
             return new SendResult(false, ErrorCode: "SEND_ERROR",
@@ -145,7 +145,7 @@ public class CallbackManager : IMessageCallback
 
         try
         {
-            // 使用 Provider 的批量发送方法
+            // Use the provider's batch send method
             var batchResults = await provider.SendMessagesAsync(messageList, userId, cancellationToken);
             var resultList = batchResults.ToList();
 
@@ -177,7 +177,7 @@ public class CallbackManager : IMessageCallback
         {
             _logger.LogError(ex, "Error sending batch messages to {UserId} on {Platform}", userId, platform);
             
-            // 将所有消息加入重试队列
+            // Add all messages to the retry queue
             foreach (var message in messageList)
             {
                 _sendStatusCache[message.MessageId] = SendStatus.Retrying;
@@ -225,7 +225,7 @@ public class CallbackManager : IMessageCallback
         {
             buffer.Append(chunk);
 
-            // 根据配置的间隔或缓冲区大小决定是否发送
+            // Decide whether to send based on the configured interval or buffer size
             var timeSinceLastSend = DateTimeOffset.UtcNow - lastSendTime;
             if (buffer.Length >= _options.StreamBufferSize || 
                 timeSinceLastSend >= TimeSpan.FromMilliseconds(_options.StreamFlushIntervalMs))
@@ -245,7 +245,7 @@ public class CallbackManager : IMessageCallback
             }
         }
 
-        // 发送剩余内容
+        // Send remaining content
         if (buffer.Length > 0)
         {
             var finalMessage = new ChatMessage
@@ -276,7 +276,7 @@ public class CallbackManager : IMessageCallback
     }
 
     /// <summary>
-    /// 将消息加入重试队列
+    /// Add message to the retry queue
     /// </summary>
     private async Task EnqueueForRetryAsync(
         string platform,
@@ -300,22 +300,22 @@ public class CallbackManager : IMessageCallback
 }
 
 /// <summary>
-/// CallbackManager 配置选项
+/// CallbackManager configuration options
 /// </summary>
 public class CallbackManagerOptions
 {
     /// <summary>
-    /// 重试延迟秒数
+    /// Retry delay in seconds
     /// </summary>
     public int RetryDelaySeconds { get; set; } = 30;
 
     /// <summary>
-    /// 流式发送缓冲区大小
+    /// Streaming send buffer size
     /// </summary>
     public int StreamBufferSize { get; set; } = 500;
 
     /// <summary>
-    /// 流式发送刷新间隔（毫秒）
+    /// Streaming send flush interval (milliseconds)
     /// </summary>
     public int StreamFlushIntervalMs { get; set; } = 1000;
 }

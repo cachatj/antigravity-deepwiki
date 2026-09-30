@@ -96,7 +96,7 @@ function generateMessageId(): string {
  * Chat history management Hook
  * 
  * Features:
- * - 维护完整的对话历史（用户消息、AI回复、工具调用和Tool result）
+ * - Maintains the full conversation history (user messages, AI replies, tool calls and tool results)
  * - Supports adding, updating, and clearing messages
  * - Auto-clears on page refresh (not persisted)
  * 

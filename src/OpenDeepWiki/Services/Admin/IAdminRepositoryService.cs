@@ -3,7 +3,7 @@ using OpenDeepWiki.Models.Admin;
 namespace OpenDeepWiki.Services.Admin;
 
 /// <summary>
-/// 管理端仓库服务接口
+/// Admin repository service interface
 /// </summary>
 public interface IAdminRepositoryService
 {
@@ -14,37 +14,37 @@ public interface IAdminRepositoryService
     Task<bool> UpdateRepositoryStatusAsync(string id, int status);
     
     /// <summary>
-    /// 同步单个仓库的统计信息（star、fork等）
+    /// Sync statistics (stars, forks, etc.) for a single repository
     /// </summary>
     Task<SyncStatsResult> SyncRepositoryStatsAsync(string id);
     
     /// <summary>
-    /// 批量同步仓库统计信息
+    /// Sync statistics for repositories in batch
     /// </summary>
     Task<BatchSyncStatsResult> BatchSyncRepositoryStatsAsync(string[] ids);
     
     /// <summary>
-    /// 批量删除仓库
+    /// Delete repositories in batch
     /// </summary>
     Task<BatchDeleteResult> BatchDeleteRepositoriesAsync(string[] ids);
 
     /// <summary>
-    /// 获取仓库深度管理信息（分支、语言、增量任务）
+    /// Get detailed repository management info (branches, languages, incremental tasks)
     /// </summary>
     Task<AdminRepositoryManagementDto?> GetRepositoryManagementAsync(string id);
 
     /// <summary>
-    /// 管理端触发全量重生成
+    /// Admin: trigger full regeneration
     /// </summary>
     Task<AdminRepositoryOperationResult> RegenerateRepositoryAsync(string id);
 
     /// <summary>
-    /// 管理端触发指定文档重生成
+    /// Admin: trigger regeneration of a specific document
     /// </summary>
     Task<AdminRepositoryOperationResult> RegenerateDocumentAsync(string id, RegenerateRepositoryDocumentRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 管理端手动更新指定文档内容
+    /// Admin: manually update the content of a specific document
     /// </summary>
     Task<AdminRepositoryOperationResult> UpdateDocumentContentAsync(string id, UpdateRepositoryDocumentContentRequest request, CancellationToken cancellationToken = default);
 }

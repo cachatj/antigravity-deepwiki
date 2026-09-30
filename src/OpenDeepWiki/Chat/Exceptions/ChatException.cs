@@ -1,17 +1,17 @@
 namespace OpenDeepWiki.Chat.Exceptions;
 
 /// <summary>
-/// Chat 系统基础异常
+/// Base exception for the Chat system
 /// </summary>
 public class ChatException : Exception
 {
     /// <summary>
-    /// 错误代码
+    /// Error code
     /// </summary>
     public string ErrorCode { get; }
     
     /// <summary>
-    /// 是否应该重试
+    /// Whether the operation should be retried
     /// </summary>
     public bool ShouldRetry { get; }
     

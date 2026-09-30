@@ -3,7 +3,7 @@ using System.Text.Json;
 namespace OpenDeepWiki.Services.Repositories;
 
 /// <summary>
-/// Git平台服务实现
+/// Git platform service implementation
 /// </summary>
 public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<GitPlatformService> logger, IConfiguration configuration) : IGitPlatformService
 {
@@ -64,7 +64,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
 
         try
         {
-            // 支持格式: https://github.com/owner/repo 或 https://github.com/owner/repo.git
+            // Supported formats: https://github.com/owner/repo or https://github.com/owner/repo.git
             var uri = new Uri(gitUrl.TrimEnd('/'));
             var host = uri.Host.ToLowerInvariant();
             
@@ -114,7 +114,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
 
             if (!response.IsSuccessStatusCode)
             {
-                logger.LogWarning("获取GitHub仓库信息失败: {Owner}/{Repo}, 状态码: {StatusCode}", owner, repo, response.StatusCode);
+                logger.LogWarning("Failed to fetch GitHub repository info: {Owner}/{Repo}, status code: {StatusCode}", owner, repo, response.StatusCode);
                 return null;
             }
 
@@ -129,7 +129,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "获取GitHub仓库统计信息异常: {Owner}/{Repo}", owner, repo);
+            logger.LogWarning(ex, "Error fetching GitHub repository statistics: {Owner}/{Repo}", owner, repo);
             return null;
         }
     }
@@ -151,7 +151,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
 
             if (!response.IsSuccessStatusCode)
             {
-                logger.LogWarning("获取Gitee仓库信息失败: {Owner}/{Repo}, 状态码: {StatusCode}", owner, repo, response.StatusCode);
+                logger.LogWarning("Failed to fetch Gitee repository info: {Owner}/{Repo}, status code: {StatusCode}", owner, repo, response.StatusCode);
                 return null;
             }
 
@@ -166,7 +166,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "获取Gitee仓库统计信息异常: {Owner}/{Repo}", owner, repo);
+            logger.LogWarning(ex, "Error fetching Gitee repository statistics: {Owner}/{Repo}", owner, repo);
             return null;
         }
     }
@@ -183,7 +183,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {GitHubToken}");
             }
 
-            // 先获取默认分支
+            // Get the default branch first
             var repoResponse = await client.GetAsync($"https://api.github.com/repos/{owner}/{repo}");
             string? defaultBranch = null;
 
@@ -194,12 +194,12 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
                 defaultBranch = repoDoc.RootElement.GetProperty("default_branch").GetString();
             }
 
-            // 获取分支列表（最多100个）
+            // Get the branch list (up to 100)
             var branchesResponse = await client.GetAsync($"https://api.github.com/repos/{owner}/{repo}/branches?per_page=100");
 
             if (!branchesResponse.IsSuccessStatusCode)
             {
-                logger.LogWarning("获取GitHub分支列表失败: {Owner}/{Repo}, 状态码: {StatusCode}", owner, repo, branchesResponse.StatusCode);
+                logger.LogWarning("Failed to fetch GitHub branch list: {Owner}/{Repo}, status code: {StatusCode}", owner, repo, branchesResponse.StatusCode);
                 return new GitBranchesResult([], defaultBranch, true);
             }
 
@@ -216,7 +216,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "获取GitHub分支列表异常: {Owner}/{Repo}", owner, repo);
+            logger.LogWarning(ex, "Error fetching GitHub branch list: {Owner}/{Repo}", owner, repo);
             return new GitBranchesResult([], null, true);
         }
     }
@@ -230,7 +230,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
 
             var tokenParam = !string.IsNullOrEmpty(GiteeToken) ? $"?access_token={GiteeToken}" : "";
 
-            // 先获取默认分支
+            // Get the default branch first
             var repoResponse = await client.GetAsync($"https://gitee.com/api/v5/repos/{owner}/{repo}{tokenParam}");
             string? defaultBranch = null;
 
@@ -241,7 +241,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
                 defaultBranch = repoDoc.RootElement.GetProperty("default_branch").GetString();
             }
 
-            // 获取分支列表
+            // Get the branch list
             var branchesUrl = $"https://gitee.com/api/v5/repos/{owner}/{repo}/branches?per_page=100";
             if (!string.IsNullOrEmpty(GiteeToken))
             {
@@ -251,7 +251,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
 
             if (!branchesResponse.IsSuccessStatusCode)
             {
-                logger.LogWarning("获取Gitee分支列表失败: {Owner}/{Repo}, 状态码: {StatusCode}", owner, repo, branchesResponse.StatusCode);
+                logger.LogWarning("Failed to fetch Gitee branch list: {Owner}/{Repo}, status code: {StatusCode}", owner, repo, branchesResponse.StatusCode);
                 return new GitBranchesResult([], defaultBranch, true);
             }
 
@@ -268,7 +268,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "获取Gitee分支列表异常: {Owner}/{Repo}", owner, repo);
+            logger.LogWarning(ex, "Error fetching Gitee branch list: {Owner}/{Repo}", owner, repo);
             return new GitBranchesResult([], null, true);
         }
     }
@@ -289,7 +289,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
 
             if (!response.IsSuccessStatusCode)
             {
-                logger.LogWarning("获取GitLab仓库信息失败: {Owner}/{Repo}, 状态码: {StatusCode}", owner, repo, response.StatusCode);
+                logger.LogWarning("Failed to fetch GitLab repository info: {Owner}/{Repo}, status code: {StatusCode}", owner, repo, response.StatusCode);
                 return null;
             }
 
@@ -304,7 +304,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "获取GitLab仓库统计信息异常: {Owner}/{Repo}", owner, repo);
+            logger.LogWarning(ex, "Error fetching GitLab repository statistics: {Owner}/{Repo}", owner, repo);
             return null;
         }
     }
@@ -322,7 +322,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
 
             var projectPath = Uri.EscapeDataString($"{owner}/{repo}");
 
-            // 先获取默认分支
+            // Get the default branch first
             var repoResponse = await client.GetAsync($"https://gitlab.com/api/v4/projects/{projectPath}");
             string? defaultBranch = null;
 
@@ -333,12 +333,12 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
                 defaultBranch = repoDoc.RootElement.GetProperty("default_branch").GetString();
             }
 
-            // 获取分支列表
+            // Get the branch list
             var branchesResponse = await client.GetAsync($"https://gitlab.com/api/v4/projects/{projectPath}/repository/branches?per_page=100");
 
             if (!branchesResponse.IsSuccessStatusCode)
             {
-                logger.LogWarning("获取GitLab分支列表失败: {Owner}/{Repo}, 状态码: {StatusCode}", owner, repo, branchesResponse.StatusCode);
+                logger.LogWarning("Failed to fetch GitLab branch list: {Owner}/{Repo}, status code: {StatusCode}", owner, repo, branchesResponse.StatusCode);
                 return new GitBranchesResult([], defaultBranch, true);
             }
 
@@ -355,14 +355,14 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "获取GitLab分支列表异常: {Owner}/{Repo}", owner, repo);
+            logger.LogWarning(ex, "Error fetching GitLab branch list: {Owner}/{Repo}", owner, repo);
             return new GitBranchesResult([], null, true);
         }
     }
 
     public async Task<GitRepoInfo> CheckRepoExistsAsync(string owner, string repo)
     {
-        // 默认检查GitHub
+        // Check GitHub by default
         return await CheckGitHubRepoAsync(owner, repo);
     }
 
@@ -407,7 +407,7 @@ public class GitPlatformService(IHttpClientFactory httpClientFactory, ILogger<Gi
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "检查GitHub仓库异常: {Owner}/{Repo}", owner, repo);
+            logger.LogWarning(ex, "Error checking GitHub repository: {Owner}/{Repo}", owner, repo);
             return new GitRepoInfo(false, null, null, null, 0, 0, null, null);
         }
     }

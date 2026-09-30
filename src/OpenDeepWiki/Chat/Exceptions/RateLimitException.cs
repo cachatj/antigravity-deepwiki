@@ -1,12 +1,12 @@
 namespace OpenDeepWiki.Chat.Exceptions;
 
 /// <summary>
-/// 限流异常
+/// Rate limit exception
 /// </summary>
 public class RateLimitException : ProviderException
 {
     /// <summary>
-    /// 重试等待时间
+    /// Time to wait before retrying
     /// </summary>
     public TimeSpan RetryAfter { get; }
     

@@ -4,7 +4,7 @@ using OpenDeepWiki.EFCore;
 namespace OpenDeepWiki.Endpoints;
 
 /// <summary>
-/// 公开 MCP 提供商端点（无需鉴权）
+/// Public MCP provider endpoints (no authentication required)
 /// </summary>
 public static class McpProviderEndpoints
 {
@@ -15,7 +15,7 @@ public static class McpProviderEndpoints
         var group = app.MapGroup("/api/mcp-providers")
             .WithTags("MCP Providers");
 
-        // 获取所有启用的 MCP 提供商（公开，无需登录）
+        // Get all enabled MCP providers (public, no login required)
         group.MapGet("/", async (IContext context) =>
         {
             var providers = await context.McpProviders
@@ -39,6 +39,6 @@ public static class McpProviderEndpoints
 
             return Results.Ok(new { success = true, data = providers });
         }).WithName("GetPublicMcpProviders")
-          .WithSummary("获取公开 MCP 提供商列表");
+          .WithSummary("Get public MCP provider list");
     }
 }

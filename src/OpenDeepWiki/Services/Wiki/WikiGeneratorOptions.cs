@@ -74,6 +74,13 @@ public class WikiGeneratorOptions
     public int ParallelCount { get; set; } = GetParallelCountFromEnv();
 
     /// <summary>
+    /// Maximum model/tool round-trips per agent run. Gemini typically issues one ReadFile per turn,
+    /// so the old default of 20 was exhausted before WriteDoc/WriteCatalog was ever called.
+    /// Override with WIKI_MAX_TOOL_ROUND_TRIPS.
+    /// </summary>
+    public int MaxToolRoundTrips { get; set; } = GetIntFromEnv("WIKI_MAX_TOOL_ROUND_TRIPS", 60);
+
+    /// <summary>
     /// Maximum output tokens for AI generation.
     /// Default: 32000
     /// </summary>
@@ -175,6 +182,14 @@ public class WikiGeneratorOptions
     /// <summary>
     /// Gets the parallel count from environment variable or returns default value.
     /// </summary>
+    private static int GetIntFromEnv(string name, int defaultValue)
+    {
+        var envValue = Environment.GetEnvironmentVariable(name);
+        return !string.IsNullOrEmpty(envValue) && int.TryParse(envValue, out var value) && value > 0
+            ? value
+            : defaultValue;
+    }
+
     private static int GetParallelCountFromEnv()
     {
         var envValue = Environment.GetEnvironmentVariable("WIKI_PARALLEL_COUNT");

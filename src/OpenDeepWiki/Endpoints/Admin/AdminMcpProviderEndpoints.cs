@@ -5,14 +5,14 @@ using OpenDeepWiki.Services.Admin;
 namespace OpenDeepWiki.Endpoints.Admin;
 
 /// <summary>
-/// 管理端 MCP 提供商端点
+/// Admin MCP provider endpoints
 /// </summary>
 public static class AdminMcpProviderEndpoints
 {
     public static RouteGroupBuilder MapAdminMcpProviderEndpoints(this RouteGroupBuilder group)
     {
         var mcpGroup = group.MapGroup("/mcp-providers")
-            .WithTags("管理端-MCP提供商");
+            .WithTags("Admin - MCP Providers");
 
         mcpGroup.MapGet("/", async ([FromServices] IAdminMcpProviderService service) =>
         {

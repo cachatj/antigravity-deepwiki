@@ -3,8 +3,8 @@ using Microsoft.Extensions.Logging;
 namespace OpenDeepWiki.Chat.Config;
 
 /// <summary>
-/// 配置变更通知器
-/// 用于在配置变更时通知相关组件
+/// Config change notifier
+/// Notifies related components when configuration changes
 /// </summary>
 public class ConfigChangeNotifier : IConfigChangeNotifier
 {
@@ -65,7 +65,7 @@ public class ConfigChangeNotifier : IConfigChangeNotifier
     }
     
     /// <summary>
-    /// 取消订阅
+    /// Unsubscribe
     /// </summary>
     private void Unsubscribe(long subscriptionId)
     {
@@ -81,12 +81,12 @@ public class ConfigChangeNotifier : IConfigChangeNotifier
     }
     
     /// <summary>
-    /// 订阅信息
+    /// Subscription info
     /// </summary>
     private record ConfigChangeSubscription(long Id, string? Platform, Action<ConfigChangeEvent> Handler);
     
     /// <summary>
-    /// 订阅取消辅助类
+    /// Helper class for cancelling a subscription
     /// </summary>
     private class SubscriptionDisposable : IDisposable
     {
@@ -110,28 +110,28 @@ public class ConfigChangeNotifier : IConfigChangeNotifier
 }
 
 /// <summary>
-/// 配置变更通知器接口
+/// Config change notifier interface
 /// </summary>
 public interface IConfigChangeNotifier
 {
     /// <summary>
-    /// 订阅配置变更
+    /// Subscribe to config changes
     /// </summary>
-    /// <param name="platform">平台标识，null 表示订阅所有平台</param>
-    /// <param name="handler">变更处理器</param>
-    /// <returns>取消订阅的 IDisposable</returns>
+    /// <param name="platform">Platform identifier; null subscribes to all platforms</param>
+    /// <param name="handler">Change handler</param>
+    /// <returns>An IDisposable that unsubscribes</returns>
     IDisposable Subscribe(string? platform, Action<ConfigChangeEvent> handler);
     
     /// <summary>
-    /// 通知配置变更
+    /// Notify config change
     /// </summary>
-    /// <param name="platform">平台标识</param>
-    /// <param name="changeType">变更类型</param>
+    /// <param name="platform">Platform identifier</param>
+    /// <param name="changeType">Change type</param>
     void NotifyChange(string platform, ConfigChangeType changeType);
 }
 
 /// <summary>
-/// 配置变更事件
+/// Config change event
 /// </summary>
 public record ConfigChangeEvent(
     string Platform,
@@ -140,27 +140,27 @@ public record ConfigChangeEvent(
 );
 
 /// <summary>
-/// 配置变更类型
+/// Config change type
 /// </summary>
 public enum ConfigChangeType
 {
     /// <summary>
-    /// 新增
+    /// Added
     /// </summary>
     Created,
     
     /// <summary>
-    /// 更新
+    /// Updated
     /// </summary>
     Updated,
     
     /// <summary>
-    /// 删除
+    /// Deleted
     /// </summary>
     Deleted,
     
     /// <summary>
-    /// 重载
+    /// Reloaded
     /// </summary>
     Reloaded
 }

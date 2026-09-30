@@ -1,91 +1,91 @@
 namespace OpenDeepWiki.Chat.Config;
 
 /// <summary>
-/// Chat 配置服务接口
-/// 提供 Provider 配置的管理功能
+/// Chat config service interface
+/// Provides management of provider configuration
 /// </summary>
 public interface IChatConfigService
 {
     /// <summary>
-    /// 获取指定平台的配置
+    /// Get the config for the specified platform
     /// </summary>
-    /// <param name="platform">平台标识</param>
-    /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>配置对象，如果不存在则返回 null</returns>
+    /// <param name="platform">Platform identifier</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Config object, or null if it does not exist</returns>
     Task<ProviderConfigDto?> GetConfigAsync(string platform, CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// 获取所有配置
+    /// Get all configs
     /// </summary>
-    /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>所有配置列表</returns>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>List of all configs</returns>
     Task<IEnumerable<ProviderConfigDto>> GetAllConfigsAsync(CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// 保存配置（新增或更新）
+    /// Save config (add or update)
     /// </summary>
-    /// <param name="config">配置对象</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="config">Config object</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     Task SaveConfigAsync(ProviderConfigDto config, CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// 删除配置
+    /// Delete config
     /// </summary>
-    /// <param name="platform">平台标识</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="platform">Platform identifier</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     Task DeleteConfigAsync(string platform, CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// 验证配置完整性
+    /// Validate config integrity
     /// </summary>
-    /// <param name="config">配置对象</param>
-    /// <returns>验证结果</returns>
+    /// <param name="config">Config object</param>
+    /// <returns>Validation result</returns>
     ConfigValidationResult ValidateConfig(ProviderConfigDto config);
     
     /// <summary>
-    /// 验证所有配置
+    /// Validate all configs
     /// </summary>
-    /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>验证结果列表</returns>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>List of validation results</returns>
     Task<IEnumerable<ConfigValidationResult>> ValidateAllConfigsAsync(CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// 注册配置变更回调
+    /// Register a config change callback
     /// </summary>
-    /// <param name="callback">回调函数</param>
-    /// <returns>取消注册的 IDisposable</returns>
+    /// <param name="callback">Callback function</param>
+    /// <returns>An IDisposable that unregisters the callback</returns>
     IDisposable OnConfigChanged(Action<string> callback);
     
     /// <summary>
-    /// 触发配置重载
+    /// Trigger a config reload
     /// </summary>
-    /// <param name="platform">平台标识，如果为 null 则重载所有配置</param>
-    /// <param name="cancellationToken">取消令牌</param>
+    /// <param name="platform">Platform identifier; if null, reloads all configs</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     Task ReloadConfigAsync(string? platform = null, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
-/// Provider 配置 DTO
+/// Provider config DTO
 /// </summary>
 public class ProviderConfigDto
 {
     /// <summary>
-    /// 平台标识
+    /// Platform identifier
     /// </summary>
     public string Platform { get; set; } = string.Empty;
     
     /// <summary>
-    /// 显示名称
+    /// Display name
     /// </summary>
     public string DisplayName { get; set; } = string.Empty;
     
     /// <summary>
-    /// 是否启用
+    /// Whether enabled
     /// </summary>
     public bool IsEnabled { get; set; } = true;
     
     /// <summary>
-    /// 配置数据（明文 JSON）
+    /// Config data (plaintext JSON)
     /// </summary>
     public string ConfigData { get; set; } = string.Empty;
     
@@ -95,43 +95,43 @@ public class ProviderConfigDto
     public string? WebhookUrl { get; set; }
     
     /// <summary>
-    /// 消息发送间隔（毫秒）
+    /// Message send interval (milliseconds)
     /// </summary>
     public int MessageInterval { get; set; } = 500;
     
     /// <summary>
-    /// 最大重试次数
+    /// Maximum retry count
     /// </summary>
     public int MaxRetryCount { get; set; } = 3;
 }
 
 /// <summary>
-/// 配置验证结果
+/// Config validation result
 /// </summary>
 public class ConfigValidationResult
 {
     /// <summary>
-    /// 平台标识
+    /// Platform identifier
     /// </summary>
     public string Platform { get; set; } = string.Empty;
     
     /// <summary>
-    /// 是否验证通过
+    /// Whether validation passed
     /// </summary>
     public bool IsValid { get; set; }
     
     /// <summary>
-    /// 错误信息列表
+    /// List of error messages
     /// </summary>
     public List<string> Errors { get; set; } = new();
     
     /// <summary>
-    /// 缺失的配置项
+    /// Missing config items
     /// </summary>
     public List<string> MissingFields { get; set; } = new();
     
     /// <summary>
-    /// 创建成功的验证结果
+    /// Create a successful validation result
     /// </summary>
     public static ConfigValidationResult Success(string platform) => new()
     {
@@ -140,7 +140,7 @@ public class ConfigValidationResult
     };
     
     /// <summary>
-    /// 创建失败的验证结果
+    /// Create a failed validation result
     /// </summary>
     public static ConfigValidationResult Failure(string platform, params string[] errors) => new()
     {

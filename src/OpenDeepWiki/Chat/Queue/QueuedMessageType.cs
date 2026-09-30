@@ -1,22 +1,22 @@
 namespace OpenDeepWiki.Chat.Queue;
 
 /// <summary>
-/// 队列消息类型
+/// Queue message type
 /// </summary>
 public enum QueuedMessageType
 {
     /// <summary>
-    /// 入站消息（从平台接收）
+    /// Inbound message (received from a platform)
     /// </summary>
     Incoming,
     
     /// <summary>
-    /// 出站消息（发送到平台）
+    /// Outbound message (sent to a platform)
     /// </summary>
     Outgoing,
     
     /// <summary>
-    /// 重试消息
+    /// Retry message
     /// </summary>
     Retry
 }

@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Microsoft.Extensions.AI;
 
@@ -15,6 +15,17 @@ public class AgentRunOptions
 
     /// <summary>Maximum number of tool-calling round-trips before stopping.</summary>
     public int MaxRoundTrips { get; set; } = 20;
+
+    /// <summary>
+    /// When the round-trip budget is exhausted while the model is still requesting tools, one extra
+    /// turn is run with this reminder appended so the model can finish (e.g. call its write tool)
+    /// instead of being cut off silently. Null disables the wrap-up turn.
+    /// </summary>
+    public string? BudgetExhaustedReminder { get; set; } =
+        "TOOL BUDGET EXHAUSTED: you have used all available tool round-trips for research. " +
+        "Do NOT call any more read/list/search tools. Complete the task NOW using the information you already have. " +
+        "If the task requires saving output through a write tool (e.g. WriteDoc, WriteCatalog), call it now with your full final output; " +
+        "otherwise reply with your final answer.";
 }
 
 /// <summary>
@@ -49,8 +60,23 @@ public static class AgentRunner
             }
         }
 
-        for (var round = 0; round < maxRoundTrips; round++)
+        var wrapUpTurnUsed = false;
+        for (var round = 0; round <= maxRoundTrips; round++)
         {
+            if (round == maxRoundTrips)
+            {
+                // Budget exhausted while the model still wanted tools. Give it one last turn to finish.
+                if (options?.BudgetExhaustedReminder is null || wrapUpTurnUsed)
+                {
+                    Console.WriteLine($"[AgentRunner] Stopping: reached the maximum of {maxRoundTrips} tool round-trips.");
+                    yield break;
+                }
+
+                Console.WriteLine($"[AgentRunner] Reached {maxRoundTrips} tool round-trips; running one wrap-up turn.");
+                messages.Add(new ChatMessage(ChatRole.User, options.BudgetExhaustedReminder));
+                wrapUpTurnUsed = true;
+            }
+
             var pendingCalls = new List<FunctionCallContent>();
             var textParts = new List<string>();
 
@@ -126,6 +152,11 @@ public static class AgentRunner
                     string s => s,
                     _ => JsonSerializer.Serialize(result)
                 };
+
+                if (resultStr.StartsWith("ERROR", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"[AgentRunner] Tool '{fc.Name}' returned an error: {(resultStr.Length > 300 ? resultStr[..300] : resultStr)}");
+                }
 
                 toolResultMessage.Contents.Add(new FunctionResultContent(fc.CallId, resultStr));
             }

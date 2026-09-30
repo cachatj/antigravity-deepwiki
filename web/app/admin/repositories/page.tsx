@@ -288,7 +288,7 @@ export default function AdminRepositoriesPage() {
         </Button>
       </div>
 
-      {/* 搜索和筛选 */}
+      {/* Search and filters */}
       <Card className="p-4 transition-all duration-300 hover:shadow-sm">
         <div className="flex flex-wrap gap-4">
           <div className="flex flex-1 gap-2">
@@ -382,7 +382,7 @@ export default function AdminRepositoriesPage() {
         </div>
       </Card>
 
-      {/* 批量操作栏 */}
+      {/* Bulk actions bar */}
       {selectedIds.size > 0 && (
         <Card className="p-3 bg-muted/50 animate-in fade-in-0 slide-in-from-top-1 duration-200">
           <div className="flex items-center justify-between">
@@ -426,7 +426,7 @@ export default function AdminRepositoriesPage() {
         </Card>
       )}
 
-      {/* 仓库列表 */}
+      {/* Repository list */}
       <Card className="transition-all duration-300 hover:shadow-sm">
         {loading ? (
           <div className="flex h-64 items-center justify-center animate-in fade-in-0 duration-200">
@@ -602,7 +602,7 @@ export default function AdminRepositoriesPage() {
               </table>
             </div>
 
-            {/* 分页 */}
+            {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex items-center justify-between border-t px-4 py-3">
                 <p className="text-sm text-muted-foreground">
@@ -637,7 +637,7 @@ export default function AdminRepositoriesPage() {
         )}
       </Card>
 
-      {/* 详情对话框 */}
+      {/* Details dialog */}
       <Dialog open={!!selectedRepo} onOpenChange={() => setSelectedRepo(null)}>
         <DialogContent>
           <DialogHeader>
@@ -695,7 +695,7 @@ export default function AdminRepositoriesPage() {
         </DialogContent>
       </Dialog>
 
-      {/* 删除确认对话框 */}
+      {/* Delete confirmation dialog */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -713,7 +713,7 @@ export default function AdminRepositoriesPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* 批量删除确认对话框 */}
+      {/* Bulk delete confirmation dialog */}
       <AlertDialog open={showBatchDeleteConfirm} onOpenChange={setShowBatchDeleteConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>

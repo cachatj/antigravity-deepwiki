@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 namespace OpenDeepWiki.Chat.Config;
 
 /// <summary>
-/// 基于 AES 的配置加密实现
+/// AES-based config encryption implementation
 /// </summary>
 public class AesConfigEncryption : IConfigEncryption
 {
@@ -17,20 +17,20 @@ public class AesConfigEncryption : IConfigEncryption
     {
         var encryptionKey = options.Value.EncryptionKey;
         
-        // 如果没有配置密钥，使用默认密钥（仅用于开发环境）
+        // If no key is configured, use the default key (development only)
         if (string.IsNullOrEmpty(encryptionKey))
         {
             encryptionKey = "OpenDeepWiki_Default_Key_32Bytes!";
         }
         
-        // 确保密钥长度为 32 字节（AES-256）
+        // Ensure the key length is 32 bytes (AES-256)
         _key = DeriveKey(encryptionKey, 32);
-        // IV 长度为 16 字节
+        // IV length is 16 bytes
         _iv = DeriveKey(encryptionKey + "_IV", 16);
     }
     
     /// <summary>
-    /// 从密钥字符串派生指定长度的字节数组
+    /// Derive a byte array of the specified length from the key string
     /// </summary>
     private static byte[] DeriveKey(string key, int length)
     {
@@ -95,12 +95,12 @@ public class AesConfigEncryption : IConfigEncryption
 }
 
 /// <summary>
-/// 配置加密选项
+/// Config encryption options
 /// </summary>
 public class ConfigEncryptionOptions
 {
     /// <summary>
-    /// 加密密钥
+    /// Encryption key
     /// </summary>
     public string EncryptionKey { get; set; } = string.Empty;
 }

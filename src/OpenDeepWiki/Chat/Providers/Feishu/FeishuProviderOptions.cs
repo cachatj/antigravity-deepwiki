@@ -1,37 +1,37 @@
 namespace OpenDeepWiki.Chat.Providers.Feishu;
 
 /// <summary>
-/// 飞书 Provider 配置选项
+/// Feishu provider configuration options
 /// </summary>
 public class FeishuProviderOptions : ProviderOptions
 {
     /// <summary>
-    /// 飞书应用 App ID
+    /// Feishu app App ID
     /// </summary>
     public string AppId { get; set; } = string.Empty;
     
     /// <summary>
-    /// 飞书应用 App Secret
+    /// Feishu app App Secret
     /// </summary>
     public string AppSecret { get; set; } = string.Empty;
     
     /// <summary>
-    /// 飞书 Verification Token（用于验证 Webhook 请求）
+    /// Feishu Verification Token (used to validate webhook requests)
     /// </summary>
     public string VerificationToken { get; set; } = string.Empty;
     
     /// <summary>
-    /// 飞书 Encrypt Key（用于消息加解密，可选）
+    /// Feishu Encrypt Key (for message encryption/decryption, optional)
     /// </summary>
     public string? EncryptKey { get; set; }
     
     /// <summary>
-    /// 飞书 API 基础 URL
+    /// Feishu API base URL
     /// </summary>
     public string ApiBaseUrl { get; set; } = "https://open.feishu.cn/open-apis";
     
     /// <summary>
-    /// Access Token 缓存时间（秒），默认 7000 秒（略小于飞书的 7200 秒有效期）
+    /// Access token cache duration (seconds), default 7000 seconds (slightly less than Feishu's 7200-second validity)
     /// </summary>
     public int TokenCacheSeconds { get; set; } = 7000;
 }
