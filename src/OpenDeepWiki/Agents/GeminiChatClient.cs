@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,20 @@ namespace OpenDeepWiki.Agents;
 /// </summary>
 public sealed class GeminiChatClient : IChatClient
 {
+    /// <summary>
+    /// Key under which a Gemini thought signature is stashed on an <see cref="AIContent"/>
+    /// so it can be echoed back verbatim on subsequent requests. Gemini 3.x rejects
+    /// function-call parts in history that are missing their signature.
+    /// </summary>
+    public const string ThoughtSignatureKey = "gemini.thoughtSignature";
+
+    /// <summary>
+    /// Documented placeholder accepted by the API for function calls that did not originate
+    /// from the model (or whose signature was lost). Skips signature validation for that part.
+    /// </summary>
+    private static readonly byte[] SkipSignatureValidator =
+        Encoding.UTF8.GetBytes("skip_thought_signature_validator");
+
     private readonly Google.GenAI.Client _client;
     private readonly string _model;
     private readonly ChatClientMetadata _metadata;
@@ -38,64 +53,102 @@ public sealed class GeminiChatClient : IChatClient
     }
 
     public async Task<ChatResponse> GetResponseAsync(
-        IEnumerable<ChatMessage> chatMessages, 
-        ChatOptions? options = null, 
+        IEnumerable<ChatMessage> chatMessages,
+        ChatOptions? options = null,
         CancellationToken cancellationToken = default)
     {
         var request = BuildRequest(chatMessages, options);
         var response = await _client.Models.GenerateContentAsync(_model, request.Contents, request.Config, cancellationToken);
-        
-        return ParseResponse(response, _model);
+
+        var message = new ChatMessage { Role = ChatRole.Assistant };
+        foreach (var content in ConvertParts(response))
+        {
+            message.Contents.Add(content);
+        }
+
+        return new ChatResponse(message)
+        {
+            ModelId = _model
+        };
     }
 
     public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(
-        IEnumerable<ChatMessage> chatMessages, 
-        ChatOptions? options = null, 
+        IEnumerable<ChatMessage> chatMessages,
+        ChatOptions? options = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var request = BuildRequest(chatMessages, options);
         var stream = _client.Models.GenerateContentStreamAsync(_model, request.Contents, request.Config, cancellationToken);
 
-        var first = true;
-        
         await foreach (var chunk in stream)
         {
             if (cancellationToken.IsCancellationRequested) yield break;
 
-            if (first && chunk.UsageMetadata != null)
-            {
-                // Just in case we want to yield metadata
-            }
-            first = false;
-
-            if (chunk.Text != null)
+            foreach (var content in ConvertParts(chunk))
             {
                 yield return new ChatResponseUpdate
                 {
                     Role = ChatRole.Assistant,
-                    Contents = new[] { new TextContent(chunk.Text) }
+                    ModelId = _model,
+                    Contents = new[] { content }
                 };
             }
-            
-            if (chunk.FunctionCalls != null)
-            {
-                foreach (var fc in chunk.FunctionCalls)
-                {
-                    var argsDict = new Dictionary<string, object?>();
-                    if (fc.Args != null)
-                    {
-                        var json = JsonSerializer.Serialize(fc.Args);
-                        argsDict = JsonSerializer.Deserialize<Dictionary<string, object?>>(json);
-                    }
+        }
+    }
 
-                    yield return new ChatResponseUpdate
-                    {
-                        Role = ChatRole.Assistant,
-                        Contents = new[] { new FunctionCallContent(fc.Id ?? Guid.NewGuid().ToString(), fc.Name ?? string.Empty, argsDict) }
-                    };
+    /// <summary>
+    /// Converts the parts of the first candidate into MEAI content, preserving thought signatures
+    /// and dropping hidden "thought" parts so they are neither displayed nor echoed back.
+    /// </summary>
+    private static IEnumerable<AIContent> ConvertParts(Google.GenAI.Types.GenerateContentResponse response)
+    {
+        var parts = response.Candidates?.FirstOrDefault()?.Content?.Parts;
+        if (parts == null) yield break;
+
+        foreach (var part in parts)
+        {
+            if (part.FunctionCall is { } fc)
+            {
+                var argsDict = new Dictionary<string, object?>();
+                if (fc.Args != null)
+                {
+                    var json = JsonSerializer.Serialize(fc.Args);
+                    argsDict = JsonSerializer.Deserialize<Dictionary<string, object?>>(json) ?? new();
                 }
+
+                var call = new FunctionCallContent(fc.Id ?? Guid.NewGuid().ToString(), fc.Name ?? string.Empty, argsDict);
+                AttachSignature(call, part.ThoughtSignature);
+                yield return call;
+            }
+            else if (part.Text != null)
+            {
+                // Thought parts are the model's reasoning summary; do not surface them as output.
+                if (part.Thought == true) continue;
+
+                var text = new TextContent(part.Text);
+                AttachSignature(text, part.ThoughtSignature);
+                yield return text;
             }
         }
+    }
+
+    private static void AttachSignature(AIContent content, byte[]? signature)
+    {
+        if (signature == null || signature.Length == 0) return;
+        content.AdditionalProperties ??= new AdditionalPropertiesDictionary();
+        content.AdditionalProperties[ThoughtSignatureKey] = signature;
+    }
+
+    private static byte[]? GetSignature(AIContent content)
+    {
+        if (content.AdditionalProperties != null &&
+            content.AdditionalProperties.TryGetValue(ThoughtSignatureKey, out var value) &&
+            value is byte[] { Length: > 0 } bytes)
+        {
+            return bytes;
+        }
+
+        return null;
     }
 
     private class GeminiRequest
@@ -107,7 +160,11 @@ public sealed class GeminiChatClient : IChatClient
     private GeminiRequest BuildRequest(IEnumerable<ChatMessage> chatMessages, ChatOptions? options)
     {
         var req = new GeminiRequest();
-        
+
+        // FunctionResultContent only carries the call id; Gemini requires the function name
+        // on functionResponse parts, so resolve it from the preceding function calls.
+        var callIdToName = new Dictionary<string, string>(StringComparer.Ordinal);
+
         foreach (var message in chatMessages)
         {
             if (message.Role == ChatRole.System)
@@ -122,7 +179,8 @@ public sealed class GeminiChatClient : IChatClient
 
             var content = new Google.GenAI.Types.Content
             {
-                Role = message.Role == ChatRole.User ? "user" : "model",
+                // Function responses are sent back in the user turn, not the model turn.
+                Role = message.Role == ChatRole.Assistant ? "model" : "user",
                 Parts = new List<Google.GenAI.Types.Part>()
             };
 
@@ -130,40 +188,53 @@ public sealed class GeminiChatClient : IChatClient
             {
                 if (item is TextContent textPart)
                 {
-                    content.Parts.Add(new Google.GenAI.Types.Part { Text = textPart.Text });
+                    content.Parts.Add(new Google.GenAI.Types.Part
+                    {
+                        Text = textPart.Text,
+                        ThoughtSignature = GetSignature(textPart)
+                    });
                 }
                 else if (item is FunctionCallContent fc)
                 {
-                    // Map to Gemini FunctionCall
+                    if (!string.IsNullOrEmpty(fc.CallId))
+                    {
+                        callIdToName[fc.CallId] = fc.Name;
+                    }
+
                     var dict = fc.Arguments as IDictionary<string, object?>;
                     var dictObj = dict != null ? dict.ToDictionary(k => k.Key, v => v.Value ?? new object()) : new Dictionary<string, object>();
 
-                    content.Parts.Add(new Google.GenAI.Types.Part 
-                    { 
-                        FunctionCall = new Google.GenAI.Types.FunctionCall 
-                        { 
-                            Name = fc.Name, 
+                    content.Parts.Add(new Google.GenAI.Types.Part
+                    {
+                        // Echo the model's signature verbatim; fall back to the documented
+                        // validator-skip placeholder for calls that never had one.
+                        ThoughtSignature = GetSignature(fc) ?? SkipSignatureValidator,
+                        FunctionCall = new Google.GenAI.Types.FunctionCall
+                        {
+                            Name = fc.Name,
                             Args = dictObj,
                             Id = fc.CallId
-                        } 
+                        }
                     });
                 }
                 else if (item is FunctionResultContent fr)
                 {
-                    // Map to Gemini FunctionResponse
                     var resultDict = new Dictionary<string, object> { { "result", fr.Result ?? string.Empty } };
+                    callIdToName.TryGetValue(fr.CallId ?? string.Empty, out var functionName);
 
-                    content.Parts.Add(new Google.GenAI.Types.Part 
-                    { 
-                        FunctionResponse = new Google.GenAI.Types.FunctionResponse 
-                        { 
-                            Name = fr.CallId, // FunctionResultContent doesn't contain Name, we use CallId or empty
+                    content.Parts.Add(new Google.GenAI.Types.Part
+                    {
+                        FunctionResponse = new Google.GenAI.Types.FunctionResponse
+                        {
+                            Name = functionName ?? fr.CallId,
                             Response = resultDict,
                             Id = fr.CallId
-                        } 
+                        }
                     });
                 }
             }
+
+            if (content.Parts.Count == 0) continue;
 
             req.Contents.Add(content);
         }
@@ -172,7 +243,7 @@ public sealed class GeminiChatClient : IChatClient
         {
             if (options.Temperature.HasValue)
                 req.Config.Temperature = options.Temperature.Value;
-            
+
             if (options.MaxOutputTokens.HasValue)
                 req.Config.MaxOutputTokens = options.MaxOutputTokens.Value;
 
@@ -186,12 +257,12 @@ public sealed class GeminiChatClient : IChatClient
                         Name = tool.Name,
                         Description = tool.Description
                     };
-                    
+
                     try
                     {
                         var schemaJson = tool.JsonSchema.ToString();
-                        var schemaOptions = new JsonSerializerOptions 
-                        { 
+                        var schemaOptions = new JsonSerializerOptions
+                        {
                             PropertyNameCaseInsensitive = true,
                             Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase) }
                         };
@@ -202,7 +273,7 @@ public sealed class GeminiChatClient : IChatClient
                     {
                         Console.WriteLine($"[GeminiChatClient] Failed to deserialize schema for tool {tool.Name}: {ex.Message}");
                     }
-                    
+
                     functionDeclarations.Add(declaration);
                 }
 
@@ -217,35 +288,5 @@ public sealed class GeminiChatClient : IChatClient
         }
 
         return req;
-    }
-
-    private ChatResponse ParseResponse(Google.GenAI.Types.GenerateContentResponse response, string model)
-    {
-        var message = new ChatMessage { Role = ChatRole.Assistant };
-        
-        if (response.Text != null)
-        {
-            message.Contents.Add(new TextContent(response.Text));
-        }
-
-        if (response.FunctionCalls != null)
-        {
-            foreach (var fc in response.FunctionCalls)
-            {
-                var argsDict = new Dictionary<string, object?>();
-                if (fc.Args != null)
-                {
-                    var json = JsonSerializer.Serialize(fc.Args);
-                    argsDict = JsonSerializer.Deserialize<Dictionary<string, object?>>(json);
-                }
-
-                message.Contents.Add(new FunctionCallContent(fc.Id ?? Guid.NewGuid().ToString(), fc.Name ?? string.Empty, argsDict));
-            }
-        }
-
-        return new ChatResponse(message)
-        {
-            ModelId = model
-        };
     }
 }
