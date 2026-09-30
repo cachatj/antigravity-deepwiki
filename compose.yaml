@@ -42,12 +42,12 @@ services:
       - CHAT_REQUEST_TYPE=Anthropic
 
       # Wiki generator config — Catalog generation (Gemini)
-      - WIKI_CATALOG_MODEL=gemini-2.5-flash
+      - WIKI_CATALOG_MODEL=gemini-3.8-flash
       - WIKI_CATALOG_API_KEY=${GOOGLE_API_KEY}
       - WIKI_CATALOG_REQUEST_TYPE=Gemini
 
       # Wiki generator config — Content generation (Gemini)
-      - WIKI_CONTENT_MODEL=gemini-2.5-flash
+      - WIKI_CONTENT_MODEL=gemini-3.8-flash
       - WIKI_CONTENT_API_KEY=${GOOGLE_API_KEY}
       - WIKI_CONTENT_REQUEST_TYPE=Gemini
 

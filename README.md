@@ -124,7 +124,7 @@ DeepWiki now implements a flexible provider-based model selection system support
 
 ### Supported Providers and Models
 
-- **Google**: Default `gemini-2.5-flash`, also supports `gemini-2.5-flash-lite`, `gemini-2.5-pro`, etc.
+- **Google**: Default `gemini-3.8-flash` (`gemini-2.5-flash` is retired for new API keys), also supports `gemini-3.5-flash-lite`, `gemini-3.1-pro-preview`, etc.
 - **OpenAI**: Default `gpt-5-nano`, also supports `gpt-5`, `4o`, etc.
 - **OpenRouter**: Access to multiple models via a unified API, including Claude, Llama, Mistral, etc.
 - **Azure OpenAI**: Default `gpt-4o`, also supports `o4-mini`, etc.
@@ -213,7 +213,7 @@ DeepWiki now supports Google AI's latest embedding models as an alternative to O
 
 ### Features
 
-- **Latest Model**: Uses Google's `text-embedding-004` model
+- **Latest Model**: Uses Google's `gemini-embedding-001` model
 - **Same API Key**: Uses your existing `GOOGLE_API_KEY` (no additional setup required)
 - **Better Integration**: Optimized for use with Google Gemini text generation models
 - **Task-Specific**: Supports semantic similarity, retrieval, and classification tasks
@@ -263,7 +263,7 @@ docker-compose up
 | Type | Description | API Key Required | Notes |
 |------|-------------|------------------|-------|
 | `openai` | OpenAI embeddings (default) | `OPENAI_API_KEY` | Uses `text-embedding-3-small` model |
-| `google` | Google AI embeddings | `GOOGLE_API_KEY` | Uses `text-embedding-004` model |
+| `google` | Google AI embeddings | `GOOGLE_API_KEY` | Uses `gemini-embedding-001` model |
 | `ollama` | Local Ollama embeddings | None | Requires local Ollama installation |
 
 ### Why Use Google AI Embeddings?

@@ -214,7 +214,7 @@ class TestEmbedderClients:
         # Test single embedding
         api_kwargs = client.convert_inputs_to_api_kwargs(
             input="Hello world",
-            model_kwargs={"model": "text-embedding-004", "task_type": "SEMANTIC_SIMILARITY"},
+            model_kwargs={"model": "models/gemini-embedding-001", "task_type": "SEMANTIC_SIMILARITY"},
             model_type=ModelType.EMBEDDER
         )
         
@@ -301,7 +301,7 @@ class TestRAGIntegration:
         
         # Test with default configuration
         try:
-            rag = RAG(provider="google", model="gemini-2.5-flash")
+            rag = RAG(provider="google", model="gemini-3.8-flash")
             assert rag is not None, "RAG should be initialized"
             assert hasattr(rag, 'embedder'), "RAG should have embedder"
             assert hasattr(rag, 'is_ollama_embedder'), "RAG should have is_ollama_embedder attribute"

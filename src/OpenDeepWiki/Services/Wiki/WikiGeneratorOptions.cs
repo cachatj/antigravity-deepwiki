@@ -17,13 +17,13 @@ public class WikiGeneratorOptions
     /// The AI model to use for catalog structure generation.
     /// Default: gpt-4o-mini (faster and cheaper for structural tasks).
     /// </summary>
-    public string CatalogModel { get; set; } = "gemini-2.5-flash";
+    public string CatalogModel { get; set; } = "gemini-3.8-flash";
 
     /// <summary>
     /// The AI model to use for document content generation.
     /// Default: gpt-4o (better quality for content generation).
     /// </summary>
-    public string ContentModel { get; set; } = "gemini-2.5-flash";
+    public string ContentModel { get; set; } = "gemini-3.8-flash";
 
     /// <summary>
     /// Optional custom endpoint for catalog generation.
