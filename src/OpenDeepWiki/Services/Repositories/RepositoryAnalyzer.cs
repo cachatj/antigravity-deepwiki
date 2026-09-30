@@ -672,23 +672,20 @@ public class RepositoryAnalyzer : IRepositoryAnalyzer
 
         try
         {
-            var files = Directory.GetFiles(workspace.WorkingDirectory, "*", SearchOption.AllDirectories);
+            var gitTool = new OpenDeepWiki.Agents.Tools.GitTool(workspace.WorkingDirectory);
+            // Get all tracked/unignored files. Use int.MaxValue to get all of them.
+            var files = await gitTool.ListFilesAsync(null, int.MaxValue, cancellationToken);
 
             foreach (var file in files)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-                // Skip hidden directories and common non-code directories
-                var relativePath = Path.GetRelativePath(workspace.WorkingDirectory, file);
-                if (ShouldSkipPath(relativePath))
-                    continue;
 
                 var extension = Path.GetExtension(file).ToLowerInvariant();
                 var language = GetLanguageFromExtension(extension);
 
                 if (language != null)
                 {
-                    var fileInfo = new FileInfo(file);
+                    var fileInfo = new FileInfo(Path.Combine(workspace.WorkingDirectory, file));
                     if (languageStats.ContainsKey(language))
                         languageStats[language] += fileInfo.Length;
                     else

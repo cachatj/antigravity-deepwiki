@@ -79,31 +79,46 @@ public class GitTool
     /// <returns>Enumerable of matching file paths (full paths)</returns>
     private IEnumerable<string> EnumerateFilesWithGlob(string? glob)
     {
-        if (string.IsNullOrWhiteSpace(glob))
+        var globRegex = string.IsNullOrWhiteSpace(glob) ? null : GlobToRegex(glob);
+
+        var directoriesToProcess = new Queue<string>();
+        directoriesToProcess.Enqueue(_workingDirectory);
+
+        while (directoriesToProcess.Count > 0)
         {
-            // No pattern - return all files (filtered by gitignore)
-            foreach (var file in Directory.EnumerateFiles(_workingDirectory, "*", SearchOption.AllDirectories))
+            var currentDir = directoriesToProcess.Dequeue();
+
+            // Subdirectories
+            try
             {
-                var relativePath = GetRelativePath(file);
-                if (!IsIgnoredByGitIgnore(relativePath))
+                foreach (var dir in Directory.EnumerateDirectories(currentDir))
                 {
-                    yield return file;
+                    var relativeDir = GetRelativePath(dir);
+                    // Skip ignored or hidden directories completely so we don't scan their contents
+                    if (!IsIgnoredByGitIgnore(relativeDir) && !IsHiddenPath(dir))
+                    {
+                        directoriesToProcess.Enqueue(dir);
+                    }
                 }
             }
+            catch { /* Skip inaccessible dirs */ }
 
-            yield break;
-        }
-
-        // Convert glob to regex pattern
-        var globRegex = GlobToRegex(glob);
-
-        foreach (var file in Directory.EnumerateFiles(_workingDirectory, "*", SearchOption.AllDirectories))
-        {
-            var relativePath = GetRelativePath(file);
-            if (!IsIgnoredByGitIgnore(relativePath) && globRegex.IsMatch(relativePath))
+            // Files
+            try
             {
-                yield return file;
+                foreach (var file in Directory.EnumerateFiles(currentDir))
+                {
+                    var relativePath = GetRelativePath(file);
+                    if (!IsIgnoredByGitIgnore(relativePath) && !IsHiddenPath(file))
+                    {
+                        if (globRegex == null || globRegex.IsMatch(relativePath))
+                        {
+                            yield return file;
+                        }
+                    }
+                }
             }
+            catch { /* Skip inaccessible files */ }
         }
     }
 
