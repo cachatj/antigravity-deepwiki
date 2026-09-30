@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const supportedLocales = ['en'];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Get language from URL query parameter (used for repository doc pages)
   const urlLang = request.nextUrl.searchParams.get('lang');
   

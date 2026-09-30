@@ -17,7 +17,7 @@ I've completed the cleanup, localization, and feature enhancement for your OpenD
 2. Log in using the local admin credentials (created during DB initialization):
    - **Email**: `admin@opendeepwiki.com`
    - **Password**: `123456`
-3. Submit your workspace repository: `/Users/jc-vht/code_sandbox/OpenDeepWiki`.
+3. Submit your workspace repository: `/Users/jc-vht/code_sandbox/antigravity-deepwiki`.
 
 ### 2. Gemini 2.5 Pro Optimization
 With the latest rebuild, Gemini is now the active provider. Here is how to get the best results based on the `ai.google.dev` documentation:

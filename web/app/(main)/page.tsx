@@ -11,6 +11,7 @@ import { RepositorySubmitForm } from "@/components/repo/repository-submit-form";
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/contexts/auth-context";
 import { useScrollPosition } from "@/hooks/use-scroll-position";
@@ -87,6 +88,7 @@ export default function Home() {
                   {t("home.addPrivateRepo")}
                 </Button>
                 <DialogContent className="sm:max-w-md">
+                  <DialogTitle className="sr-only">{t("home.addPrivateRepo")}</DialogTitle>
                   {user && (
                     <RepositorySubmitForm
                       onSuccess={handleSubmitSuccess}

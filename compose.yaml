@@ -8,7 +8,11 @@ services:
       - "8080:8080"
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8080/api/system/version || exit 1" ]
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/api/system/version || exit 1",
+        ]
       interval: 15s
       timeout: 10s
       retries: 5
@@ -55,10 +59,10 @@ services:
 
     volumes:
       - ./data:/data
-      - /Users/jcachat/code_sandbox/edna_phm_sow_airflow:/cah:ro
-      - /Users/jcachat/code_sandbox/2026-PayerPropensity-Models-days_to_payment_payment_ratio:/vht-ppm:ro
-      - /Users/jcachat/code_sandbox/SOW - each version/edna_phm_sow_airflow:/sow:ro
-      - /Users/jcachat/code_sandbox/SOW - each version/1-SOWinSAS-legacy:/sas:ro
+      - /Users/jc-vht/code_sandbox/claims_denial_data_science:/vht-denials:ro
+      - /Users/jc-vht/code_sandbox/autogluon-local-new-client-tests:/vht-autogluon-local:ro
+      - /Users/jc-vht/code_sandbox/vht-ai-claims-engine:/vht-ai-claims-engine:ro
+      - /Users/jc-vht/code_sandbox/vht-ds-fabric:/vht-ds-fabric:ro
 
   web:
     # SECURITY: Build locally from source only — no external pre-compiled images
