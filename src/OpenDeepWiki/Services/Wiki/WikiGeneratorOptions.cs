@@ -1,4 +1,4 @@
-using OpenDeepWiki.Agents;
+﻿using OpenDeepWiki.Agents;
 
 namespace OpenDeepWiki.Services.Wiki;
 
@@ -59,7 +59,7 @@ public class WikiGeneratorOptions
     /// Maximum retry attempts for AI generation operations.
     /// Default: 3
     /// </summary>
-    public int MaxRetryAttempts { get; set; } = 3;
+    public int MaxRetryAttempts { get; set; } = 5;
 
     /// <summary>
     /// Delay between retry attempts in milliseconds.

@@ -1,4 +1,4 @@
-services:
+﻿services:
   opendeepwiki:
     # SECURITY: Build locally from source only — no external pre-compiled images
     build:
@@ -52,7 +52,8 @@ services:
       - WIKI_CONTENT_REQUEST_TYPE=Gemini
 
       # Wiki parallel generation count (default: 5)
-      - WIKI_PARALLEL_COUNT=10
+      # Gemini paid tier 2 allows ~3M input tokens/min; 10 parallel agents blew through it.
+      - WIKI_PARALLEL_COUNT=4
 
       # Language support (English only)
       - WIKI_LANGUAGES=en

@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -51,8 +51,7 @@ public class GitTool
 
         // Parse .gitignore, then .deepwikiignore (same syntax) for wiki-specific exclusions
         // such as archived notebooks or scratch folders that would otherwise dilute the docs.
-        _gitIgnoreRules = ParseIgnoreFile(Path.Combine(_workingDirectory, ".gitignore"));
-        _gitIgnoreRules.AddRange(ParseIgnoreFile(Path.Combine(_workingDirectory, ".deepwikiignore")));
+        _gitIgnoreRules = LoadIgnoreRules(_workingDirectory);
     }
 
     /// <summary>
@@ -638,9 +637,14 @@ Glob Examples:
     /// </summary>
     /// <param name="relativePath">The relative path to check.</param>
     /// <returns>True if the path should be ignored, false otherwise.</returns>
-    private bool IsIgnoredByGitIgnore(string relativePath)
+    private bool IsIgnoredByGitIgnore(string relativePath) => IsIgnored(_gitIgnoreRules, relativePath);
+
+    /// <summary>
+    /// Checks a relative path against a list of gitignore-style rules (later rules override earlier ones).
+    /// </summary>
+    public static bool IsIgnored(IReadOnlyList<GitIgnoreRule> rules, string relativePath)
     {
-        if (_gitIgnoreRules.Count == 0)
+        if (rules.Count == 0)
         {
             return false;
         }
@@ -650,7 +654,7 @@ Glob Examples:
 
         // Check each rule in order (later rules can override earlier ones)
         var isIgnored = false;
-        foreach (var rule in _gitIgnoreRules)
+        foreach (var rule in rules)
         {
             if (rule.Pattern.IsMatch(normalizedPath))
             {
@@ -659,6 +663,16 @@ Glob Examples:
         }
 
         return isIgnored;
+    }
+
+    /// <summary>
+    /// Loads .gitignore and .deepwikiignore rules from a repository root.
+    /// </summary>
+    public static List<GitIgnoreRule> LoadIgnoreRules(string repositoryRoot)
+    {
+        var rules = ParseIgnoreFile(Path.Combine(repositoryRoot, ".gitignore"));
+        rules.AddRange(ParseIgnoreFile(Path.Combine(repositoryRoot, ".deepwikiignore")));
+        return rules;
     }
 
     /// <summary>

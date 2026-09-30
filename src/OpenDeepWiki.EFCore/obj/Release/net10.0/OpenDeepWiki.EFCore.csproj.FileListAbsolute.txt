@@ -1,0 +1,17 @@
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/bin/Release/net10.0/OpenDeepWiki.EFCore.deps.json
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/bin/Release/net10.0/OpenDeepWiki.EFCore.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/bin/Release/net10.0/OpenDeepWiki.EFCore.pdb
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/bin/Release/net10.0/OpenDeepWiki.Entities.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/bin/Release/net10.0/OpenDeepWiki.Entities.pdb
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/bin/Release/net10.0/OpenDeepWiki.Entities.xml
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/obj/Release/net10.0/OpenDeepWiki.EFCore.csproj.AssemblyReference.cache
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/obj/Release/net10.0/OpenDeepWiki.EFCore.GeneratedMSBuildEditorConfig.editorconfig
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/obj/Release/net10.0/OpenDeepWiki.EFCore.AssemblyInfoInputs.cache
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/obj/Release/net10.0/OpenDeepWiki.EFCore.AssemblyInfo.cs
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/obj/Release/net10.0/OpenDeepWiki.EFCore.csproj.CoreCompileInputs.cache
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/obj/Release/net10.0/OpenDeepWiki.EFCore.sourcelink.json
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/obj/Release/net10.0/OpenDeep.269E5919.Up2Date
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/obj/Release/net10.0/OpenDeepWiki.EFCore.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/obj/Release/net10.0/refint/OpenDeepWiki.EFCore.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/obj/Release/net10.0/OpenDeepWiki.EFCore.pdb
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/obj/Release/net10.0/ref/OpenDeepWiki.EFCore.dll

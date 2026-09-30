@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -983,7 +983,16 @@ Please start executing the task.";
                     // Exponential backoff with jitter: base_delay * 2^(attempt-1) + random(0, 1000ms)
                     var exponentialDelay = _options.RetryDelayMs * Math.Pow(2, retryCount - 1);
                     var jitter = Random.Shared.Next(0, 1000);
-                    var totalDelay = (int)Math.Min(exponentialDelay + jitter, 60000); // Cap at 60 seconds
+                    var computedDelay = exponentialDelay + jitter;
+
+                    // Rate-limit responses (e.g. Gemini 429 with RetryInfo) tell us how long to wait.
+                    // Waiting less than that just burns an attempt, so honor it when present.
+                    if (TryGetServerRetryDelay(ex, out var serverDelay))
+                    {
+                        computedDelay = Math.Max(computedDelay, serverDelay.TotalMilliseconds + jitter);
+                    }
+
+                    var totalDelay = (int)Math.Min(computedDelay, 120000); // Cap at 120 seconds
 
                     _logger.LogInformation(
                         "Retrying AI agent in {Delay}ms (exponential backoff). Operation: {Operation}, Attempt: {NextAttempt}/{MaxAttempts}",
@@ -1035,12 +1044,48 @@ Please start executing the task.";
         var message = ex.Message.ToLowerInvariant();
         return message.Contains("timeout") ||
                message.Contains("rate limit") ||
+               message.Contains("rate-limit") ||
+               message.Contains("quota") ||
+               message.Contains("resource_exhausted") ||
+               message.Contains("resource exhausted") ||
+               message.Contains("overloaded") ||
+               message.Contains("429") ||
+               message.Contains("503") ||
                message.Contains("too many requests") ||
                message.Contains("service unavailable") ||
                message.Contains("temporarily unavailable") ||
                message.Contains("connection") ||
                message.Contains("network") ||
                message.Contains("response ended prematurely");
+    }
+
+    private static readonly Regex RetryInSecondsRegex = new(@"retry in (\d+(?:\.\d+)?)\s*s", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex RetryDelayFieldRegex = new(@"""retryDelay""\s*:\s*""(\d+(?:\.\d+)?)s""", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    /// <summary>
+    /// Extracts a server-suggested retry delay from a rate-limit error, e.g. Gemini's
+    /// "Please retry in 39.4s" text or the RetryInfo {"retryDelay":"39s"} detail.
+    /// </summary>
+    private static bool TryGetServerRetryDelay(Exception ex, out TimeSpan delay)
+    {
+        delay = TimeSpan.Zero;
+        for (Exception? current = ex; current != null; current = current.InnerException)
+        {
+            var match = RetryDelayFieldRegex.Match(current.Message);
+            if (!match.Success)
+            {
+                match = RetryInSecondsRegex.Match(current.Message);
+            }
+
+            if (match.Success && double.TryParse(match.Groups[1].Value, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out var seconds) && seconds > 0)
+            {
+                delay = TimeSpan.FromSeconds(seconds);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -1824,7 +1869,10 @@ Translated mind map:";
             context.ProjectType = DetectProjectType(rootDir);
             
             // 2. Collect directory structure as tree data and serialize with Toon
-            var treeData = CollectDirectoryTreeData(rootDir, excludedDirs, maxDepth: _options.DirectoryTreeMaxDepth, currentDepth: 0);
+            // Honor the repository's .gitignore and .deepwikiignore so ignored data/export folders
+            // don't show up in the file tree fed to the catalog and mind map prompts.
+            var ignoreRules = GitTool.LoadIgnoreRules(rootDir.FullName);
+            var treeData = CollectDirectoryTreeData(rootDir, rootDir.FullName, ignoreRules, excludedDirs, maxDepth: _options.DirectoryTreeMaxDepth, currentDepth: 0);
             context.DirectoryTree = ToonSerializer.Serialize(treeData);
             
             // 3. Read README content (truncated if too long)
@@ -1889,6 +1937,8 @@ Translated mind map:";
     /// </summary>
     private static List<FileTreeNode> CollectDirectoryTreeData(
         DirectoryInfo dir,
+        string rootPath,
+        List<GitIgnoreRule> ignoreRules,
         HashSet<string> excludedDirs,
         int maxDepth,
         int currentDepth)
@@ -1904,6 +1954,9 @@ Translated mind map:";
                 if (subDir.Name.StartsWith('.') || excludedDirs.Contains(subDir.Name))
                     continue;
 
+                if (GitTool.IsIgnored(ignoreRules, Path.GetRelativePath(rootPath, subDir.FullName)))
+                    continue;
+
                 var node = new FileTreeNode
                 {
                     Name = subDir.Name,
@@ -1912,7 +1965,7 @@ Translated mind map:";
 
                 if (currentDepth < maxDepth)
                 {
-                    node.Children = CollectDirectoryTreeData(subDir, excludedDirs, maxDepth, currentDepth + 1);
+                    node.Children = CollectDirectoryTreeData(subDir, rootPath, ignoreRules, excludedDirs, maxDepth, currentDepth + 1);
                 }
 
                 result.Add(node);
@@ -1924,6 +1977,9 @@ Translated mind map:";
                 foreach (var file in dir.GetFiles().OrderBy(f => f.Name))
                 {
                     if (file.Name.StartsWith('.'))
+                        continue;
+
+                    if (GitTool.IsIgnored(ignoreRules, Path.GetRelativePath(rootPath, file.FullName)))
                         continue;
 
                     result.Add(new FileTreeNode

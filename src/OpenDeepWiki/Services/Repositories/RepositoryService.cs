@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenDeepWiki.EFCore;
 using OpenDeepWiki.Entities;
@@ -35,6 +35,56 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
         if (exists)
         {
             throw new InvalidOperationException("A repository with the same branch already exists");
+        }
+
+        // A previously deleted repository is only soft-deleted, but the unique index on
+        // (OwnerUserId, OrgName, RepoName) does not exclude soft-deleted rows. Purge any such
+        // tombstone (and leftover children) so re-submitting the same repository succeeds.
+        var tombstones = await context.Repositories
+            .Where(r => r.IsDeleted
+                        && r.OwnerUserId == currentUserId
+                        && r.OrgName == request.OrgName
+                        && r.RepoName == request.RepoName)
+            .ToListAsync();
+
+        if (tombstones.Count > 0)
+        {
+            var tombstoneIds = tombstones.Select(r => r.Id).ToList();
+
+            var staleBranches = await context.RepositoryBranches
+                .Where(b => tombstoneIds.Contains(b.RepositoryId))
+                .ToListAsync();
+            var staleBranchIds = staleBranches.Select(b => b.Id).ToList();
+
+            var staleLanguages = await context.BranchLanguages
+                .Where(l => staleBranchIds.Contains(l.RepositoryBranchId))
+                .ToListAsync();
+
+            var staleLanguageIds = staleLanguages.Select(l => l.Id).ToList();
+
+            var staleCatalogs = await context.DocCatalogs
+                .Where(c => staleLanguageIds.Contains(c.BranchLanguageId))
+                .ToListAsync();
+            var staleDocFileIds = staleCatalogs
+                .Where(c => c.DocFileId != null)
+                .Select(c => c.DocFileId!)
+                .Distinct()
+                .ToList();
+            var staleDocFiles = await context.DocFiles
+                .Where(f => staleDocFileIds.Contains(f.Id))
+                .ToListAsync();
+
+            var staleLogs = await context.RepositoryProcessingLogs
+                .Where(log => tombstoneIds.Contains(log.RepositoryId))
+                .ToListAsync();
+
+            context.DocCatalogs.RemoveRange(staleCatalogs);
+            context.DocFiles.RemoveRange(staleDocFiles);
+            context.BranchLanguages.RemoveRange(staleLanguages);
+            context.RepositoryBranches.RemoveRange(staleBranches);
+            context.RepositoryProcessingLogs.RemoveRange(staleLogs);
+            context.Repositories.RemoveRange(tombstones);
+            await context.SaveChangesAsync();
         }
 
         // Get star and fork counts for public repositories

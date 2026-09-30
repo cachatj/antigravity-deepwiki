@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -260,7 +260,7 @@ public sealed class GeminiChatClient : IChatClient
 
                     try
                     {
-                        var schemaJson = tool.JsonSchema.ToString();
+                        var schemaJson = NormalizeSchemaForGemini(tool.JsonSchema);
                         var schemaOptions = new JsonSerializerOptions
                         {
                             PropertyNameCaseInsensitive = true,
@@ -288,5 +288,53 @@ public sealed class GeminiChatClient : IChatClient
         }
 
         return req;
+    }
+
+    /// <summary>
+    /// Gemini's Schema.Type is a single enum, but Microsoft.Extensions.AI emits JSON Schema
+    /// type unions such as ["string","null"] for nullable parameters. Collapse those to the
+    /// non-null type and mark the property nullable so the declaration deserializes.
+    /// </summary>
+    private static string NormalizeSchemaForGemini(JsonElement schema)
+    {
+        var node = System.Text.Json.Nodes.JsonNode.Parse(schema.GetRawText());
+        if (node is null)
+            return schema.GetRawText();
+
+        NormalizeSchemaNode(node);
+        return node.ToJsonString();
+    }
+
+    private static void NormalizeSchemaNode(System.Text.Json.Nodes.JsonNode node)
+    {
+        switch (node)
+        {
+            case System.Text.Json.Nodes.JsonObject obj:
+                if (obj["type"] is System.Text.Json.Nodes.JsonArray typeArray)
+                {
+                    var types = typeArray.Select(t => t?.GetValue<string>()).Where(t => t != null).ToList();
+                    var isNullable = types.Any(t => string.Equals(t, "null", StringComparison.OrdinalIgnoreCase));
+                    var primary = types.FirstOrDefault(t => !string.Equals(t, "null", StringComparison.OrdinalIgnoreCase));
+                    obj.Remove("type");
+                    if (primary != null)
+                        obj["type"] = primary;
+                    if (isNullable)
+                        obj["nullable"] = true;
+                }
+
+                // Gemini rejects unknown keywords; drop ones Microsoft.Extensions.AI commonly emits.
+                obj.Remove("$schema");
+                obj.Remove("additionalProperties");
+                obj.Remove("default");
+
+                foreach (var child in obj.Select(kv => kv.Value).Where(v => v != null).ToList())
+                    NormalizeSchemaNode(child!);
+                break;
+
+            case System.Text.Json.Nodes.JsonArray arr:
+                foreach (var item in arr.Where(i => i != null).ToList())
+                    NormalizeSchemaNode(item!);
+                break;
+        }
     }
 }

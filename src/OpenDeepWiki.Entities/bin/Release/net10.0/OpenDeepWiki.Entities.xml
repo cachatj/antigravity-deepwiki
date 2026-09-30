@@ -1,0 +1,2212 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OpenDeepWiki.Entities</name>
+    </assembly>
+    <members>
+        <member name="T:OpenDeepWiki.Entities.AggregateRoot`1">
+            <summary>
+            聚合根基类（DDD设计）
+            </summary>
+            <typeparam name="TKey">主键类型</typeparam>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.AggregateRoot`1.Id">
+            <summary>
+            主键ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.AggregateRoot`1.CreatedAt">
+            <summary>
+            创建时间（UTC）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.AggregateRoot`1.UpdatedAt">
+            <summary>
+            更新时间（UTC）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.AggregateRoot`1.DeletedAt">
+            <summary>
+            删除时间（UTC）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.AggregateRoot`1.IsDeleted">
+            <summary>
+            是否已删除（软删除）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.AggregateRoot`1.Version">
+            <summary>
+            版本号（用于乐观并发控制）
+            </summary>
+        </member>
+        <member name="M:OpenDeepWiki.Entities.AggregateRoot`1.MarkAsDeleted">
+            <summary>
+            标记为已删除
+            </summary>
+        </member>
+        <member name="M:OpenDeepWiki.Entities.AggregateRoot`1.UpdateTimestamp">
+            <summary>
+            更新时间戳
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.UserBookmark">
+            <summary>
+            用户收藏实体
+            记录用户与仓库之间的收藏关系
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserBookmark.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserBookmark.RepositoryId">
+            <summary>
+            仓库ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserBookmark.User">
+            <summary>
+            用户导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserBookmark.Repository">
+            <summary>
+            仓库导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.AppStatistics">
+            <summary>
+            应用统计数据实体
+            记录每日调用次数、Token消耗等统计信息
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.AppStatistics.AppId">
+            <summary>
+            关联的应用ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.AppStatistics.Date">
+            <summary>
+            统计日期
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.AppStatistics.RequestCount">
+            <summary>
+            请求总数
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.AppStatistics.InputTokens">
+            <summary>
+            输入Token数量
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.AppStatistics.OutputTokens">
+            <summary>
+            输出Token数量
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.ChatApp">
+            <summary>
+            用户创建的对话应用实体
+            包含AppId、AppSecret和配置信息，用于嵌入到外部网站
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.UserId">
+            <summary>
+            所属用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.Name">
+            <summary>
+            应用名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.Description">
+            <summary>
+            应用描述
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.IconUrl">
+            <summary>
+            应用图标URL
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.AppId">
+            <summary>
+            公开的应用ID（用于嵌入脚本）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.AppSecret">
+            <summary>
+            服务端验证密钥
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.EnableDomainValidation">
+            <summary>
+            是否启用域名校验
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.AllowedDomains">
+            <summary>
+            允许的域名列表（JSON数组）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.ProviderType">
+            <summary>
+            AI模型提供商类型（OpenAI、OpenAIResponses、Anthropic）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.ApiKey">
+            <summary>
+            API密钥
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.BaseUrl">
+            <summary>
+            API基础URL
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.AvailableModels">
+            <summary>
+            可用模型列表（JSON数组）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.DefaultModel">
+            <summary>
+            默认模型
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.RateLimitPerMinute">
+            <summary>
+            每分钟请求限制
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatApp.IsActive">
+            <summary>
+            是否激活
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.ChatAssistantConfig">
+            <summary>
+            对话助手配置实体
+            存储管理员配置的模型、MCPs、Skills等
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatAssistantConfig.IsEnabled">
+            <summary>
+            是否启用对话助手功能
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatAssistantConfig.EnabledModelIds">
+            <summary>
+            启用的模型ID列表（JSON数组）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatAssistantConfig.EnabledMcpIds">
+            <summary>
+            启用的MCP ID列表（JSON数组）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatAssistantConfig.EnabledSkillIds">
+            <summary>
+            启用的Skill ID列表（JSON数组）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatAssistantConfig.DefaultModelId">
+            <summary>
+            默认模型ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatAssistantConfig.EnableImageUpload">
+            <summary>
+            是否启用图片上传功能
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.ChatLog">
+            <summary>
+            用户提问记录实体
+            记录通过嵌入脚本的对话内容
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatLog.AppId">
+            <summary>
+            关联的应用ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatLog.UserIdentifier">
+            <summary>
+            用户标识（可选）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatLog.Question">
+            <summary>
+            用户提问内容
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatLog.AnswerSummary">
+            <summary>
+            AI回复摘要
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatLog.InputTokens">
+            <summary>
+            输入Token数量
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatLog.OutputTokens">
+            <summary>
+            输出Token数量
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatLog.ModelUsed">
+            <summary>
+            使用的模型
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatLog.SourceDomain">
+            <summary>
+            请求来源域名
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.ChatMessageHistory">
+            <summary>
+            消息历史实体
+            记录对话会话中的消息历史
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageHistory.SessionId">
+            <summary>
+            关联的会话ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageHistory.MessageId">
+            <summary>
+            消息ID（平台消息ID）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageHistory.SenderId">
+            <summary>
+            发送者标识
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageHistory.Content">
+            <summary>
+            消息内容
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageHistory.MessageType">
+            <summary>
+            消息类型（Text/Image/File/Audio/Video/RichText/Card/Unknown）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageHistory.Role">
+            <summary>
+            消息角色（User/Assistant）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageHistory.MessageTimestamp">
+            <summary>
+            消息时间戳
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageHistory.Metadata">
+            <summary>
+            消息元数据（JSON）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageHistory.Session">
+            <summary>
+            关联的会话
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.ChatMessageQueue">
+            <summary>
+            消息队列实体
+            用于处理连续消息发送和平台限流
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageQueue.SessionId">
+            <summary>
+            关联的会话ID（可选）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageQueue.TargetUserId">
+            <summary>
+            目标用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageQueue.Platform">
+            <summary>
+            平台标识
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageQueue.MessageContent">
+            <summary>
+            消息内容（JSON）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageQueue.QueueType">
+            <summary>
+            队列类型（Incoming/Outgoing/Retry）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageQueue.Status">
+            <summary>
+            处理状态（Pending/Processing/Completed/Failed）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageQueue.RetryCount">
+            <summary>
+            重试次数
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageQueue.ScheduledAt">
+            <summary>
+            计划执行时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatMessageQueue.ErrorMessage">
+            <summary>
+            错误信息
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.ChatProviderConfig">
+            <summary>
+            Provider 配置实体
+            存储各平台的接入配置
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatProviderConfig.Platform">
+            <summary>
+            平台标识
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatProviderConfig.DisplayName">
+            <summary>
+            显示名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatProviderConfig.IsEnabled">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatProviderConfig.ConfigData">
+            <summary>
+            配置数据（加密JSON）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatProviderConfig.WebhookUrl">
+            <summary>
+            Webhook URL
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatProviderConfig.MessageInterval">
+            <summary>
+            消息发送间隔（毫秒）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatProviderConfig.MaxRetryCount">
+            <summary>
+            最大重试次数
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.ChatSession">
+            <summary>
+            对话会话实体
+            维护用户与 Agent 之间的对话上下文
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatSession.UserId">
+            <summary>
+            用户标识（平台用户ID）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatSession.Platform">
+            <summary>
+            平台标识
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatSession.State">
+            <summary>
+            会话状态（Active/Processing/Waiting/Expired/Closed）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatSession.LastActivityAt">
+            <summary>
+            最后活动时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatSession.Metadata">
+            <summary>
+            会话元数据（JSON）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatSession.Messages">
+            <summary>
+            关联的消息历史
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.ChatShareSnapshot">
+            <summary>
+            聊天分享快照实体
+            用于存储创建分享时的对话内容和元数据
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatShareSnapshot.ShareId">
+            <summary>
+            对外分享ID（随机Token）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatShareSnapshot.Title">
+            <summary>
+            分享标题
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatShareSnapshot.Description">
+            <summary>
+            分享描述
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatShareSnapshot.CreatedBy">
+            <summary>
+            分享创建者（可为空）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatShareSnapshot.SnapshotJson">
+            <summary>
+            分享内容快照（JSON）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatShareSnapshot.Metadata">
+            <summary>
+            分享元数据（JSON）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatShareSnapshot.CreatedAt">
+            <summary>
+            分享创建时间（UTC）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatShareSnapshot.ExpiresAt">
+            <summary>
+            分享过期时间（UTC）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ChatShareSnapshot.RevokedAt">
+            <summary>
+            分享撤销时间（UTC）
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.Department">
+            <summary>
+            部门实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Department.Name">
+            <summary>
+            部门名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Department.ParentId">
+            <summary>
+            父部门ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Department.Description">
+            <summary>
+            部门描述
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Department.SortOrder">
+            <summary>
+            排序号
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Department.IsActive">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Department.Parent">
+            <summary>
+            父部门导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.McpDailyStatistics">
+            <summary>
+            MCP 每日统计聚合实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpDailyStatistics.McpProviderId">
+            <summary>
+            提供商 ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpDailyStatistics.Date">
+            <summary>
+            统计日期
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpDailyStatistics.RequestCount">
+            <summary>
+            请求总数
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpDailyStatistics.SuccessCount">
+            <summary>
+            成功数
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpDailyStatistics.ErrorCount">
+            <summary>
+            错误数
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpDailyStatistics.TotalDurationMs">
+            <summary>
+            总耗时（毫秒）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpDailyStatistics.InputTokens">
+            <summary>
+            输入 Token 总量
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpDailyStatistics.OutputTokens">
+            <summary>
+            输出 Token 总量
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.McpProvider">
+            <summary>
+            MCP 提供商配置实体（管理员管理）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.Name">
+            <summary>
+            提供商名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.Description">
+            <summary>
+            提供商描述
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.ServerUrl">
+            <summary>
+            MCP 服务端点地址
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.TransportType">
+            <summary>
+            传输方式：sse | streamable_http
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.RequiresApiKey">
+            <summary>
+            是否需要用户提供 API Key
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.ApiKeyObtainUrl">
+            <summary>
+            用户获取 API Key 的地址（管理员填写）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.SystemApiKey">
+            <summary>
+            系统级 API Key（RequiresApiKey=false 时系统自动带上）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.ModelConfigId">
+            <summary>
+            关联的 AI 模型配置 ID（FK → ModelConfig）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.RequestTypes">
+            <summary>
+            管理员配置的请求类型 JSON 数组
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.AllowedTools">
+            <summary>
+            允许暴露的工具 JSON 数组
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.IsActive">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.SortOrder">
+            <summary>
+            排序
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.IconUrl">
+            <summary>
+            提供商图标 URL
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpProvider.MaxRequestsPerDay">
+            <summary>
+            每日请求限额（0=无限制）
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.McpUsageLog">
+            <summary>
+            MCP 使用日志实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpUsageLog.UserId">
+            <summary>
+            用户 ID（从 Bearer Token 解析）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpUsageLog.McpProviderId">
+            <summary>
+            提供商 ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpUsageLog.ToolName">
+            <summary>
+            调用的工具名
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpUsageLog.RequestSummary">
+            <summary>
+            请求摘要
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpUsageLog.ResponseStatus">
+            <summary>
+            HTTP 状态码
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpUsageLog.DurationMs">
+            <summary>
+            响应耗时（毫秒）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpUsageLog.InputTokens">
+            <summary>
+            输入 Token 数
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpUsageLog.OutputTokens">
+            <summary>
+            输出 Token 数
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpUsageLog.IpAddress">
+            <summary>
+            请求 IP
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpUsageLog.UserAgent">
+            <summary>
+            客户端 User-Agent
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpUsageLog.ErrorMessage">
+            <summary>
+            错误信息
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.OAuthProvider">
+            <summary>
+            OAuth2提供商实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.Name">
+            <summary>
+            提供商名称（如：github, google, microsoft, feishu, gitee）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.DisplayName">
+            <summary>
+            提供商显示名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.AuthorizationUrl">
+            <summary>
+            OAuth2授权端点URL
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.TokenUrl">
+            <summary>
+            OAuth2令牌端点URL
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.UserInfoUrl">
+            <summary>
+            OAuth2用户信息端点URL
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.ClientId">
+            <summary>
+            OAuth2客户端ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.ClientSecret">
+            <summary>
+            OAuth2客户端密钥（加密存储）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.RedirectUri">
+            <summary>
+            回调URL
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.Scope">
+            <summary>
+            授权范围（多个用空格分隔）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.UserInfoMapping">
+            <summary>
+            用户信息映射配置（JSON格式）
+            </summary>
+            <example>
+            {
+              "id": "id",
+              "name": "name",
+              "email": "email",
+              "avatar": "avatar_url"
+            }
+            </example>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.IsActive">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.RequireEmailVerification">
+            <summary>
+            是否需要邮箱验证
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.OAuthProvider.UserOAuths">
+            <summary>
+            OAuth用户关联集合
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.UserOAuth">
+            <summary>
+            用户OAuth登录关联实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.OAuthProviderId">
+            <summary>
+            OAuth提供商ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.OAuthUserId">
+            <summary>
+            OAuth提供商用户ID（第三方平台的用户ID）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.OAuthUserName">
+            <summary>
+            OAuth提供商用户名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.OAuthUserEmail">
+            <summary>
+            OAuth提供商用户邮箱
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.OAuthUserAvatar">
+            <summary>
+            OAuth提供商用户头像
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.AccessToken">
+            <summary>
+            访问令牌（加密存储）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.RefreshToken">
+            <summary>
+            刷新令牌（加密存储）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.TokenExpiresAt">
+            <summary>
+            令牌过期时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.Scope">
+            <summary>
+            令牌作用域
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.TokenType">
+            <summary>
+            令牌类型
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.IsBound">
+            <summary>
+            是否已绑定（true表示已绑定到现有用户，false表示临时绑定）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.LastLoginAt">
+            <summary>
+            最后登录时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.User">
+            <summary>
+            用户实体导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserOAuth.OAuthProvider">
+            <summary>
+            OAuth提供商实体导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.BranchLanguage">
+            <summary>
+            分支语言实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.BranchLanguage.RepositoryBranchId">
+            <summary>
+            仓库分支ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.BranchLanguage.LanguageCode">
+            <summary>
+            语言代码
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.BranchLanguage.UpdateSummary">
+            <summary>
+            语言更新总结
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.BranchLanguage.IsDefault">
+            <summary>
+            是否为默认语言
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.BranchLanguage.MindMapContent">
+            <summary>
+            项目架构思维导图内容
+            格式: # 一级标题\n## 二级标题:文件路径\n### 三级标题
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.BranchLanguage.MindMapStatus">
+            <summary>
+            思维导图生成状态
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.BranchLanguage.RepositoryBranch">
+            <summary>
+            仓库分支导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.MindMapStatus">
+            <summary>
+            思维导图生成状态
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.MindMapStatus.Pending">
+            <summary>
+            等待生成
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.MindMapStatus.Processing">
+            <summary>
+            正在生成
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.MindMapStatus.Completed">
+            <summary>
+            生成完成
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.MindMapStatus.Failed">
+            <summary>
+            生成失败
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.CatalogItem">
+            <summary>
+            Catalog item model for JSON serialization.
+            Represents a node in the wiki catalog tree structure.
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.CatalogItem.Title">
+            <summary>
+            The display title of the catalog item.
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.CatalogItem.Path">
+            <summary>
+            URL-friendly path identifier, e.g., "1-overview", "2-architecture".
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.CatalogItem.Order">
+            <summary>
+            Sort order within the parent level.
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.CatalogItem.Children">
+            <summary>
+            Child catalog items (for tree structure).
+            </summary>
+        </member>
+        <member name="M:OpenDeepWiki.Entities.CatalogItem.Equals(OpenDeepWiki.Entities.CatalogItem)">
+            <summary>
+            Determines whether the specified CatalogItem is equal to the current CatalogItem.
+            </summary>
+        </member>
+        <member name="M:OpenDeepWiki.Entities.CatalogItem.Equals(System.Object)">
+            <summary>
+            Determines whether the specified object is equal to the current CatalogItem.
+            </summary>
+        </member>
+        <member name="M:OpenDeepWiki.Entities.CatalogItem.GetHashCode">
+            <summary>
+            Returns a hash code for the current CatalogItem.
+            </summary>
+        </member>
+        <member name="M:OpenDeepWiki.Entities.CatalogItem.ChildrenEqual(System.Collections.Generic.List{OpenDeepWiki.Entities.CatalogItem},System.Collections.Generic.List{OpenDeepWiki.Entities.CatalogItem})">
+            <summary>
+            Compares two lists of CatalogItem for equality.
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.CatalogRoot">
+            <summary>
+            Root container for the catalog structure.
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.CatalogRoot.Items">
+            <summary>
+            The list of top-level catalog items.
+            </summary>
+        </member>
+        <member name="M:OpenDeepWiki.Entities.CatalogRoot.Equals(OpenDeepWiki.Entities.CatalogRoot)">
+            <summary>
+            Determines whether the specified CatalogRoot is equal to the current CatalogRoot.
+            </summary>
+        </member>
+        <member name="M:OpenDeepWiki.Entities.CatalogRoot.Equals(System.Object)">
+            <summary>
+            Determines whether the specified object is equal to the current CatalogRoot.
+            </summary>
+        </member>
+        <member name="M:OpenDeepWiki.Entities.CatalogRoot.GetHashCode">
+            <summary>
+            Returns a hash code for the current CatalogRoot.
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.DocCatalog">
+            <summary>
+            文档目录实体（支持树形结构）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocCatalog.BranchLanguageId">
+            <summary>
+            分支语言ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocCatalog.ParentId">
+            <summary>
+            父目录ID（null 表示根节点）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocCatalog.Title">
+            <summary>
+            目录标题
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocCatalog.Path">
+            <summary>
+            URL 友好的路径，如 "1-overview"
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocCatalog.Order">
+            <summary>
+            排序顺序
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocCatalog.DocFileId">
+            <summary>
+            关联的文档文件ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocCatalog.Parent">
+            <summary>
+            父目录导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocCatalog.Children">
+            <summary>
+            子目录集合
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocCatalog.BranchLanguage">
+            <summary>
+            分支语言导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocCatalog.DocFile">
+            <summary>
+            文档文件导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.DocFile">
+            <summary>
+            文档文件实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocFile.BranchLanguageId">
+            <summary>
+            分支语言ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocFile.Content">
+            <summary>
+            文档内容
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocFile.SourceFiles">
+            <summary>
+            来源文件列表（JSON 数组格式存储）
+            记录生成此文档时读取的源代码文件路径
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.DocFile.BranchLanguage">
+            <summary>
+            分支语言导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.IncrementalUpdateStatus">
+            <summary>
+            增量更新任务状态
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.IncrementalUpdateStatus.Pending">
+            <summary>
+            等待处理
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.IncrementalUpdateStatus.Processing">
+            <summary>
+            正在处理
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.IncrementalUpdateStatus.Completed">
+            <summary>
+            处理完成
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.IncrementalUpdateStatus.Failed">
+            <summary>
+            处理失败
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.IncrementalUpdateStatus.Cancelled">
+            <summary>
+            已取消
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.IncrementalUpdateTask">
+            <summary>
+            增量更新任务实体
+            跟踪增量更新任务的状态
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.RepositoryId">
+            <summary>
+            仓库ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.BranchId">
+            <summary>
+            分支ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.PreviousCommitId">
+            <summary>
+            上次处理的 Commit ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.TargetCommitId">
+            <summary>
+            当前目标 Commit ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.Status">
+            <summary>
+            任务状态
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.Priority">
+            <summary>
+            任务优先级 (数值越大优先级越高)
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.IsManualTrigger">
+            <summary>
+            是否为手动触发
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.RetryCount">
+            <summary>
+            重试次数
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.ErrorMessage">
+            <summary>
+            错误信息
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.StartedAt">
+            <summary>
+            开始处理时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.CompletedAt">
+            <summary>
+            完成时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.Repository">
+            <summary>
+            仓库导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.IncrementalUpdateTask.Branch">
+            <summary>
+            分支导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.RepositoryStatus">
+            <summary>
+            仓库处理状态
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.Repository">
+            <summary>
+            仓库实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.OwnerUserId">
+            <summary>
+            所属用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.GitUrl">
+            <summary>
+            Git地址
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.RepoName">
+            <summary>
+            仓库名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.OrgName">
+            <summary>
+            仓库组织
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.AuthAccount">
+            <summary>
+            仓库账户
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.AuthPassword">
+            <summary>
+            仓库密码（明文存储）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.IsPublic">
+            <summary>
+            是否公开
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.Status">
+            <summary>
+            仓库处理状态
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.StarCount">
+            <summary>
+            Star数量
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.ForkCount">
+            <summary>
+            Fork数量
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.BookmarkCount">
+            <summary>
+            收藏数量
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.SubscriptionCount">
+            <summary>
+            订阅数量
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.ViewCount">
+            <summary>
+            浏览数量
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.PrimaryLanguage">
+            <summary>
+            仓库主要编程语言
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.UpdateIntervalMinutes">
+            <summary>
+            更新检查间隔（分钟）
+            null 表示使用全局默认值
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.LastUpdateCheckAt">
+            <summary>
+            上次检查更新时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Repository.Owner">
+            <summary>
+            所属用户导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.RepositoryAssignment">
+            <summary>
+            仓库指派实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryAssignment.RepositoryId">
+            <summary>
+            仓库ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryAssignment.DepartmentId">
+            <summary>
+            部门ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryAssignment.AssigneeUserId">
+            <summary>
+            指派用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryAssignment.Repository">
+            <summary>
+            仓库导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryAssignment.Department">
+            <summary>
+            部门导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryAssignment.AssigneeUser">
+            <summary>
+            指派用户导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.RepositoryBranch">
+            <summary>
+            仓库分支实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryBranch.RepositoryId">
+            <summary>
+            仓库ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryBranch.BranchName">
+            <summary>
+            分支名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryBranch.LastCommitId">
+            <summary>
+            最后处理的 commit ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryBranch.LastProcessedAt">
+            <summary>
+            最后处理时间（UTC）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryBranch.Repository">
+            <summary>
+            仓库导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.ProcessingStep">
+            <summary>
+            处理步骤类型
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.ProcessingStep.Workspace">
+            <summary>
+            准备工作区
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.ProcessingStep.Catalog">
+            <summary>
+            生成目录
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.ProcessingStep.Content">
+            <summary>
+            生成文档内容
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.ProcessingStep.Translation">
+            <summary>
+            多语言翻译
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.ProcessingStep.MindMap">
+            <summary>
+            生成思维导图
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.ProcessingStep.Complete">
+            <summary>
+            完成
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.RepositoryProcessingLog">
+            <summary>
+            仓库处理日志实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryProcessingLog.RepositoryId">
+            <summary>
+            关联的仓库ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryProcessingLog.Step">
+            <summary>
+            当前处理步骤
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryProcessingLog.Message">
+            <summary>
+            日志消息
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryProcessingLog.IsAiOutput">
+            <summary>
+            是否为AI输出
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryProcessingLog.ToolName">
+            <summary>
+            工具调用名称（如果是工具调用）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.RepositoryProcessingLog.Repository">
+            <summary>
+            关联的仓库导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.TranslationTaskStatus">
+            <summary>
+            翻译任务状态
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.TranslationTaskStatus.Pending">
+            <summary>
+            待处理
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.TranslationTaskStatus.Processing">
+            <summary>
+            处理中
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.TranslationTaskStatus.Completed">
+            <summary>
+            已完成
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.TranslationTaskStatus.Failed">
+            <summary>
+            失败
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.TranslationTask">
+            <summary>
+            翻译任务实体
+            用于存储待翻译的 Wiki 任务，由后台服务异步处理
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.RepositoryId">
+            <summary>
+            仓库ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.RepositoryBranchId">
+            <summary>
+            仓库分支ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.SourceBranchLanguageId">
+            <summary>
+            源语言分支ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.TargetLanguageCode">
+            <summary>
+            目标语言代码
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.Status">
+            <summary>
+            任务状态
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.ErrorMessage">
+            <summary>
+            错误信息（失败时记录）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.RetryCount">
+            <summary>
+            重试次数
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.MaxRetryCount">
+            <summary>
+            最大重试次数
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.StartedAt">
+            <summary>
+            开始处理时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.CompletedAt">
+            <summary>
+            完成时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.Repository">
+            <summary>
+            仓库导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.RepositoryBranch">
+            <summary>
+            仓库分支导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TranslationTask.SourceBranchLanguage">
+            <summary>
+            源语言分支导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.SystemSetting">
+            <summary>
+            系统设置实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.SystemSetting.Key">
+            <summary>
+            设置键
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.SystemSetting.Value">
+            <summary>
+            设置值
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.SystemSetting.Description">
+            <summary>
+            设置描述
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.SystemSetting.Category">
+            <summary>
+            设置分类（general, ai, security 等）
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.TokenUsage">
+            <summary>
+            Token 消耗记录实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TokenUsage.RepositoryId">
+            <summary>
+            关联的仓库ID（可选）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TokenUsage.UserId">
+            <summary>
+            关联的用户ID（可选）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TokenUsage.InputTokens">
+            <summary>
+            输入 Token 数量
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TokenUsage.OutputTokens">
+            <summary>
+            输出 Token 数量
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TokenUsage.ModelName">
+            <summary>
+            使用的模型名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TokenUsage.Operation">
+            <summary>
+            操作类型（catalog, content, chat 等）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TokenUsage.RecordedAt">
+            <summary>
+            记录时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TokenUsage.Repository">
+            <summary>
+            关联的仓库导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.TokenUsage.User">
+            <summary>
+            关联的用户导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.UserActivityType">
+            <summary>
+            用户活动类型
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.UserActivityType.View">
+            <summary>
+            浏览仓库
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.UserActivityType.Search">
+            <summary>
+            搜索
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.UserActivityType.Bookmark">
+            <summary>
+            收藏
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.UserActivityType.Subscribe">
+            <summary>
+            订阅
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.UserActivityType.Analyze">
+            <summary>
+            分析仓库
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.UserActivity">
+            <summary>
+            用户活动记录实体
+            用于记录用户行为，支持推荐算法
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserActivity.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserActivity.RepositoryId">
+            <summary>
+            仓库ID（可选，搜索行为可能没有）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserActivity.ActivityType">
+            <summary>
+            活动类型
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserActivity.Weight">
+            <summary>
+            活动权重（用于推荐算法）
+            View=1, Search=2, Bookmark=3, Subscribe=4, Analyze=5
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserActivity.Duration">
+            <summary>
+            浏览时长（秒），仅对 View 类型有效
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserActivity.SearchQuery">
+            <summary>
+            搜索关键词，仅对 Search 类型有效
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserActivity.Language">
+            <summary>
+            相关语言（用于语言偏好统计）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserActivity.User">
+            <summary>
+            用户导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserActivity.Repository">
+            <summary>
+            仓库导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.UserDislike">
+            <summary>
+            用户不感兴趣记录
+            用于排除用户明确表示不感兴趣的仓库
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserDislike.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserDislike.RepositoryId">
+            <summary>
+            仓库ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserDislike.Reason">
+            <summary>
+            不感兴趣原因（可选）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserDislike.User">
+            <summary>
+            用户导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserDislike.Repository">
+            <summary>
+            仓库导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.UserPreferenceCache">
+            <summary>
+            用户偏好缓存实体
+            定期聚合计算用户的语言和主题偏好
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserPreferenceCache.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserPreferenceCache.LanguageWeights">
+            <summary>
+            语言偏好权重（JSON格式）
+            例如: {"C#": 0.5, "TypeScript": 0.3, "Python": 0.2}
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserPreferenceCache.TopicWeights">
+            <summary>
+            主题偏好权重（JSON格式）
+            例如: {"web": 0.4, "api": 0.3, "database": 0.3}
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserPreferenceCache.PrivateRepoLanguages">
+            <summary>
+            用户私有仓库的语言分布（JSON格式）
+            从用户自己添加的仓库中提取
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserPreferenceCache.LastCalculatedAt">
+            <summary>
+            最后计算时间
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.LocalStorage">
+            <summary>
+            本地存储实体（用于存储文件）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.FileName">
+            <summary>
+            文件名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.FileExtension">
+            <summary>
+            文件扩展名
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.FileSize">
+            <summary>
+            文件大小（字节）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.ContentType">
+            <summary>
+            文件类型（MIME类型）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.FilePath">
+            <summary>
+            文件存储路径（相对路径）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.FileHash">
+            <summary>
+            文件哈希值（MD5/SHA256）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.Category">
+            <summary>
+            文件分类（如：avatar, document, image, video, audio）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.UploaderId">
+            <summary>
+            上传者ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.BusinessId">
+            <summary>
+            关联业务ID（如：用户ID、仓库ID等）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.BusinessType">
+            <summary>
+            关联业务类型（如：User, Warehouse, Document）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.Status">
+            <summary>
+            文件状态：0-临时，1-永久，2-已删除
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.IsPublic">
+            <summary>
+            是否公开访问
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.AccessCount">
+            <summary>
+            访问次数
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.LastAccessAt">
+            <summary>
+            最后访问时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.ExpiredAt">
+            <summary>
+            过期时间（临时文件）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.Metadata">
+            <summary>
+            元数据（JSON格式，存储自定义属性）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.LocalStorage.Uploader">
+            <summary>
+            用户实体导航属性（上传者）
+            </summary>
+        </member>
+        <member name="M:OpenDeepWiki.Entities.LocalStorage.MarkAsDeleted">
+            <summary>
+            标记为已删除
+            </summary>
+        </member>
+        <member name="M:OpenDeepWiki.Entities.LocalStorage.IncrementAccessCount">
+            <summary>
+            增加访问次数
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.UserSubscription">
+            <summary>
+            用户订阅实体
+            记录用户与仓库之间的订阅关系
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserSubscription.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserSubscription.RepositoryId">
+            <summary>
+            仓库ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserSubscription.User">
+            <summary>
+            用户导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserSubscription.Repository">
+            <summary>
+            仓库导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.McpConfig">
+            <summary>
+            MCP 配置实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpConfig.Name">
+            <summary>
+            MCP 名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpConfig.Description">
+            <summary>
+            MCP 描述
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpConfig.ServerUrl">
+            <summary>
+            MCP 服务器地址
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpConfig.ApiKey">
+            <summary>
+            API 密钥
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpConfig.IsActive">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.McpConfig.SortOrder">
+            <summary>
+            排序顺序
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.ModelConfig">
+            <summary>
+            AI 模型配置实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ModelConfig.Name">
+            <summary>
+            模型显示名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ModelConfig.Provider">
+            <summary>
+            模型提供商（OpenAI, Anthropic, AzureOpenAI 等）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ModelConfig.ModelId">
+            <summary>
+            模型ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ModelConfig.Endpoint">
+            <summary>
+            API 端点
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ModelConfig.ApiKey">
+            <summary>
+            API 密钥
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ModelConfig.IsDefault">
+            <summary>
+            是否为默认模型
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ModelConfig.IsActive">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.ModelConfig.Description">
+            <summary>
+            模型描述
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.Tools.SkillConfig">
+            <summary>
+            Agent Skills 配置实体
+            遵循 Anthropic Agent Skills 开放标准 (agentskills.io)
+            Skill 以文件夹形式存储，此实体仅记录元数据和管理信息
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.Name">
+            <summary>
+            Skill 名称（唯一标识符，同时也是文件夹名）
+            规范：最大64字符，仅小写字母、数字和连字符，不能以连字符开头或结尾
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.Description">
+            <summary>
+            Skill 描述（从 SKILL.md frontmatter 解析）
+            规范：最大1024字符
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.License">
+            <summary>
+            许可证信息（从 SKILL.md frontmatter 解析）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.Compatibility">
+            <summary>
+            兼容性要求（从 SKILL.md frontmatter 解析）
+            规范：最大500字符
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.AllowedTools">
+            <summary>
+            预批准的工具列表（空格分隔，从 SKILL.md frontmatter 解析）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.FolderPath">
+            <summary>
+            Skill 文件夹的相对路径（相对于 skills 根目录）
+            例如：code-review、data-analysis
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.IsActive">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.SortOrder">
+            <summary>
+            排序顺序
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.Author">
+            <summary>
+            作者
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.Version">
+            <summary>
+            版本号
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.Source">
+            <summary>
+            来源类型
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.SourceUrl">
+            <summary>
+            来源 URL（如果是从远程导入的）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.HasScripts">
+            <summary>
+            是否包含 scripts 目录
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.HasReferences">
+            <summary>
+            是否包含 references 目录
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.HasAssets">
+            <summary>
+            是否包含 assets 目录
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.SkillMdSize">
+            <summary>
+            SKILL.md 文件大小（字节）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Tools.SkillConfig.TotalSize">
+            <summary>
+            整个 Skill 文件夹大小（字节）
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.Tools.SkillSource">
+            <summary>
+            Skill 来源类型
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.Tools.SkillSource.Local">
+            <summary>
+            本地上传
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.Tools.SkillSource.Remote">
+            <summary>
+            从 URL 导入
+            </summary>
+        </member>
+        <member name="F:OpenDeepWiki.Entities.Tools.SkillSource.Marketplace">
+            <summary>
+            从市场安装
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.Role">
+            <summary>
+            角色实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Role.Name">
+            <summary>
+            角色名称
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Role.Description">
+            <summary>
+            角色描述
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Role.IsActive">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Role.IsSystemRole">
+            <summary>
+            是否为系统角色（系统角色不能删除和修改）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.Role.UserRoles">
+            <summary>
+            用户角色关联集合
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.User">
+            <summary>
+            用户实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.User.Name">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.User.Email">
+            <summary>
+            邮箱
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.User.Password">
+            <summary>
+            密码（加密存储）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.User.Avatar">
+            <summary>
+            头像URL
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.User.Phone">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.User.Status">
+            <summary>
+            用户状态：0-禁用，1-正常，2-待验证
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.User.IsSystem">
+            <summary>
+            是否为系统用户
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.User.LastLoginAt">
+            <summary>
+            最后登录时间
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.User.LastLoginIp">
+            <summary>
+            最后登录IP
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.User.UserRoles">
+            <summary>
+            用户角色关联集合
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.User.UserOAuths">
+            <summary>
+            OAuth登录关联集合
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.UserDepartment">
+            <summary>
+            用户-部门关联实体
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserDepartment.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserDepartment.DepartmentId">
+            <summary>
+            部门ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserDepartment.IsManager">
+            <summary>
+            是否为部门主管
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserDepartment.User">
+            <summary>
+            用户导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserDepartment.Department">
+            <summary>
+            部门导航属性
+            </summary>
+        </member>
+        <member name="T:OpenDeepWiki.Entities.UserRole">
+            <summary>
+            用户角色关联实体（多对多关系）
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserRole.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserRole.RoleId">
+            <summary>
+            角色ID
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserRole.User">
+            <summary>
+            用户实体导航属性
+            </summary>
+        </member>
+        <member name="P:OpenDeepWiki.Entities.UserRole.Role">
+            <summary>
+            角色实体导航属性
+            </summary>
+        </member>
+    </members>
+</doc>

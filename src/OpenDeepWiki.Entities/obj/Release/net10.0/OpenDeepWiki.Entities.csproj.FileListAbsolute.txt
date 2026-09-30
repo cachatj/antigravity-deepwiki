@@ -1,0 +1,15 @@
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/bin/Release/net10.0/OpenDeepWiki.Entities.deps.json
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/bin/Release/net10.0/OpenDeepWiki.Entities.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/bin/Release/net10.0/OpenDeepWiki.Entities.pdb
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/bin/Release/net10.0/OpenDeepWiki.Entities.xml
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/Release/net10.0/OpenDeepWiki.Entities.csproj.AssemblyReference.cache
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/Release/net10.0/OpenDeepWiki.Entities.GeneratedMSBuildEditorConfig.editorconfig
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/Release/net10.0/OpenDeepWiki.Entities.AssemblyInfoInputs.cache
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/Release/net10.0/OpenDeepWiki.Entities.AssemblyInfo.cs
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/Release/net10.0/OpenDeepWiki.Entities.csproj.CoreCompileInputs.cache
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/Release/net10.0/OpenDeepWiki.Entities.sourcelink.json
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/Release/net10.0/OpenDeepWiki.Entities.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/Release/net10.0/refint/OpenDeepWiki.Entities.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/Release/net10.0/OpenDeepWiki.Entities.xml
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/Release/net10.0/OpenDeepWiki.Entities.pdb
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/Release/net10.0/ref/OpenDeepWiki.Entities.dll
