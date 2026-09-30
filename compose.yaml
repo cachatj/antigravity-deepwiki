@@ -58,7 +58,8 @@ services:
       - WIKI_LANGUAGES=en
 
     volumes:
-      - ./data:/data
+      # Named volume: SQLite over a macOS bind mount fails with 'disk I/O error' on large writes.
+      - opendeepwiki-data:/data
       - /Users/jc-vht/code_sandbox/claims_denial_data_science:/vht-denials:ro
       - /Users/jc-vht/code_sandbox/autogluon-local-new-client-tests:/vht-autogluon-local:ro
       - /Users/jc-vht/code_sandbox/vht-ai-claims-engine:/vht-ai-claims-engine:ro
@@ -78,3 +79,6 @@ services:
     environment:
       - NODE_ENV=production
       - API_PROXY_URL=http://opendeepwiki:8080
+
+volumes:
+  opendeepwiki-data:
