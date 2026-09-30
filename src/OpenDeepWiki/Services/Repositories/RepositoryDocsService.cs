@@ -4,15 +4,19 @@ using OpenDeepWiki.Cache.Abstractions;
 using OpenDeepWiki.EFCore;
 using OpenDeepWiki.Entities;
 using OpenDeepWiki.Models;
-using System.IO.Compression;
-using System.Text;
+using OpenDeepWiki.Services.Wiki;
 using Microsoft.AspNetCore.Authorization;
 
 namespace OpenDeepWiki.Services.Repositories;
 
 [MiniApi(Route = "/api/v1/repos")]
 [Tags("Repository Documents")]
-public class RepositoryDocsService(IContext context, IGitPlatformService gitPlatformService, ICache cache)
+public class RepositoryDocsService(
+    IContext context,
+    IGitPlatformService gitPlatformService,
+    ICache cache,
+    WikiHtmlExportService htmlExportService,
+    IHostEnvironment hostEnvironment)
 {
     private const string FallbackLanguageCode = "en"; // Fallback language when no default is marked
     private const int ExportRateLimitMinutes = 5; // Export rate limit: once per 5 minutes
@@ -441,7 +445,8 @@ public class RepositoryDocsService(IContext context, IGitPlatformService gitPlat
         var now = DateTime.UtcNow;
         var rateLimitKey = BuildRateLimitKey(owner, repo, branchEntity.BranchName, language.LanguageCode);
 
-        var lastExportTime = await cache.GetAsync<DateTime?>(rateLimitKey);
+        // Rate limiting is skipped in Development so the export can be iterated on locally.
+        var lastExportTime = hostEnvironment.IsDevelopment() ? null : await cache.GetAsync<DateTime?>(rateLimitKey);
         if (lastExportTime.HasValue)
         {
             var timeSinceLastExport = now - lastExportTime.Value;
@@ -477,19 +482,16 @@ public class RepositoryDocsService(IContext context, IGitPlatformService gitPlat
                 return Results.NotFound("No document content found for this branch and language");
             }
 
-            // Create memory stream for generating archive
-            using var memoryStream = new MemoryStream();
-            using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-            {
-                // Build directory structure and add files
-                await AddFilesToArchive(archive, catalogs, null, null);
-            }
+            // Build a self-contained HTML site: index.html + one page per document, offline-browsable.
+            var zipBytes = htmlExportService.Build(new WikiHtmlExportService.ExportRequest(
+                owner,
+                repo,
+                branchEntity.BranchName,
+                language.LanguageCode,
+                catalogs));
 
-            // Set filename
             var fileName = $"{owner}-{repo}-{branchEntity.BranchName}-{language.LanguageCode}.zip";
-            
-            // Return archive
-            return Results.File(memoryStream.ToArray(), "application/zip", fileName);
+            return Results.File(zipBytes, "application/zip", fileName);
         }
         finally
         {
@@ -538,93 +540,5 @@ public class RepositoryDocsService(IContext context, IGitPlatformService gitPlat
         {
             SlidingExpiration = ExportConcurrencyCountTtl
         });
-    }
-
-    /// <summary>
-    /// Recursively add files to archive
-    /// </summary>
-    private static async Task AddFilesToArchive(
-        ZipArchive archive,
-        List<DocCatalog> catalogs,
-        string? parentCatalogId,
-        string? parentZipPath)
-    {
-        // Get items at current level
-        var currentLevelItems = catalogs
-            .Where(c => c.ParentId == parentCatalogId)
-            .OrderBy(c => c.Order)
-            .ToList();
-
-        var usedNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var catalog in currentLevelItems)
-        {
-            var itemName = EnsureUniqueName(SanitizeZipNameSegment(catalog.Title), usedNames);
-
-            // If has document file, create file entry
-            if (catalog.DocFile != null)
-            {
-                // Use .md extension
-                var fileName = $"{itemName}.md";
-                var fullPath = CombineZipPath(parentZipPath, fileName);
-
-                var entry = archive.CreateEntry(fullPath);
-                using var entryStream = entry.Open();
-                using var writer = new StreamWriter(entryStream, Encoding.UTF8);
-                await writer.WriteAsync(catalog.DocFile.Content);
-            }
-
-            // Recursively process subdirectories
-            var children = catalogs.Where(c => c.ParentId == catalog.Id).ToList();
-            if (children.Count > 0)
-            {
-                var nextParentZipPath = CombineZipPath(parentZipPath, itemName);
-                await AddFilesToArchive(archive, catalogs, catalog.Id, nextParentZipPath);
-            }
-        }
-    }
-
-    private static string CombineZipPath(string? parentZipPath, string entryName)
-    {
-        return string.IsNullOrEmpty(parentZipPath)
-            ? entryName
-            : $"{parentZipPath}/{entryName}";
-    }
-
-    private static string SanitizeZipNameSegment(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return "untitled";
-        }
-
-        var invalidChars = Path.GetInvalidFileNameChars();
-        var sanitized = new string(value
-            .Trim()
-            .Select(ch => invalidChars.Contains(ch) ? '_' : ch)
-            .ToArray());
-
-        sanitized = sanitized.TrimEnd('.', ' ');
-
-        return string.IsNullOrWhiteSpace(sanitized)
-            ? "untitled"
-            : sanitized;
-    }
-
-    private static string EnsureUniqueName(string baseName, ISet<string> usedNames)
-    {
-        if (usedNames.Add(baseName))
-        {
-            return baseName;
-        }
-
-        for (var index = 2; ; index++)
-        {
-            var candidate = $"{baseName} ({index})";
-            if (usedNames.Add(candidate))
-            {
-                return candidate;
-            }
-        }
     }
 }

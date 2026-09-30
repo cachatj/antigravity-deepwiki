@@ -20,5 +20,10 @@
   "selectStrategy": "Select Strategy",
   "allLanguages": "All Languages",
   "noResults": "No results found",
-  "tryAnotherSearch": "Try another search or adjust filters"
+  "tryAnotherSearch": "Try another search or adjust filters",
+  "exportTitle": "Export Wiki",
+  "exportExporting": "Exporting...",
+  "exportDownloaded": "Downloaded!",
+  "exportSuccess": "Documentation exported. Unzip and open index.html to browse offline.",
+  "exportFailed": "Failed to export documentation"
 }

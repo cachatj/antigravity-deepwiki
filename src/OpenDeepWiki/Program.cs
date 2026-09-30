@@ -310,7 +310,7 @@ try
 
     // Register translation service
     builder.Services.AddScoped<ITranslationService, TranslationService>();
-    builder.Services.AddScoped<WikiExportService>();
+    builder.Services.AddScoped<WikiHtmlExportService>();
 
     builder.Services.AddHostedService<RepositoryProcessingWorker>();
     builder.Services.AddHostedService<TranslationWorker>();

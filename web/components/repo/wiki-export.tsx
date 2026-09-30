@@ -75,13 +75,13 @@ export function WikiExport({
       document.body.removeChild(a);
       
       setIsSuccess(true);
-      toast.success(t("export.success") || "Documentation exported successfully");
+      toast.success(t("ui.exportSuccess"));
       
       // Reset success state after a while
       setTimeout(() => setIsSuccess(false), 3000);
     } catch (error) {
       console.error("Export failed:", error);
-      toast.error(t("export.failed") || "Failed at exporting documentation");
+      toast.error(t("ui.exportFailed"));
     } finally {
       setIsExporting(false);
     }
@@ -97,17 +97,17 @@ export function WikiExport({
       {isExporting ? (
         <>
           <Loader2 className="h-4 w-4 animate-spin" />
-          <span>{t("export.exporting") || "Exporting..."}</span>
+          <span>{t("ui.exportExporting")}</span>
         </>
       ) : isSuccess ? (
         <>
           <CheckCircle2 className="h-4 w-4 text-green-500 animate-in zoom-in duration-300" />
-          <span>{t("export.downloaded") || "Downloaded!"}</span>
+          <span>{t("ui.exportDownloaded")}</span>
         </>
       ) : (
         <>
           <Download className="h-4 w-4 group-hover:translate-y-0.5 transition-transform" />
-          <span>{t("export.title") || "Export Wiki"}</span>
+          <span>{t("ui.exportTitle")}</span>
         </>
       )}
       
