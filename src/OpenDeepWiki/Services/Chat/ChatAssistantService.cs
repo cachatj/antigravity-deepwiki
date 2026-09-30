@@ -616,6 +616,7 @@ public class ChatAssistantService : IChatAssistantService
         var repositoryIds = await context.Repositories
             .Where(r => !r.IsDeleted && r.OrgName == docContext.Owner && r.RepoName == docContext.Repo)
             .Select(r => r.Id)
+            .OrderBy(id => id)
             .Take(2)
             .ToListAsync(cancellationToken);
 

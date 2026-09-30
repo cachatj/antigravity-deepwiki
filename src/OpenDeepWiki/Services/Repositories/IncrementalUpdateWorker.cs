@@ -224,6 +224,7 @@ public class IncrementalUpdateWorker : BackgroundService
             .Where(r => r.LastUpdateCheckAt == null ||
                         r.LastUpdateCheckAt.Value.AddMinutes(
                             r.UpdateIntervalMinutes ?? _options.DefaultUpdateIntervalMinutes) <= now)
+            .OrderBy(r => r.LastUpdateCheckAt)
             .Take(10) // 每次最多检查10个仓库，避免单次处理过多
             .ToListAsync(stoppingToken);
 

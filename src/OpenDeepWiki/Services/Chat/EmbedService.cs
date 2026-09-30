@@ -492,6 +492,7 @@ public class EmbedService : IEmbedService
                 var repositoryIds = await context.Repositories
                     .Where(r => !r.IsDeleted && r.OrgName == owner && r.RepoName == repo)
                     .Select(r => r.Id)
+                    .OrderBy(id => id)
                     .Take(2)
                     .ToListAsync(cancellationToken);
                 repositoryId = repositoryIds.Count == 1 ? repositoryIds[0] : null;
