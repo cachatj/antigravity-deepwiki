@@ -49,8 +49,10 @@ public class GitTool
             throw new DirectoryNotFoundException($"Working directory does not exist: {_workingDirectory}");
         }
 
-        // 解析 .gitignore 文件
-        _gitIgnoreRules = ParseGitIgnore(_workingDirectory);
+        // Parse .gitignore, then .deepwikiignore (same syntax) for wiki-specific exclusions
+        // such as archived notebooks or scratch folders that would otherwise dilute the docs.
+        _gitIgnoreRules = ParseIgnoreFile(Path.Combine(_workingDirectory, ".gitignore"));
+        _gitIgnoreRules.AddRange(ParseIgnoreFile(Path.Combine(_workingDirectory, ".deepwikiignore")));
     }
 
     /// <summary>
@@ -205,6 +207,7 @@ Usage:
 - Lines longer than 2000 characters will be truncated
 - Results include line numbers in 'N: content' format
 - Binary files (images, executables, etc.) are not supported
+- Jupyter notebooks (.ipynb) are rendered as numbered cells with source code and summarized outputs instead of raw JSON
 - Hidden files/directories (starting with .) are accessible but filtered in search results")]
     public async Task<string> ReadAsync(
         [Description("Relative path to the file from repository root, e.g., 'src/main.cs' or 'docs/README.md'")]
@@ -235,7 +238,7 @@ Usage:
                 return $"ERROR: File not found at path '{relativePath}'. Please verify the file path is correct and the file exists in the repository.";
             }
 
-            var lines = await File.ReadAllLinesAsync(fullPath, cancellationToken);
+            var lines = await ReadFileLinesAsync(fullPath, normalizedPath, cancellationToken);
             var startIndex = Math.Max(0, offset - 1);
             var endIndex = Math.Min(lines.Length, startIndex + limit);
 
@@ -415,7 +418,7 @@ Pattern Examples:
         ConcurrentBag<GrepResult> results, ref int resultCount)
     {
         var relativePath = GetRelativePath(file);
-        using var reader = new StreamReader(file);
+        using var reader = OpenTextForSearch(file, relativePath);
         var lineBuffer = new Queue<string>(contextLines + 1);
         var lineNumber = 0;
         string? line;
@@ -477,6 +480,50 @@ Pattern Examples:
                 lineBuffer.Enqueue(line);
             }
         }
+    }
+
+    /// <summary>
+    /// Reads a file as lines. Jupyter notebooks are rendered into readable cells; anything else is read verbatim.
+    /// Falls back to raw content if a notebook cannot be parsed.
+    /// </summary>
+    private static async Task<string[]> ReadFileLinesAsync(string fullPath, string displayName, CancellationToken cancellationToken)
+    {
+        if (NotebookRenderer.IsNotebook(fullPath))
+        {
+            var json = await File.ReadAllTextAsync(fullPath, cancellationToken);
+            try
+            {
+                return NotebookRenderer.Render(json, displayName);
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                // Not valid notebook JSON; fall through to raw read
+            }
+        }
+
+        return await File.ReadAllLinesAsync(fullPath, cancellationToken);
+    }
+
+    /// <summary>
+    /// Opens a file for line-based searching. Notebooks are searched in their rendered form so
+    /// matches land on readable cell source rather than escaped JSON fragments.
+    /// </summary>
+    private static TextReader OpenTextForSearch(string fullPath, string displayName)
+    {
+        if (NotebookRenderer.IsNotebook(fullPath))
+        {
+            try
+            {
+                var rendered = NotebookRenderer.Render(File.ReadAllText(fullPath), displayName);
+                return new StringReader(string.Join('\n', rendered));
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                // Fall back to raw content
+            }
+        }
+
+        return new StreamReader(fullPath);
     }
 
     /// <summary>
@@ -615,14 +662,13 @@ Glob Examples:
     }
 
     /// <summary>
-    /// Parses .gitignore file and returns a list of ignore rules.
+    /// Parses a gitignore-syntax file and returns a list of ignore rules.
     /// </summary>
-    /// <param name="workingDirectory">The repository root directory.</param>
-    /// <returns>List of parsed gitignore rules.</returns>
-    private static List<GitIgnoreRule> ParseGitIgnore(string workingDirectory)
+    /// <param name="gitignorePath">Full path to the ignore file.</param>
+    /// <returns>List of parsed ignore rules (empty if the file is missing).</returns>
+    private static List<GitIgnoreRule> ParseIgnoreFile(string gitignorePath)
     {
         var rules = new List<GitIgnoreRule>();
-        var gitignorePath = Path.Combine(workingDirectory, ".gitignore");
 
         if (!File.Exists(gitignorePath))
         {
