@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "bjQ41Cfr+Yo=",
+  "dgSpecHash": "yvorpdcLrlM=",
   "success": true,
-  "projectFilePath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj",
+  "projectFilePath": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj",
   "expectedPackageFiles": [
-    "/Users/jcachat/.nuget/packages/microsoft.entityframeworkcore.abstractions/10.0.2/microsoft.entityframeworkcore.abstractions.10.0.2.nupkg.sha512",
-    "/Users/jcachat/.nuget/packages/system.componentmodel.annotations/5.0.0/system.componentmodel.annotations.5.0.0.nupkg.sha512"
+    "/Users/jc-vht/.nuget/packages/microsoft.entityframeworkcore.abstractions/10.0.2/microsoft.entityframeworkcore.abstractions.10.0.2.nupkg.sha512",
+    "/Users/jc-vht/.nuget/packages/system.componentmodel.annotations/5.0.0/system.componentmodel.annotations.5.0.0.nupkg.sha512"
   ],
   "logs": []
 }

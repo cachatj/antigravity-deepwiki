@@ -1,21 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj": {}
+    "/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj": {}
   },
   "projects": {
-    "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj": {
+    "/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj": {
       "version": "2.0.0",
       "restore": {
-        "projectUniqueName": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj",
+        "projectUniqueName": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj",
         "projectName": "OpenDeepWiki.Entities",
-        "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj",
-        "packagesPath": "/Users/jcachat/.nuget/packages/",
-        "outputPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/",
+        "projectPath": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/OpenDeepWiki.Entities.csproj",
+        "packagesPath": "/Users/jc-vht/.nuget/packages/",
+        "outputPath": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.Entities/obj/",
         "projectStyle": "PackageReference",
         "centralPackageVersionsManagementEnabled": true,
         "configFilePaths": [
-          "/Users/jcachat/.nuget/NuGet/NuGet.Config"
+          "/Users/jc-vht/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -25,6 +25,7 @@
         },
         "frameworks": {
           "net10.0": {
+            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {}
           }
@@ -47,10 +48,11 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.400"
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "Microsoft.EntityFrameworkCore.Abstractions": {
@@ -156,7 +158,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.401/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

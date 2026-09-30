@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net10.0": {
       "Microsoft.Extensions.Caching.Abstractions/10.0.2": {
@@ -397,20 +397,20 @@
     ]
   },
   "packageFolders": {
-    "/Users/jcachat/.nuget/packages/": {}
+    "/Users/jc-vht/.nuget/packages/": {}
   },
   "project": {
     "version": "2.0.0",
     "restore": {
-      "projectUniqueName": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.DependencyInjection/OpenDeepWiki.Cache.DependencyInjection.csproj",
+      "projectUniqueName": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.DependencyInjection/OpenDeepWiki.Cache.DependencyInjection.csproj",
       "projectName": "OpenDeepWiki.Cache.DependencyInjection",
-      "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.DependencyInjection/OpenDeepWiki.Cache.DependencyInjection.csproj",
-      "packagesPath": "/Users/jcachat/.nuget/packages/",
-      "outputPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.DependencyInjection/obj/",
+      "projectPath": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.DependencyInjection/OpenDeepWiki.Cache.DependencyInjection.csproj",
+      "packagesPath": "/Users/jc-vht/.nuget/packages/",
+      "outputPath": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.DependencyInjection/obj/",
       "projectStyle": "PackageReference",
       "centralPackageVersionsManagementEnabled": true,
       "configFilePaths": [
-        "/Users/jcachat/.nuget/NuGet/NuGet.Config"
+        "/Users/jc-vht/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -420,13 +420,14 @@
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/OpenDeepWiki.Cache.Abstractions.csproj": {
-              "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/OpenDeepWiki.Cache.Abstractions.csproj"
+            "/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/OpenDeepWiki.Cache.Abstractions.csproj": {
+              "projectPath": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/OpenDeepWiki.Cache.Abstractions.csproj"
             },
-            "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Memory/OpenDeepWiki.Cache.Memory.csproj": {
-              "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Memory/OpenDeepWiki.Cache.Memory.csproj"
+            "/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Memory/OpenDeepWiki.Cache.Memory.csproj": {
+              "projectPath": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Memory/OpenDeepWiki.Cache.Memory.csproj"
             }
           }
         }
@@ -449,10 +450,11 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.200"
+      "SdkAnalysisLevel": "10.0.400"
     },
     "frameworks": {
       "net10.0": {
+        "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": {
@@ -553,7 +555,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.401/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",

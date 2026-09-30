@@ -22,3 +22,15 @@
 /app/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/refint/OpenDeepWiki.Cache.Abstractions.dll
 /app/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/OpenDeepWiki.Cache.Abstractions.pdb
 /app/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/ref/OpenDeepWiki.Cache.Abstractions.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/bin/Debug/net10.0/OpenDeepWiki.Cache.Abstractions.deps.json
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/bin/Debug/net10.0/OpenDeepWiki.Cache.Abstractions.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/bin/Debug/net10.0/OpenDeepWiki.Cache.Abstractions.pdb
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/OpenDeepWiki.Cache.Abstractions.GeneratedMSBuildEditorConfig.editorconfig
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/OpenDeepWiki.Cache.Abstractions.AssemblyInfoInputs.cache
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/OpenDeepWiki.Cache.Abstractions.AssemblyInfo.cs
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/OpenDeepWiki.Cache.Abstractions.csproj.CoreCompileInputs.cache
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/OpenDeepWiki.Cache.Abstractions.sourcelink.json
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/OpenDeepWiki.Cache.Abstractions.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/refint/OpenDeepWiki.Cache.Abstractions.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/OpenDeepWiki.Cache.Abstractions.pdb
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/framework/OpenDeepWiki.Cache.Abstractions/obj/Debug/net10.0/ref/OpenDeepWiki.Cache.Abstractions.dll

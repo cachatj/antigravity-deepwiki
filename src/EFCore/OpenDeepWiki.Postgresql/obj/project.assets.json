@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net10.0": {
       "Humanizer.Core/2.14.1": {
@@ -2794,20 +2794,20 @@
     ]
   },
   "packageFolders": {
-    "/Users/jcachat/.nuget/packages/": {}
+    "/Users/jc-vht/.nuget/packages/": {}
   },
   "project": {
     "version": "2.0.0",
     "restore": {
-      "projectUniqueName": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj",
+      "projectUniqueName": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj",
       "projectName": "OpenDeepWiki.Postgresql",
-      "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj",
-      "packagesPath": "/Users/jcachat/.nuget/packages/",
-      "outputPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Postgresql/obj/",
+      "projectPath": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Postgresql/OpenDeepWiki.Postgresql.csproj",
+      "packagesPath": "/Users/jc-vht/.nuget/packages/",
+      "outputPath": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/EFCore/OpenDeepWiki.Postgresql/obj/",
       "projectStyle": "PackageReference",
       "centralPackageVersionsManagementEnabled": true,
       "configFilePaths": [
-        "/Users/jcachat/.nuget/NuGet/NuGet.Config"
+        "/Users/jc-vht/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -2817,10 +2817,11 @@
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj": {
-              "projectPath": "/Users/jcachat/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj"
+            "/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj": {
+              "projectPath": "/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki.EFCore/OpenDeepWiki.EFCore.csproj"
             }
           }
         }
@@ -2843,10 +2844,11 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.200"
+      "SdkAnalysisLevel": "10.0.400"
     },
     "frameworks": {
       "net10.0": {
+        "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Design": {
@@ -2952,7 +2954,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.401/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",
