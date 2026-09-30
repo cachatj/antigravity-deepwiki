@@ -190,13 +190,17 @@ public sealed class GeminiChatClient : IChatClient
                     try
                     {
                         var schemaJson = tool.JsonSchema.ToString();
-                        var schemaOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                        var schemaOptions = new JsonSerializerOptions 
+                        { 
+                            PropertyNameCaseInsensitive = true,
+                            Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase) }
+                        };
                         var parameters = JsonSerializer.Deserialize<Google.GenAI.Types.Schema>(schemaJson, schemaOptions);
                         declaration.Parameters = parameters;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        // Fallback if schema doesn't match perfectly, though typically GenAI SDK handles generic schema fields.
+                        Console.WriteLine($"[GeminiChatClient] Failed to deserialize schema for tool {tool.Name}: {ex.Message}");
                     }
                     
                     functionDeclarations.Add(declaration);
