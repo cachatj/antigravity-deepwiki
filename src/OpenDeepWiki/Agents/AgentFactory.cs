@@ -72,7 +72,7 @@ namespace OpenDeepWiki.Agents
 
             if (option.RequestType == AiRequestType.Gemini)
             {
-                var modelToUse = string.IsNullOrEmpty(model) ? "gemini-3.1-pro-preview" : model;
+                var modelToUse = string.IsNullOrEmpty(model) ? "gemini-2.5-flash" : model;
                 var geminiClient = new Google.GenAI.Client(apiKey: option.ApiKey ?? string.Empty);
                 return new GeminiChatClient(geminiClient, modelToUse);
             }
