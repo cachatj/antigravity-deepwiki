@@ -66,6 +66,9 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
                 .Where(c => staleLanguageIds.Contains(c.BranchLanguageId))
                 .ToListAsync();
 
+            // Break DocCatalog self-referencing foreign keys to avoid SQLite ON DELETE RESTRICT errors
+            foreach (var c in staleCatalogs) c.ParentId = null;
+
             var staleDocFiles = await context.DocFiles
                 .Where(f => staleLanguageIds.Contains(f.BranchLanguageId))
                 .ToListAsync();
@@ -102,6 +105,10 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
                 .Where(t => tombstoneIds.Contains(t.RepositoryId))
                 .ToListAsync();
 
+            var staleTokenUsages = await context.TokenUsages
+                .Where(t => tombstoneIds.Contains(t.RepositoryId))
+                .ToListAsync();
+
             context.DocCatalogs.RemoveRange(staleCatalogs);
             context.DocFiles.RemoveRange(staleDocFiles);
             context.BranchLanguages.RemoveRange(staleLanguages);
@@ -114,6 +121,7 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
             context.UserDislikes.RemoveRange(staleDislikes);
             context.IncrementalUpdateTasks.RemoveRange(staleUpdateTasks);
             context.TranslationTasks.RemoveRange(staleTranslationTasks);
+            context.TokenUsages.RemoveRange(staleTokenUsages);
             context.Repositories.RemoveRange(tombstones);
             await context.SaveChangesAsync();
         }
@@ -454,6 +462,9 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
             .Where(c => branchLanguageIds.Contains(c.BranchLanguageId))
             .ToListAsync();
 
+        // Break self-referencing foreign keys to avoid SQLite ON DELETE RESTRICT errors
+        foreach (var c in oldCatalogs) c.ParentId = null;
+
         // Clear associated document files directly by language ID
         var oldDocFiles = await context.DocFiles
             .Where(f => branchLanguageIds.Contains(f.BranchLanguageId))
@@ -566,6 +577,9 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
                 .Where(c => branchLanguageIds.Contains(c.BranchLanguageId))
                 .ToListAsync();
 
+            // Break self-referencing foreign keys to avoid SQLite ON DELETE RESTRICT errors
+            foreach (var c in catalogs) c.ParentId = null;
+
             var docFiles = await context.DocFiles
                 .Where(f => branchLanguageIds.Contains(f.BranchLanguageId))
                 .ToListAsync();
@@ -619,6 +633,9 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
 
         var translationTasks = await context.TranslationTasks.Where(t => t.RepositoryId == repository.Id).ToListAsync();
         if (translationTasks.Count > 0) context.TranslationTasks.RemoveRange(translationTasks);
+
+        var tokenUsages = await context.TokenUsages.Where(t => t.RepositoryId == repository.Id).ToListAsync();
+        if (tokenUsages.Count > 0) context.TokenUsages.RemoveRange(tokenUsages);
 
         // Soft-delete the repository
         repository.IsDeleted = true;
