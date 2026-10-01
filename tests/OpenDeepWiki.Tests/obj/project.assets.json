@@ -130,12 +130,12 @@
         },
         "compile": {
           "lib/net6.0/Google.Apis.dll": {
-            "related": ".pdb"
+            "related": ".pdb;.xml"
           }
         },
         "runtime": {
           "lib/net6.0/Google.Apis.dll": {
-            "related": ".pdb"
+            "related": ".pdb;.xml"
           }
         }
       },
@@ -148,12 +148,12 @@
         },
         "compile": {
           "lib/net6.0/Google.Apis.Auth.dll": {
-            "related": ".pdb"
+            "related": ".pdb;.xml"
           }
         },
         "runtime": {
           "lib/net6.0/Google.Apis.Auth.dll": {
-            "related": ".pdb"
+            "related": ".pdb;.xml"
           }
         }
       },
@@ -164,12 +164,12 @@
         },
         "compile": {
           "lib/net6.0/Google.Apis.Core.dll": {
-            "related": ".pdb"
+            "related": ".pdb;.xml"
           }
         },
         "runtime": {
           "lib/net6.0/Google.Apis.Core.dll": {
-            "related": ".pdb"
+            "related": ".pdb;.xml"
           }
         }
       },
@@ -181,10 +181,14 @@
           "MimeTypes": "2.5.2"
         },
         "compile": {
-          "lib/net8.0/Google.GenAI.dll": {}
+          "lib/net8.0/Google.GenAI.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net8.0/Google.GenAI.dll": {}
+          "lib/net8.0/Google.GenAI.dll": {
+            "related": ".xml"
+          }
         }
       },
       "LibGit2Sharp/0.31.0": {
@@ -300,6 +304,19 @@
         },
         "runtime": {
           "lib/net10.0/Making.Security.dll": {}
+        }
+      },
+      "Markdig/0.41.3": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/Markdig.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/Markdig.dll": {
+            "related": ".xml"
+          }
         }
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer/10.0.2": {
@@ -490,10 +507,14 @@
       "Microsoft.Extensions.AI.Abstractions/10.4.0": {
         "type": "package",
         "compile": {
-          "lib/net10.0/Microsoft.Extensions.AI.Abstractions.dll": {}
+          "lib/net10.0/Microsoft.Extensions.AI.Abstractions.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net10.0/Microsoft.Extensions.AI.Abstractions.dll": {}
+          "lib/net10.0/Microsoft.Extensions.AI.Abstractions.dll": {
+            "related": ".xml"
+          }
         }
       },
       "Microsoft.Extensions.AI.OpenAI/9.9.0-preview.1.25458.4": {
@@ -1697,10 +1718,14 @@
       "System.CodeDom/7.0.0": {
         "type": "package",
         "compile": {
-          "lib/net7.0/System.CodeDom.dll": {}
+          "lib/net7.0/System.CodeDom.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net7.0/System.CodeDom.dll": {}
+          "lib/net7.0/System.CodeDom.dll": {
+            "related": ".xml"
+          }
         },
         "build": {
           "buildTransitive/net6.0/_._": {}
@@ -1742,10 +1767,14 @@
           "System.CodeDom": "7.0.0"
         },
         "compile": {
-          "lib/net7.0/System.Management.dll": {}
+          "lib/net7.0/System.Management.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net7.0/System.Management.dll": {}
+          "lib/net7.0/System.Management.dll": {
+            "related": ".xml"
+          }
         },
         "build": {
           "buildTransitive/net6.0/_._": {}
@@ -1891,6 +1920,7 @@
           "Google.GenAI": "1.5.0",
           "LibGit2Sharp": "0.31.0",
           "Making.AspNetCore": "1.0.9-preview",
+          "Markdig": "0.41.3",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.2",
           "Microsoft.AspNetCore.OpenApi": "10.0.2",
           "Microsoft.Extensions.AI.OpenAI": "9.9.0-preview.1.25458.4",
@@ -2302,6 +2332,29 @@
         "lib/net9.0/Making.Security.dll",
         "making.security.1.0.9-preview.nupkg.sha512",
         "making.security.nuspec"
+      ]
+    },
+    "Markdig/0.41.3": {
+      "sha512": "i3vSTyGpBGWbJB04aJ3cPJs0T3BV2e1nduW3EUHK/i+xUupYbym75iZPss/XjqhS5JlBErwQYnx7ofK3Zcsozg==",
+      "type": "package",
+      "path": "markdig/0.41.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net462/Markdig.dll",
+        "lib/net462/Markdig.xml",
+        "lib/net8.0/Markdig.dll",
+        "lib/net8.0/Markdig.xml",
+        "lib/net9.0/Markdig.dll",
+        "lib/net9.0/Markdig.xml",
+        "lib/netstandard2.0/Markdig.dll",
+        "lib/netstandard2.0/Markdig.xml",
+        "lib/netstandard2.1/Markdig.dll",
+        "lib/netstandard2.1/Markdig.xml",
+        "markdig.0.41.3.nupkg.sha512",
+        "markdig.nuspec",
+        "markdig.png",
+        "readme.md"
       ]
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/10.0.2": {
@@ -4603,6 +4656,7 @@
           "Making.AspNetCore": "1.0.9-preview",
           "Making.MiniApis.Analyzers": "1.0.9-preview",
           "Mapster.DependencyInjection": "10.0.0-pre01",
+          "Markdig": "0.41.3",
           "Mem0.NET": "1.1.3",
           "MessagePack": "3.1.3",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.2",

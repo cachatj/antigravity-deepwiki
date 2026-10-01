@@ -265,6 +265,14 @@
           }
         }
       },
+      "Markdig/0.41.3": {
+        "runtime": {
+          "lib/net9.0/Markdig.dll": {
+            "assemblyVersion": "0.41.0.0",
+            "fileVersion": "0.41.3.0"
+          }
+        }
+      },
       "Microsoft.AspNetCore.Authentication.JwtBearer/10.0.2": {
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.0.1"
@@ -1220,6 +1228,7 @@
           "Google.GenAI": "1.5.0",
           "LibGit2Sharp": "0.31.0",
           "Making.AspNetCore": "1.0.9-preview",
+          "Markdig": "0.41.3",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.2",
           "Microsoft.AspNetCore.OpenApi": "10.0.2",
           "Microsoft.Extensions.AI.OpenAI": "9.9.0-preview.1.25458.4",
@@ -1429,6 +1438,13 @@
       "sha512": "sha512-XSjb9S9wIRl4P37mNNMbHzmh/8+xYLSCgOjMDbUqneiK8Bfrt/CTH0K+nvMHgAUoIcGiXoQYj6xHAkS7EBM/PQ==",
       "path": "making.security/1.0.9-preview",
       "hashPath": "making.security.1.0.9-preview.nupkg.sha512"
+    },
+    "Markdig/0.41.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-i3vSTyGpBGWbJB04aJ3cPJs0T3BV2e1nduW3EUHK/i+xUupYbym75iZPss/XjqhS5JlBErwQYnx7ofK3Zcsozg==",
+      "path": "markdig/0.41.3",
+      "hashPath": "markdig.0.41.3.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/10.0.2": {
       "type": "package",

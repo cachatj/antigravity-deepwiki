@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © AIDotNet 2026. All rights reserved.")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute(@"OpenDeepWiki is an AI-powered code knowledge base built on .NET and Semantic Kernel. It converts GitHub, GitLab, and other code repositories into intelligent knowledge bases with multi-language code analysis, documentation generation, architecture diagrams, and AI chat interaction.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("2.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("2.0.0+8b84419399b98a05b5f32aa686922547d06e6574")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("2.0.0+90c48b8f0c6d0178c28faa8cd6f67845eb90f613")]
 [assembly: System.Reflection.AssemblyProductAttribute("OpenDeepWiki")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OpenDeepWiki")]
 [assembly: System.Reflection.AssemblyVersionAttribute("2.0.0.0")]

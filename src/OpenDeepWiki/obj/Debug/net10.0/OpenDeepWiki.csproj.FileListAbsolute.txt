@@ -700,14 +700,17 @@
 /Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/obj/Debug/net10.0/OpenDeepWiki.pdb
 /Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/obj/Debug/net10.0/OpenDeepWiki.genruntimeconfig.cache
 /Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/obj/Debug/net10.0/ref/OpenDeepWiki.dll
-/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/architecture_current_state.md
-/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/catalog-generator azure.md
-/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/catalog-generator v2.md
-/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/content-generator v2.md
-/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/incremental-updater v2.md
-/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/mindmap-generator v2.md
 /Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/ExportAssets/highlight.min.js
 /Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/ExportAssets/hljs-github-dark.min.css
 /Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/ExportAssets/hljs-github.min.css
 /Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/ExportAssets/mermaid.min.js
 /Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/Markdig.dll
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/.DS_Store
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/orignal prompts/catalog-generator v2.md
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/orignal prompts/catalog-generator.md
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/orignal prompts/content-generator v2.md
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/orignal prompts/content-generator.md
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/orignal prompts/incremental-updater v2.md
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/orignal prompts/incremental-updater.md
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/orignal prompts/mindmap-generator v2.md
+/Users/jc-vht/code_sandbox/antigravity-deepwiki/src/OpenDeepWiki/bin/Debug/net10.0/prompts/orignal prompts/mindmap-generator.md

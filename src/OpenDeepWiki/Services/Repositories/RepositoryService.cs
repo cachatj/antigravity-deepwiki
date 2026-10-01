@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenDeepWiki.EFCore;
 using OpenDeepWiki.Entities;
@@ -78,11 +78,46 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
                 .Where(log => tombstoneIds.Contains(log.RepositoryId))
                 .ToListAsync();
 
+            var staleBookmarks = await context.UserBookmarks
+                .Where(b => tombstoneIds.Contains(b.RepositoryId))
+                .ToListAsync();
+
+            var staleSubscriptions = await context.UserSubscriptions
+                .Where(s => tombstoneIds.Contains(s.RepositoryId))
+                .ToListAsync();
+
+            var staleAssignments = await context.RepositoryAssignments
+                .Where(a => tombstoneIds.Contains(a.RepositoryId))
+                .ToListAsync();
+
+            var staleActivities = await context.UserActivities
+                .Where(a => a.RepositoryId != null && tombstoneIds.Contains(a.RepositoryId))
+                .ToListAsync();
+
+            var staleDislikes = await context.UserDislikes
+                .Where(d => tombstoneIds.Contains(d.RepositoryId))
+                .ToListAsync();
+
+            var staleUpdateTasks = await context.IncrementalUpdateTasks
+                .Where(t => tombstoneIds.Contains(t.RepositoryId))
+                .ToListAsync();
+
+            var staleTranslationTasks = await context.TranslationTasks
+                .Where(t => tombstoneIds.Contains(t.RepositoryId))
+                .ToListAsync();
+
             context.DocCatalogs.RemoveRange(staleCatalogs);
             context.DocFiles.RemoveRange(staleDocFiles);
             context.BranchLanguages.RemoveRange(staleLanguages);
             context.RepositoryBranches.RemoveRange(staleBranches);
             context.RepositoryProcessingLogs.RemoveRange(staleLogs);
+            context.UserBookmarks.RemoveRange(staleBookmarks);
+            context.UserSubscriptions.RemoveRange(staleSubscriptions);
+            context.RepositoryAssignments.RemoveRange(staleAssignments);
+            context.UserActivities.RemoveRange(staleActivities);
+            context.UserDislikes.RemoveRange(staleDislikes);
+            context.IncrementalUpdateTasks.RemoveRange(staleUpdateTasks);
+            context.TranslationTasks.RemoveRange(staleTranslationTasks);
             context.Repositories.RemoveRange(tombstones);
             await context.SaveChangesAsync();
         }
@@ -583,6 +618,28 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
             .ToListAsync();
         if (logs.Count > 0)
             context.RepositoryProcessingLogs.RemoveRange(logs);
+
+        // Clear additional related entities
+        var bookmarks = await context.UserBookmarks.Where(b => b.RepositoryId == repository.Id).ToListAsync();
+        if (bookmarks.Count > 0) context.UserBookmarks.RemoveRange(bookmarks);
+
+        var subscriptions = await context.UserSubscriptions.Where(s => s.RepositoryId == repository.Id).ToListAsync();
+        if (subscriptions.Count > 0) context.UserSubscriptions.RemoveRange(subscriptions);
+
+        var assignments = await context.RepositoryAssignments.Where(a => a.RepositoryId == repository.Id).ToListAsync();
+        if (assignments.Count > 0) context.RepositoryAssignments.RemoveRange(assignments);
+
+        var activities = await context.UserActivities.Where(a => a.RepositoryId == repository.Id).ToListAsync();
+        if (activities.Count > 0) context.UserActivities.RemoveRange(activities);
+
+        var dislikes = await context.UserDislikes.Where(d => d.RepositoryId == repository.Id).ToListAsync();
+        if (dislikes.Count > 0) context.UserDislikes.RemoveRange(dislikes);
+
+        var updateTasks = await context.IncrementalUpdateTasks.Where(t => t.RepositoryId == repository.Id).ToListAsync();
+        if (updateTasks.Count > 0) context.IncrementalUpdateTasks.RemoveRange(updateTasks);
+
+        var translationTasks = await context.TranslationTasks.Where(t => t.RepositoryId == repository.Id).ToListAsync();
+        if (translationTasks.Count > 0) context.TranslationTasks.RemoveRange(translationTasks);
 
         // Soft-delete the repository
         repository.IsDeleted = true;
