@@ -65,13 +65,9 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
             var staleCatalogs = await context.DocCatalogs
                 .Where(c => staleLanguageIds.Contains(c.BranchLanguageId))
                 .ToListAsync();
-            var staleDocFileIds = staleCatalogs
-                .Where(c => c.DocFileId != null)
-                .Select(c => c.DocFileId!)
-                .Distinct()
-                .ToList();
+
             var staleDocFiles = await context.DocFiles
-                .Where(f => staleDocFileIds.Contains(f.Id))
+                .Where(f => staleLanguageIds.Contains(f.BranchLanguageId))
                 .ToListAsync();
 
             var staleLogs = await context.RepositoryProcessingLogs
@@ -458,12 +454,10 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
             .Where(c => branchLanguageIds.Contains(c.BranchLanguageId))
             .ToListAsync();
 
-        // Collect associated document file IDs
-        var docFileIds = oldCatalogs
-            .Where(c => c.DocFileId != null)
-            .Select(c => c.DocFileId!)
-            .Distinct()
-            .ToList();
+        // Clear associated document files directly by language ID
+        var oldDocFiles = await context.DocFiles
+            .Where(f => branchLanguageIds.Contains(f.BranchLanguageId))
+            .ToListAsync();
 
         // Clear document catalogs
         if (oldCatalogs.Count > 0)
@@ -472,16 +466,9 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
         }
 
         // Clear document files
-        if (docFileIds.Count > 0)
+        if (oldDocFiles.Count > 0)
         {
-            var oldDocFiles = await context.DocFiles
-                .Where(f => docFileIds.Contains(f.Id))
-                .ToListAsync();
-            
-            if (oldDocFiles.Count > 0)
-            {
-                context.DocFiles.RemoveRange(oldDocFiles);
-            }
+            context.DocFiles.RemoveRange(oldDocFiles);
         }
 
         // Clear previous processing logs
@@ -579,23 +566,15 @@ public class RepositoryService(IContext context, IGitPlatformService gitPlatform
                 .Where(c => branchLanguageIds.Contains(c.BranchLanguageId))
                 .ToListAsync();
 
-            var docFileIds = catalogs
-                .Where(c => c.DocFileId != null)
-                .Select(c => c.DocFileId!)
-                .Distinct()
-                .ToList();
+            var docFiles = await context.DocFiles
+                .Where(f => branchLanguageIds.Contains(f.BranchLanguageId))
+                .ToListAsync();
 
             if (catalogs.Count > 0)
                 context.DocCatalogs.RemoveRange(catalogs);
 
-            if (docFileIds.Count > 0)
-            {
-                var docFiles = await context.DocFiles
-                    .Where(f => docFileIds.Contains(f.Id))
-                    .ToListAsync();
-                if (docFiles.Count > 0)
-                    context.DocFiles.RemoveRange(docFiles);
-            }
+            if (docFiles.Count > 0)
+                context.DocFiles.RemoveRange(docFiles);
 
             // Clear branch languages
             var languages = await context.BranchLanguages
