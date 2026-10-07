@@ -8,11 +8,7 @@
       - "8080:8080"
     restart: unless-stopped
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -f http://localhost:8080/api/system/version || exit 1",
-        ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/api/system/version || exit 1" ]
       interval: 15s
       timeout: 10s
       retries: 5
@@ -61,10 +57,13 @@
     volumes:
       # Named volume: SQLite over a macOS bind mount fails with 'disk I/O error' on large writes.
       - opendeepwiki-data:/data
-      - /Users/jc-vht/code_sandbox/claims_denial_data_science:/vht-denials:ro
-      - /Users/jc-vht/code_sandbox/autogluon-local-new-client-tests:/vht-autogluon-local:ro
-      - /Users/jc-vht/code_sandbox/vht-ai-claims-engine:/vht-ai-claims-engine:ro
-      - /Users/jc-vht/code_sandbox/vht-ds-fabric:/vht-ds-fabric:ro
+      #- /Users/jc-vht/code_sandbox/claims_denial_data_science:/vht-denials:ro
+      #- /Users/jc-vht/code_sandbox/autogluon-local-new-client-tests:/vht-autogluon-local:ro
+      #- /Users/jc-vht/code_sandbox/vht-ai-claims-engine:/vht-ai-claims-engine:ro
+      #- /Users/jc-vht/code_sandbox/vht-ds-fabric:/vht-ds-fabric:ro
+      - /Users/jcachat/code_sandbox/edna_phm_sow_airflow_pipeline:/sow:ro
+      - /Users/jcachat/code_sandbox/cistern-water-level-monitor:/cistern-water-level-monitor:ro
+      - /Users/jcachat/code_sandbox/cistern-water-level-monitor-eink-display:/cistern-water-level-monitor-eink-display:ro
 
   web:
     # SECURITY: Build locally from source only — no external pre-compiled images
